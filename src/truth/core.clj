@@ -38,6 +38,10 @@
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
     :db/doc "The user who created this claim"}
+   {:db/ident :claim/contributors
+    :db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/many
+    :db/doc "Users who have contributed this claim"}
    ])
 
 (def claim-vote-schema
@@ -94,20 +98,39 @@
     :user/email "travis@truth.com"}
    {:user/username "james"
     :user/email "james@truth.com"}
+   {:user/username "toby"
+    :user/email "toby@truth.com"}
    ])
 
 (def james [:user/username "james"])
 (def travis [:user/username "travis"])
+(def toby [:user/username "toby"])
 
 (def pet-claims
   [{:claim/body "Dogs are great"
-    :claim/creator travis}
+    :claim/creator travis
+    :claim/contributors [travis]
+    }
    {:claim/body "They have cute paws"
-    :claim/creator travis}
+    :claim/creator travis
+;;    :claim/contributors travis
+}
    {:claim/body "Cats are great"
-    :claim/creator james}
+    :claim/creator james
+;;    :claim/contributors travis
+}
    {:claim/body "They don't like people"
-    :claim/creator travis}
+    :claim/creator travis
+    ;;    :claim/contributors travis
+    }
+
+   ])
+
+(def more-pet-claims
+  [{:db/id [:claim/body "Dogs are great"]
+    :claim/contributors [james]
+    :claim/body "Dogs are awesome"
+    }
    ])
 
 (def dogs-are-great [:claim/body "Dogs are great"])
@@ -187,6 +210,7 @@
 
 (def relevance-votes-q
   '[:find ?agree ?target-body ?supports ?claim-body (avg ?rating)
+    :in $ ?current-user-username
     :where
     [?vote :relevance-vote/rating ?rating]
     [?vote :relevance-vote/evidence ?evidence]
@@ -196,14 +220,39 @@
     [?target-vote :claim-vote/claim ?target]
     [?target-vote :claim-vote/agree ?agree]
     [?target-vote :claim-vote/voter ?current-user]
-    [?current-user :user/username "travis"]
+    [?current-user :user/username ?current-user-username]
     [?evidence :evidence/claim ?claim]
     [?claim :claim/body ?claim-body]
     ])
 
+(def relevance-votes-q
+  '[:find ?agree
+    (pull ?target [:claim/body])
+    (pull ?evidence [:evidence/supports])
+    (pull ?claim [:claim/body])
+    (avg ?rating)
+    :in $ ?current-user-username
+    :where
+    [?vote :relevance-vote/rating ?rating]
+    [?vote :relevance-vote/evidence ?evidence]
+    [?evidence :evidence/target ?target]
+    [?target-vote :claim-vote/claim ?target]
+    [?target-vote :claim-vote/agree ?agree]
+    [?target-vote :claim-vote/voter ?current-user]
+    [?current-user :user/username ?current-user-username]
+    [?evidence :evidence/claim ?claim]
+    ])
+
+(def claim-q
+  '[:find (pull ?claim [* {:claim/contributors [:user/username]}])
+    :in $ ?claim-body
+    :where
+    [?claim :claim/body ?claim-body]
+
+    ])
+
 (comment
   (def conn (d/connect client {:db-name "truth"}))
-  (def db (d/db conn))
   (do
    (d/transact conn {:tx-data user-schema})
    (d/transact conn {:tx-data claim-schema})
@@ -213,13 +262,54 @@
 
    (d/transact conn {:tx-data users})
    (d/transact conn {:tx-data pet-claims})
+;;   (d/transact conn {:tx-data more-pet-claims})
    (d/transact conn {:tx-data votes})
    (d/transact conn {:tx-data evidence})
+   (def db (d/db conn))
 
    )
+  (let [[[id]]
+        ]
+    id
+    )
+
+  (d/q '[:find ?claim
+         :in $ ?claim-body
+         :where
+         [?claim :claim/body ?claim-body]
+         ]
+       db "Dogs are great")
+
+  (d/q '[:find ?eid
+         :in $ ?eid
+         :where
+         [?eid]
+         ]
+       db 17592186045425)
+
+  (d/transact conn {:tx-data [{:db/id 17592186045425
+                               :claim/body "Dogs are fine"
+                               :claim/contributors [toby]
+                               }]})
+  (def db (d/db conn))
+
+  (d/q '[:find ?body (distinct ?contributor-usernames)
+         :in $ ?eid
+         :where
+         [?eid]
+         [?eid :claim/body ?body]
+         [?eid :claim/contributors ?contributors]
+         [?contributors :user/username ?contributor-usernames]
+         ]
+       db
+       17592186045425)
+
+
   (d/q all-claims-q db)
   (d/q all-evidence-claims-q db)
   (d/q cats-evidence db)
   (d/q votes-q db)
-  (d/q relevance-votes-q db)
+  (d/q relevance-votes-q db "james")
+  (d/q relevance-votes-q db "travis")
+  (d/q claim-q db "Dogs are fine")
   )
