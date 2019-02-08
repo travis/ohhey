@@ -2,7 +2,6 @@
   (:require [datomic.client.api :as d]))
 
 
-
 (defn foo
   "I don't do a whole lot."
   [x]
@@ -251,8 +250,29 @@
 
     ])
 
+(def conn (d/connect client {:db-name "truth"}))
+
+(defn get-user-by-email [db email]
+  (first (first
+          (d/q '[:find (pull ?user [*])
+                 :in $ ?email
+                 :where
+                 [?user :user/email ?email]
+                 ]
+               db email))))
+
+(defn get-all-claims [db]
+  (first
+   (d/q
+    '[:find (pull ?claim [* {:claim/contributors [:user/username]}])
+      :where
+      [?claim :claim/body _]]
+    db)))
+
+(defn get-contributors [db user]
+  [])
+
 (comment
-  (def conn (d/connect client {:db-name "truth"}))
   (do
    (d/transact conn {:tx-data user-schema})
    (d/transact conn {:tx-data claim-schema})

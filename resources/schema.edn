@@ -1,0 +1,19 @@
+{:objects
+   {:Claim
+    {:fields {:id {:type Int}
+              :body {:type String
+                     :resolve [:key :claim/body]}
+              :contributors {:type (list :User)
+                             :resolve :Claim/contributors}}}
+
+    :User
+    {:fields {:id {:type Int
+                   :resolve [:key :db/id]}
+              :username {:type String
+                         :resolve [:key :user/username]}}}}
+
+   :queries
+   {:currentUser {:type :User
+                  :resolve :current-user}
+    :claims {:type (list :Claim)
+             :resolve :claims}}}
