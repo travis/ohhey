@@ -1,0 +1,44 @@
+interface Node {
+  id: ID!
+}
+
+type User {
+  id: ID
+  username: String
+}
+
+input ClaimInput {
+  body: String
+}
+
+type Claim implements Node {
+  id: ID!
+  body: String
+  contributors: [User]
+  supportingEvidence: EvidenceConnection
+  opposingEvidence: EvidenceConnection
+}
+
+type EvidenceConnection {
+  edges: [Evidence]
+}
+
+type Evidence {
+  cursor: String
+  node: Claim
+}
+
+type Query {
+  currentUser: User
+  claims: [Claim]
+}
+
+type Mutation {
+  addClaim(claim: ClaimInput): Claim
+  addEvidence(claimID: ID!): Claim
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

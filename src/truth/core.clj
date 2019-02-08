@@ -257,8 +257,7 @@
           (d/q '[:find (pull ?user [*])
                  :in $ ?email
                  :where
-                 [?user :user/email ?email]
-                 ]
+                 [?user :user/email ?email]]
                db email))))
 
 (defn get-all-claims [db]
@@ -269,8 +268,13 @@
       [?claim :claim/body _]]
     db)))
 
-(defn get-contributors [db user]
-  [])
+(defn get-contributors [db claim]
+  (first
+   (d/q '[:find (pull ?user [:user/username])
+          :in $ ?claim-id
+          :where
+          [?claim-id :claim/contributors ?user]]
+        db (:db/id claim))))
 
 (comment
   (do
