@@ -5,10 +5,10 @@
             [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
             [com.walmartlabs.lacinia.schema :as schema]
             [com.walmartlabs.lacinia.parser.schema :refer [parse-schema]]
-            [truth.core :refer [conn get-user-by-email get-all-claims get-contributors]]
+            [truth.core :refer [conn get-user-by-email get-all-claims get-contributors get-evidence-for-claim]]
             [datomic.client.api :as d]))
 
-(defn key
+(defn dkey
   [key]
   (fn [context args value]
     (get value key)))
@@ -25,13 +25,20 @@
        (get-all-claims (d/db conn)))
      }
     :User
-    {:username (key :user/username)}
+    {:username (dkey :user/username)}
     :Claim
-    {:body (key :claim/body)
-     :contributors (fn [context arguments claim]
-                     (or (:claim/contributors claim)
-                         (get-contributors (d/db conn) claim)))
-     :supportingEvidence (fn [c a claim])}}})
+    {:body (dkey :claim/body)
+     :contributors
+     (fn [context arguments claim]
+       (or (:claim/contributors claim)
+           (get-contributors (d/db conn) claim)))
+     :supportingEvidence
+     (fn [c a claim]
+       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim (d/db conn) claim true))})
+     :opposingEvidence
+     (fn [c a claim]
+       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim (d/db conn) claim false))})
+     }}})
 
 (def schema
   (-> (parse-schema (slurp (clojure.java.io/resource "schema.gql")) resolvers)
@@ -45,4 +52,5 @@
   (execute schema "{currentUser {username} }" nil nil)
   (execute schema "{claims {body } }" nil nil)
   (execute schema "{claims {body, contributors {username} } }" nil nil)
+  (execute schema "{claims {body, supportingEvidence {edges { node {body}}}, contributors {username} } }" nil nil)
   )

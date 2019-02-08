@@ -14,17 +14,24 @@
 
 (def client (d/client cfg))
 
+(defn uuid [] (str (java.util.UUID/randomUUID)))
+
 (def user-schema
   [{:db/ident :user/username
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The user's username"}
+   {:db/ident :user/id
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/unique :db.unique/identity
+    :db/doc "The user's id"}
    {:db/ident :user/email
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
-    :db/doc "The user's username"}
+    :db/doc "The user's email"}
    ])
 
 (def claim-schema
@@ -33,6 +40,11 @@
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The text of the claim"}
+   {:db/ident :claim/id
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/unique :db.unique/identity
+    :db/doc "The claim's id"}
    {:db/ident :claim/creator
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
@@ -40,11 +52,15 @@
    {:db/ident :claim/contributors
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many
-    :db/doc "Users who have contributed this claim"}
-   ])
+    :db/doc "Users who have contributed this claim"}])
 
 (def claim-vote-schema
-  [{:db/ident :claim-vote/claim
+  [{:db/ident :claim-vote/id
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/unique :db.unique/identity
+    :db/doc "The claim vote's id"}
+   {:db/ident :claim-vote/claim
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
     :db/doc "The claim being voted on"}
@@ -59,18 +75,23 @@
    ])
 
 (def evidence-schema
-  [{:db/ident :evidence/creator
+  [{:db/ident :evidence/id
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/unique :db.unique/identity
+    :db/doc "The evidence's id"}
+   {:db/ident :evidence/creator
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
     :db/doc "The user who asserted this evidentiary relationship"}
-   {:db/ident :evidence/target
-    :db/valueType :db.type/ref
-    :db/cardinality :db.cardinality/one
-    :db/doc "The claim being supported"}
    {:db/ident :evidence/claim
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
     :db/doc "The claim providing evidence"}
+   {:db/ident :evidence/target
+    :db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/one
+    :db/doc "The claim being supported or refuted"}
    {:db/ident :evidence/supports
     :db/valueType :db.type/boolean
     :db/cardinality :db.cardinality/one
@@ -78,7 +99,12 @@
    ])
 
 (def relevance-vote-schema
-  [{:db/ident :relevance-vote/evidence
+  [{:db/ident :relevance-vote/id
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/unique :db.unique/identity
+    :db/doc "The relevance vote's id"}
+   {:db/ident :relevance-vote/evidence
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
     :db/doc "The evidence being voted on"}
@@ -93,11 +119,14 @@
    ])
 
 (def users
-  [{:user/username "travis"
+  [{:user/id (uuid)
+    :user/username "travis"
     :user/email "travis@truth.com"}
-   {:user/username "james"
+   {:user/id (uuid)
+    :user/username "james"
     :user/email "james@truth.com"}
-   {:user/username "toby"
+   {:user/id (uuid)
+    :user/username "toby"
     :user/email "toby@truth.com"}
    ])
 
@@ -106,31 +135,29 @@
 (def toby [:user/username "toby"])
 
 (def pet-claims
-  [{:claim/body "Dogs are great"
+  [{:claim/id (uuid)
+    :claim/body "Dogs are great"
     :claim/creator travis
     :claim/contributors [travis]
     }
-   {:claim/body "They have cute paws"
+   {:claim/id (uuid)
+    :claim/body "They have cute paws"
     :claim/creator travis
 ;;    :claim/contributors travis
 }
-   {:claim/body "Cats are great"
+   {:claim/id (uuid)
+    :claim/body "Cats are great"
     :claim/creator james
 ;;    :claim/contributors travis
 }
-   {:claim/body "They don't like people"
+   {:claim/id (uuid)
+    :claim/body "They don't like people"
     :claim/creator travis
     ;;    :claim/contributors travis
     }
 
    ])
 
-(def more-pet-claims
-  [{:db/id [:claim/body "Dogs are great"]
-    :claim/contributors [james]
-    :claim/body "Dogs are awesome"
-    }
-   ])
 
 (def dogs-are-great [:claim/body "Dogs are great"])
 (def cats-are-great [:claim/body "Cats are great"])
@@ -138,42 +165,52 @@
 (def dont-like-people [:claim/body "They don't like people"])
 
 (def votes
-  [{:claim-vote/claim dogs-are-great
+  [{:claim-vote/id (uuid)
+    :claim-vote/claim dogs-are-great
     :claim-vote/voter travis
     :claim-vote/agree true}
-   {:claim-vote/claim dogs-are-great
+   {:claim-vote/id (uuid)
+    :claim-vote/claim dogs-are-great
     :claim-vote/voter james
     :claim-vote/agree false}
-   {:claim-vote/claim cats-are-great
+   {:claim-vote/id (uuid)
+    :claim-vote/claim cats-are-great
     :claim-vote/voter travis
     :claim-vote/agree false}
-   {:claim-vote/claim cats-are-great
+   {:claim-vote/id (uuid)
+    :claim-vote/claim cats-are-great
     :claim-vote/voter james
     :claim-vote/agree true}
    ])
 
 (def evidence
   [{:db/id "cute-paws-supports-dogs-are-great"
+    :evidence/id (uuid)
     :evidence/creator travis
     :evidence/target dogs-are-great
     :evidence/claim cute-paws
     :evidence/supports true}
    {:db/id "cute-paws-supports-cats-are-great"
+    :evidence/id (uuid)
     :evidence/creator james
     :evidence/target cats-are-great
     :evidence/claim cute-paws
     :evidence/supports true}
-   {:evidence/creator travis
+   {:evidence/id (uuid)
+    :evidence/creator travis
     :evidence/target cats-are-great
     :evidence/claim dont-like-people
     :evidence/supports false}
-   {:relevance-vote/evidence "cute-paws-supports-dogs-are-great"
+   {:relevance-vote/id (uuid)
+    :relevance-vote/evidence "cute-paws-supports-dogs-are-great"
     :relevance-vote/voter james
     :relevance-vote/rating 33}
-   {:relevance-vote/evidence "cute-paws-supports-dogs-are-great"
+   {:relevance-vote/id (uuid)
+    :relevance-vote/evidence "cute-paws-supports-dogs-are-great"
     :relevance-vote/voter travis
     :relevance-vote/rating 100}
-   {:relevance-vote/evidence "cute-paws-supports-cats-are-great"
+   {:relevance-vote/id (uuid)
+    :relevance-vote/evidence "cute-paws-supports-cats-are-great"
     :relevance-vote/voter james
     :relevance-vote/rating 100}
    {:relevance-vote/evidence "cute-paws-supports-cats-are-great"
@@ -261,11 +298,10 @@
                db email))))
 
 (defn get-all-claims [db]
-  (first
+  (map first
    (d/q
-    '[:find (pull ?claim [* {:claim/contributors [:user/username]}])
-      :where
-      [?claim :claim/body _]]
+    '[:find (pull ?claim  [* {:claim/contributors [:user/username]}])
+      :where [?claim :claim/id _]]
     db)))
 
 (defn get-contributors [db claim]
@@ -275,6 +311,21 @@
           :where
           [?claim-id :claim/contributors ?user]]
         db (:db/id claim))))
+
+(defn get-evidence-for-claim [db claim supports]
+  (print claim)
+  (print (:claim/id claim))
+  (let [[results]
+        (d/q '[:find (pull ?evidence-claim [*])
+               :in $ ?claim-id ?supports
+               :where
+               [?claim :claim/id ?claim-id]
+               [?evidence :evidence/target ?claim]
+               [?evidence :evidence/supports ?supports]
+               [?evidence :evidence/claim ?evidence-claim]]
+             db (:claim/id claim) supports)]
+    (print results)
+    results))
 
 (comment
   (do
@@ -286,7 +337,6 @@
 
    (d/transact conn {:tx-data users})
    (d/transact conn {:tx-data pet-claims})
-;;   (d/transact conn {:tx-data more-pet-claims})
    (d/transact conn {:tx-data votes})
    (d/transact conn {:tx-data evidence})
    (def db (d/db conn))
