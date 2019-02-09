@@ -70,13 +70,11 @@
         db (:db/id claim))))
 
 (defn get-evidence-for-claim [db claim supports]
-  (let [[results]
-        (d/q '[:find (pull ?evidence-claim [* {:claim/creator [:user/username]}])
-               :in $ ?claim-id ?supports
-               :where
-               [?claim :claim/id ?claim-id]
-               [?evidence :evidence/target ?claim]
-               [?evidence :evidence/supports ?supports]
-               [?evidence :evidence/claim ?evidence-claim]]
-             db (:claim/id claim) supports)]
-    results))
+  (map first
+      (d/q '[:find (pull ?evidence-claim [* {:claim/creator [:user/username]}])
+             :in $ ?claim [?supports ...]
+             :where
+             [?evidence :evidence/target ?claim]
+             [?evidence :evidence/supports ?supports]
+             [?evidence :evidence/claim ?evidence-claim]]
+           db claim supports)))
