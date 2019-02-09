@@ -50,9 +50,16 @@
 (defn get-all-claims [db]
   (map first
    (d/q
-    '[:find (pull ?claim  [* {:claim/contributors [:user/username]}])
+    '[:find (pull ?claim  [* {:claim/contributors [:user/username]} {:claim/creator [:user/username]}])
       :where [?claim :claim/id _]]
     db)))
+
+(defn get-claim-by-body [db]
+  (map first
+       (d/q
+        '[:find (pull ?claim  [* {:claim/contributors [:user/username]} {:claim/creator [:user/username]}])
+          :where [?claim :claim/id _]]
+        db)))
 
 (defn get-contributors [db claim]
   (first
@@ -63,10 +70,8 @@
         db (:db/id claim))))
 
 (defn get-evidence-for-claim [db claim supports]
-  (print claim)
-  (print (:claim/id claim))
   (let [[results]
-        (d/q '[:find (pull ?evidence-claim [*])
+        (d/q '[:find (pull ?evidence-claim [* {:claim/creator [:user/username]}])
                :in $ ?claim-id ?supports
                :where
                [?claim :claim/id ?claim-id]
@@ -74,5 +79,4 @@
                [?evidence :evidence/supports ?supports]
                [?evidence :evidence/claim ?evidence-claim]]
              db (:claim/id claim) supports)]
-    (print results)
     results))
