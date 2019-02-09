@@ -90,12 +90,23 @@
 
 
 (deftest test-get-claim
-  (testing "Dogs are great"
+  (testing "Cats are great"
     (is (= {:claim/body "Cats are great",
             :claim/contributors [#:user{:username "travis"}],
             :claim/creator #:user{:username "james"},
             :support-count 1,
-            :oppose-count 1}
+            :oppose-count 1
+            :agree-count 1
+            :disagree-count 1}
            (dissoc-ids
-            (get-claim fresh-db [:claim/body "Cats are great"]))))
-   ))
+            (get-claim fresh-db [:claim/body "Cats are great"])))))
+  (testing "Dogs are great"
+    (is (= {:claim/body "Dogs are great",
+            :claim/contributors [],
+            :claim/creator #:user{:username "travis"},
+            :support-count 1,
+            :oppose-count 0
+            :agree-count 1
+            :disagree-count 1}
+           (dissoc-ids
+            (get-claim fresh-db [:claim/body "Dogs are great"]))))))

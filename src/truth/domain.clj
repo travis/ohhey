@@ -91,32 +91,50 @@
            db claim supports)))
 
 (defn get-claim [db claim-ref]
-  (let [[claim support-count oppose-count]
+  (let [[claim support-count oppose-count agree-count disagree-count]
         (d/q
          '[:find
            [(pull ?claim  [:claim/body
-                           {:claim/contributors [:user/username]}
+                           {(:claim/contributors :default []) [:user/username]}
                            {:claim/creator [:user/username]}
 
                            ])
-            (sum ?support) (sum ?oppose)]
+            (sum ?support) (sum ?oppose)
+            (sum ?agree) (sum ?disagree)]
 
            :in $ ?claim
            :where
-           (or-join [?claim ?support ?oppose]
+           (or-join [?claim ?agree ?disagree ?support ?oppose]
+                    (and
+                     [?claim :claim/votes ?agree-vote]
+                     [?agree-vote :claim-vote/agree true]
+                     [(ground 1) ?agree]
+                     [(ground 0) ?disagree]
+                     [(ground 0) ?support]
+                     [(ground 0) ?oppose])
+                    (and
+                     [?claim :claim/votes ?disagree-vote]
+                     [?disagree-vote :claim-vote/agree false]
+                     [(ground 0) ?agree]
+                     [(ground 1) ?disagree]
+                     [(ground 0) ?support]
+                     [(ground 0) ?oppose])
                     (and
                      [?claim :claim/evidence ?supporting-evidence]
                      [?supporting-evidence :evidence/supports true]
                      [(ground 1) ?support]
-                     [(ground 0) ?oppose])
+                     [(ground 0) ?oppose]
+                     [(ground 0) ?agree]
+                     [(ground 0) ?disagree])
                     (and
                      [?claim :claim/evidence ?opposing-evidence]
                      [?opposing-evidence :evidence/supports false]
                      [(ground 0) ?support]
-                     [(ground 1) ?oppose]))
-
-
-           ]
+                     [(ground 1) ?oppose]
+                     [(ground 0) ?agree]
+                     [(ground 0) ?disagree]))]
          db claim-ref)]
 
-    (assoc claim :support-count support-count :oppose-count oppose-count)))
+    (assoc claim
+           :support-count support-count :oppose-count oppose-count
+           :agree-count agree-count :disagree-count disagree-count)))
