@@ -6,4 +6,6 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [com.datomic/client-pro "0.8.28"]
                  [com.walmartlabs/lacinia "0.32.0"]]
+  :profiles {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-389"]]}}
+  :aliases {"kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]}
   :repl-options {:init-ns truth.core})
