@@ -89,3 +89,34 @@
              [?evidence :evidence/supports ?supports]
              [?evidence :evidence/claim ?evidence-claim]]
            db claim supports)))
+
+(defn get-claim [db claim-ref]
+  (let [[claim support-count oppose-count]
+        (d/q
+         '[:find
+           [(pull ?claim  [:claim/body
+                           {:claim/contributors [:user/username]}
+                           {:claim/creator [:user/username]}
+
+                           ])
+            (sum ?support) (sum ?oppose)]
+
+           :in $ ?claim
+           :where
+           (or-join [?claim ?support ?oppose]
+                    (and
+                     [?claim :claim/evidence ?supporting-evidence]
+                     [?supporting-evidence :evidence/supports true]
+                     [(ground 1) ?support]
+                     [(ground 0) ?oppose])
+                    (and
+                     [?claim :claim/evidence ?opposing-evidence]
+                     [?opposing-evidence :evidence/supports false]
+                     [(ground 0) ?support]
+                     [(ground 1) ?oppose]))
+
+
+           ]
+         db claim-ref)]
+
+    (assoc claim :support-count support-count :oppose-count oppose-count)))

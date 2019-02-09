@@ -3,7 +3,9 @@
             [clojure.test :refer :all]
             [truth.schema :as schema]
             [truth.data :as data]
-            [truth.domain :refer [uuid get-user-by-email get-all-claims get-evidence-for-claim]]
+            [truth.domain :refer
+             [uuid get-user-by-email get-all-claims get-evidence-for-claim
+              get-claim]]
             ))
 
 (use-fixtures
@@ -85,3 +87,15 @@
                     :creator #:user{:username "travis"}}]
            (map dissoc-ids
                 (get-evidence-for-claim fresh-db [:claim/body "Cats are great"] [false true]))))))
+
+
+(deftest test-get-claim
+  (testing "Dogs are great"
+    (is (= {:claim/body "Cats are great",
+            :claim/contributors [#:user{:username "travis"}],
+            :claim/creator #:user{:username "james"},
+            :support-count 1,
+            :oppose-count 1}
+           (dissoc-ids
+            (get-claim fresh-db [:claim/body "Cats are great"]))))
+   ))
