@@ -5,7 +5,7 @@
             [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
             [com.walmartlabs.lacinia.schema :as schema]
             [com.walmartlabs.lacinia.parser.schema :refer [parse-schema]]
-            [truth.core :refer [db conn]]
+            [truth.core :refer [conn]]
             [truth.domain :refer [get-user-by-email get-all-claims get-contributors get-evidence-for-claim]]
             [datomic.client.api :as d]))
 
