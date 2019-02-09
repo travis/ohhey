@@ -32,13 +32,16 @@
                {:voter james :agree false}])
       :evidence (map
                  new-evidence
-                 [{:db/id "cute-paws-supports-dogs-are-great"
-                   :creator travis
+                 [{:creator travis
                    :claim (new-claim
                            {:db/id "cute-paws"
                             :body "They have cute paws"
                             :creator travis})
-                   :supports true}])}
+                   :supports true
+                   :votes (map
+                           new-relevance-vote
+                           [{:voter james :rating 33}
+                            {:voter travis :rating 100}])}])}
 
      {:body "Cats are great"
       :creator james
@@ -49,31 +52,18 @@
                {:voter james :agree true}])
       :evidence (map
                  new-evidence
-                 [{:db/id "cute-paws-supports-cats-are-great"
-                   :creator james
+                 [{:creator james
                    :claim "cute-paws"
-                   :supports true}
+                   :supports true
+                   :votes (map
+                           new-relevance-vote
+                           [{:voter james :rating 100}
+                            {:voter travis :rating 66}])}
                   {:creator travis
                    :claim (new-claim
                            {:body "They don't like people"
                             :creator travis})
-                   :supports false}])}])
-
-
-   (map
-    new-relevance-vote
-    [{:evidence "cute-paws-supports-dogs-are-great"
-      :voter james
-      :rating 33}
-     {:evidence "cute-paws-supports-dogs-are-great"
-      :voter travis
-      :rating 100}
-     {:evidence "cute-paws-supports-cats-are-great"
-      :voter james
-      :rating 100}
-     {:evidence "cute-paws-supports-cats-are-great"
-      :voter travis
-      :rating 66}])))
+                   :supports false}])}])))
 
 (defn load [conn]
   @(d/transact conn users)

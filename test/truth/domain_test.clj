@@ -12,10 +12,9 @@
             (d/create-database uri)
             (let [conn (d/connect uri)]
               (schema/load conn)
-             (data/load conn)
-             (def fresh-db (d/db conn))
-
-             (run-tests)))
+              (data/load conn)
+              (def fresh-db (d/db conn))))
+          (run-tests)
           ))
 
 (defn dissoc-ids [map]

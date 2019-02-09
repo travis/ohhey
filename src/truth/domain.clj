@@ -28,17 +28,19 @@
    :claim-vote/voter voter
    :claim-vote/agree agree})
 
-(defn new-evidence [{db-id :db/id creator :creator claim :claim supports :supports}]
+(defn new-evidence [{db-id :db/id creator :creator claim :claim supports :supports
+                     votes :votes
+                     :or {votes []}}]
   {:db/id (or db-id (uuid))
    :evidence/id (uuid)
    :evidence/creator creator
    :evidence/claim claim
-   :evidence/supports supports})
+   :evidence/supports supports
+   :evidence/votes votes})
 
 (defn new-relevance-vote [{db-id :db/id evidence :evidence voter :voter rating :rating}]
   {:db/id (or db-id (uuid))
    :relevance-vote/id (uuid)
-   :relevance-vote/evidence evidence
    :relevance-vote/voter voter
    :relevance-vote/rating rating})
 

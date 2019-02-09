@@ -81,6 +81,10 @@
     :db/valueType :db.type/boolean
     :db/cardinality :db.cardinality/one
     :db/doc "Does this evidence support the target claim?"}
+   {:db/ident :evidence/votes
+    :db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/many
+    :db/doc "Votes about the relevance of this evidence"}
    ])
 
 (def relevance-vote
@@ -89,10 +93,6 @@
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The relevance vote's id"}
-   {:db/ident :relevance-vote/evidence
-    :db/valueType :db.type/ref
-    :db/cardinality :db.cardinality/one
-    :db/doc "The evidence being voted on"}
    {:db/ident :relevance-vote/voter
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
