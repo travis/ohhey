@@ -5,9 +5,8 @@
             [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
             [com.walmartlabs.lacinia.schema :as schema]
             [com.walmartlabs.lacinia.parser.schema :refer [parse-schema]]
-            [truth.core :refer [conn]]
             [truth.domain :refer [get-user-by-email get-all-claims get-contributors get-evidence-for-claim]]
-            [datomic.client.api :as d]))
+            [datomic.api :as d]))
 
 (defn dkey
   [key]
@@ -18,26 +17,26 @@
   {:resolvers
    {:Query
     {:currentUser
-     (fn [context arguments value]
-       (get-user-by-email (d/db conn) "travis@truth.com"))
+     (fn [{db :db} arguments query]
+       (get-user-by-email db "travis@truth.com"))
 
      :claims
-     (fn [context arguments value]
-       (get-all-claims (d/db conn)))
+     (fn [{db :db} arguments query]
+       (get-all-claims db))
      }
     :User
     {:username (dkey :user/username)}
     :Claim
     {:body (dkey :claim/body)
      :contributors
-     (fn [context arguments {id :db/id contributors :claim/contributors}]
-       (or contributors (get-contributors (d/db conn) id)))
+     (fn [{db :db} arguments {id :db/id contributors :claim/contributors}]
+       (or contributors (get-contributors db id)))
      :supportingEvidence
-     (fn [c a {id :db/id}]
-       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim (d/db conn) id [true]))})
+     (fn [{db :db} a {id :db/id}]
+       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim db id [true]))})
      :opposingEvidence
-     (fn [c a {id :db/id}]
-       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim (d/db conn) id [false]))})
+     (fn [{db :db} a {id :db/id}]
+       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim db id [false]))})
      }}})
 
 (def schema

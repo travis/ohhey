@@ -1,5 +1,5 @@
 (ns truth.schema
-  (:require [datomic.client.api :as d]))
+  (:require [datomic.api :as d]))
 
 (def user
   [{:db/ident :user/username
@@ -37,7 +37,11 @@
    {:db/ident :claim/contributors
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many
-    :db/doc "Users who have contributed this claim"}])
+    :db/doc "Users who have contributed this claim"}
+   {:db/ident :claim/evidence
+    :db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/many
+    :db/doc "Supporting and counter evidence for this claim"}])
 
 (def claim-vote
   [{:db/ident :claim-vote/id
@@ -73,10 +77,6 @@
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
     :db/doc "The claim providing evidence"}
-   {:db/ident :evidence/target
-    :db/valueType :db.type/ref
-    :db/cardinality :db.cardinality/one
-    :db/doc "The claim being supported or refuted"}
    {:db/ident :evidence/supports
     :db/valueType :db.type/boolean
     :db/cardinality :db.cardinality/one
@@ -104,8 +104,8 @@
    ])
 
 (defn load [conn]
-  (d/transact conn {:tx-data user})
-  (d/transact conn {:tx-data claim})
-  (d/transact conn {:tx-data claim-vote})
-  (d/transact conn {:tx-data evidence})
-  (d/transact conn {:tx-data relevance-vote}))
+  @(d/transact conn user)
+  @(d/transact conn claim)
+  @(d/transact conn claim-vote)
+  @(d/transact conn evidence)
+  @(d/transact conn relevance-vote))

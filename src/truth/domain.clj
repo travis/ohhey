@@ -1,38 +1,40 @@
 (ns truth.domain
-  (:require [datomic.client.api :as d]))
+  (:require [datomic.api :as d]))
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
 
 (defn new-user [{db-id :db/id username :username email :email}]
-  {:db/id db-id
+  {:db/id (or db-id (uuid))
    :user/id (uuid)
    :user/username username
    :user/email email})
 
-(defn new-claim [{db-id :db/id body :body creator :creator contributors :contributors
-                  :or {contributors []}}]
-  {:claim/id (uuid)
+(defn new-claim [{db-id :db/id body :body creator :creator contributors :contributors evidence :evidence
+                  :or {contributors [] evidence []}}]
+  {:db/id (or db-id (uuid))
+   :claim/id (uuid)
    :claim/body body
    :claim/creator creator
-   :claim/contributors contributors})
+   :claim/contributors contributors
+   :claim/evidence  evidence
+   })
 
 (defn new-claim-vote [{db-id :db/id claim :claim voter :voter agree :agree}]
-  {:db/id db-id
+  {:db/id (or db-id (uuid))
    :claim-vote/id (uuid)
    :claim-vote/claim claim
    :claim-vote/voter voter
    :claim-vote/agree agree})
 
-(defn new-evidence [{db-id :db/id creator :creator target :target claim :claim supports :supports}]
-  {:db/id db-id
+(defn new-evidence [{db-id :db/id creator :creator claim :claim supports :supports}]
+  {:db/id (or db-id (uuid))
    :evidence/id (uuid)
    :evidence/creator creator
-   :evidence/target target
    :evidence/claim claim
    :evidence/supports supports})
 
 (defn new-relevance-vote [{db-id :db/id evidence :evidence voter :voter rating :rating}]
-  {:db/id db-id
+  {:db/id (or db-id (uuid))
    :relevance-vote/id (uuid)
    :relevance-vote/evidence evidence
    :relevance-vote/voter voter
@@ -50,7 +52,11 @@
 (defn get-all-claims [db]
   (map first
    (d/q
-    '[:find (pull ?claim  [* {:claim/contributors [:user/username]} {:claim/creator [:user/username]}])
+    '[:find (pull ?claim  [*
+                           {:claim/contributors [:user/username]}
+                           {:claim/creator [:user/username]}
+                           {:claim/evidence [:evidence/supports {:evidence/claim [:claim/body]}]}
+                           ])
       :where [?claim :claim/id _]]
     db)))
 
@@ -74,7 +80,7 @@
       (d/q '[:find (pull ?evidence-claim [* {:claim/creator [:user/username]}])
              :in $ ?claim [?supports ...]
              :where
-             [?evidence :evidence/target ?claim]
+             [?claim :claim/evidence ?evidence]
              [?evidence :evidence/supports ?supports]
              [?evidence :evidence/claim ?evidence-claim]]
            db claim supports)))

@@ -1,19 +1,21 @@
 (ns truth.domain-test
-  (:require [datomic.client.api :as d]
+  (:require [datomic.api :as d]
             [clojure.test :refer :all]
             [truth.schema :as schema]
             [truth.data :as data]
-            [truth.domain :refer [get-user-by-email get-all-claims get-evidence-for-claim]]
-
-            [truth.core :refer [conn]]))
+            [truth.domain :refer [uuid get-user-by-email get-all-claims get-evidence-for-claim]]
+            ))
 
 (use-fixtures
   :once (fn [run-tests]
-          (schema/load conn)
-          (data/load conn)
-          (def fresh-db (d/db conn))
+          (let [uri "datomic:mem://domain-test"]
+            (d/create-database uri)
+            (let [conn (d/connect uri)]
+              (schema/load conn)
+             (data/load conn)
+             (def fresh-db (d/db conn))
 
-          (run-tests)
+             (run-tests)))
           ))
 
 (defn dissoc-ids [map]
@@ -27,11 +29,24 @@
 
 (deftest test-get-all-claims
   (testing "it returns all claims"
-    (is (= [#:claim {:body "Dogs are great", :creator #:user{:username "travis"}}
-            #:claim {:body "They have cute paws", :creator #:user{:username "travis"}}
-            #:claim {:body "Cats are great", :creator #:user{:username "james"}
-                     :contributors [#:user{:username "travis"}]}
-            #:claim {:body "They don't like people", :creator #:user{:username "travis"}}]
+    (is (= [#:claim{:body "Dogs are great",
+                    :creator #:user{:username "travis"},
+                    :evidence
+                    [#:evidence{:supports true,
+                                :claim #:claim{:body "They have cute paws"}}]}
+            #:claim{:body "They have cute paws",
+                    :creator #:user{:username "travis"}}
+            #:claim{:body "Cats are great",
+                    :creator #:user{:username "james"},
+                    :contributors [#:user{:username "travis"}],
+                    :evidence
+                    [#:evidence{:supports true,
+                                :claim #:claim{:body "They have cute paws"}}
+                     #:evidence{:supports false,
+                                :claim
+                                #:claim{:body "They don't like people"}}]}
+            #:claim{:body "They don't like people",
+                    :creator #:user{:username "travis"}}]
            (map dissoc-ids (get-all-claims fresh-db))))))
 
 (deftest test-get-evidence-for-claims
