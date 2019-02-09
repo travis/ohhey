@@ -1,4 +1,4 @@
-(ns truth.resolvers
+(ns truth.graphql
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [com.walmartlabs.lacinia :refer [execute]]
@@ -30,15 +30,14 @@
     :Claim
     {:body (dkey :claim/body)
      :contributors
-     (fn [context arguments claim]
-       (or (:claim/contributors claim)
-           (get-contributors (d/db conn) claim)))
+     (fn [context arguments {id :db/id contributors :claim/contributors}]
+       (or contributors (get-contributors (d/db conn) id)))
      :supportingEvidence
-     (fn [c a claim]
-       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim (d/db conn) claim true))})
+     (fn [c a {id :db/id}]
+       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim (d/db conn) id [true]))})
      :opposingEvidence
-     (fn [c a claim]
-       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim (d/db conn) claim false))})
+     (fn [c a {id :db/id}]
+       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim (d/db conn) id [false]))})
      }}})
 
 (def schema
@@ -49,11 +48,11 @@
 
 
 (comment
-
+  (let [{bar :foo/bar} nil] bar)
   (execute schema "{currentUser {username} }" nil nil)
   (execute schema "{claims {body } }" nil nil)
   (execute schema "{claims {body, contributors {username} } }" nil nil)
-  (execute schema "{claims {body, supportingEvidence {edges { node {body}}}, contributors {username} } }" nil nil)
+
 
   (get-all-claims db)
 

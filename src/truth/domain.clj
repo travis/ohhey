@@ -62,12 +62,12 @@
         db)))
 
 (defn get-contributors [db claim]
-  (first
+  (map first
    (d/q '[:find (pull ?user [:user/username])
           :in $ ?claim-id
           :where
           [?claim-id :claim/contributors ?user]]
-        db (:db/id claim))))
+        db claim)))
 
 (defn get-evidence-for-claim [db claim supports]
   (map first
