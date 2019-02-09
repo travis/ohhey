@@ -43,17 +43,3 @@
 (def schema
   (-> (parse-schema (slurp (clojure.java.io/resource "schema.gql")) resolvers)
       schema/compile))
-
-
-
-
-(comment
-  (let [{bar :foo/bar} nil] bar)
-  (execute schema "{currentUser {username} }" nil nil)
-  (execute schema "{claims {body } }" nil nil)
-  (execute schema "{claims {body, contributors {username} } }" nil nil)
-
-
-  (get-all-claims db)
-
-  )
