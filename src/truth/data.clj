@@ -26,6 +26,10 @@
     new-claim
     [{:body "Dogs are great"
       :creator travis
+      :votes (map
+              new-claim-vote
+              [{:voter travis :agree true}
+               {:voter james :agree false}])
       :evidence (map
                  new-evidence
                  [{:db/id "cute-paws-supports-dogs-are-great"
@@ -39,6 +43,10 @@
      {:body "Cats are great"
       :creator james
       :contributors [travis]
+      :votes (map
+              new-claim-vote
+              [{:voter travis :agree false}
+               {:voter james :agree true}])
       :evidence (map
                  new-evidence
                  [{:db/id "cute-paws-supports-cats-are-great"
@@ -67,29 +75,6 @@
       :voter travis
       :rating 66}])))
 
-(def dogs-are-great [:claim/body "Dogs are great"])
-(def cats-are-great [:claim/body "Cats are great"])
-(def cute-paws [:claim/body "They have cute paws"])
-(def dont-like-people [:claim/body "They don't like people"])
-
-(def votes
-  (map
-   new-claim-vote
-   [{:claim dogs-are-great
-     :voter travis
-     :agree true}
-    {:claim dogs-are-great
-     :voter james
-     :agree false}
-    {:claim cats-are-great
-     :voter travis
-     :agree false}
-    {:claim cats-are-great
-     :voter james
-     :agree true}
-    ]))
-
 (defn load [conn]
   @(d/transact conn users)
-  @(d/transact conn pet-claims)
-  @(d/transact conn votes))
+  @(d/transact conn pet-claims))

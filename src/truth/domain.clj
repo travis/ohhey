@@ -9,20 +9,22 @@
    :user/username username
    :user/email email})
 
-(defn new-claim [{db-id :db/id body :body creator :creator contributors :contributors evidence :evidence
-                  :or {contributors [] evidence []}}]
+(defn new-claim [{db-id :db/id body :body creator :creator
+                  contributors :contributors evidence :evidence
+                  votes :votes
+                  :or {contributors [] evidence [] votes []}}]
   {:db/id (or db-id (uuid))
    :claim/id (uuid)
    :claim/body body
    :claim/creator creator
    :claim/contributors contributors
    :claim/evidence  evidence
+   :claim/votes votes
    })
 
 (defn new-claim-vote [{db-id :db/id claim :claim voter :voter agree :agree}]
   {:db/id (or db-id (uuid))
    :claim-vote/id (uuid)
-   :claim-vote/claim claim
    :claim-vote/voter voter
    :claim-vote/agree agree})
 
@@ -56,6 +58,7 @@
                            {:claim/contributors [:user/username]}
                            {:claim/creator [:user/username]}
                            {:claim/evidence [:evidence/supports {:evidence/claim [:claim/body]}]}
+                           {:claim/votes [:claim-vote/agree {:claim-vote/voter [:user/username]}]}
                            ])
       :where [?claim :claim/id _]]
     db)))

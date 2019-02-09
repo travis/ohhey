@@ -31,6 +31,11 @@
   (testing "it returns all claims"
     (is (= [#:claim{:body "Dogs are great",
                     :creator #:user{:username "travis"},
+                    :votes
+                    [#:claim-vote{:agree true,
+                                  :voter #:user{:username "travis"}}
+                     #:claim-vote{:agree false,
+                                  :voter #:user{:username "james"}}]
                     :evidence
                     [#:evidence{:supports true,
                                 :claim #:claim{:body "They have cute paws"}}]}
@@ -39,6 +44,11 @@
             #:claim{:body "Cats are great",
                     :creator #:user{:username "james"},
                     :contributors [#:user{:username "travis"}],
+                    :votes
+                    [#:claim-vote{:agree false,
+                                  :voter #:user{:username "travis"}}
+                     #:claim-vote{:agree true,
+                                  :voter #:user{:username "james"}}]
                     :evidence
                     [#:evidence{:supports true,
                                 :claim #:claim{:body "They have cute paws"}}

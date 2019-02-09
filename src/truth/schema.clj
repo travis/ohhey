@@ -41,7 +41,11 @@
    {:db/ident :claim/evidence
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many
-    :db/doc "Supporting and counter evidence for this claim"}])
+    :db/doc "Supporting and counter evidence for this claim"}
+   {:db/ident :claim/votes
+    :db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/many
+    :db/doc "Votes on this claim"}])
 
 (def claim-vote
   [{:db/ident :claim-vote/id
@@ -49,10 +53,6 @@
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The claim vote's id"}
-   {:db/ident :claim-vote/claim
-    :db/valueType :db.type/ref
-    :db/cardinality :db.cardinality/one
-    :db/doc "The claim being voted on"}
    {:db/ident :claim-vote/voter
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
