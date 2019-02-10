@@ -179,6 +179,7 @@
   )
 (comment
   (get-claim fresh-db [:claim/body "They don't like people"])
+  (get-claim-evidence fresh-db [:claim/body "Dogs are great"])
 
 
   )
