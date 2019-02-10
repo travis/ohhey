@@ -27,21 +27,30 @@
   (testing "claims"
     (is (= {:data
             {:claims
-             [{:body "Dogs are great"}
+             [{:body "They don't like people"}
+              {:body "A cat was mean to me"}
+              {:body "Dogs are great"}
               {:body "They have cute paws"}
-              {:body "Cats are great"}
-              {:body "They don't like people"}]}}
+              {:body "Cats are great"}]}}
            (execute "{claims {body } }" nil)))
     (is (= {:data
             {:claims
-             [{:body "Dogs are great", :contributors []}
+             [{:body "They don't like people", :contributors []}
+              {:body "A cat was mean to me", :contributors []}
+              {:body "Dogs are great", :contributors []}
               {:body "They have cute paws", :contributors []}
               {:body "Cats are great", :contributors [{:username "travis"}]}
-              {:body "They don't like people", :contributors []}]}}
+              ]}}
            (execute "{claims {body, contributors {username} } }" nil)))
     (is (= {:data
             {:claims
-             [{:body "Dogs are great",
+             [{:body "They don't like people",
+               :supportingEvidence {:edges [{:node {:body "A cat was mean to me"}}]},
+               :contributors []}
+              {:body "A cat was mean to me",
+               :supportingEvidence {:edges []},
+               :contributors []}
+              {:body "Dogs are great",
                :supportingEvidence
                {:edges '({:node {:body "They have cute paws"}})},
                :contributors []}
@@ -50,15 +59,20 @@
                :contributors []}
               {:body "Cats are great",
                :supportingEvidence
-               {:edges '({:node {:body "They have cute paws"}})},
+               {:edges '({:node {:body "They don't like people"}}
+                         {:node {:body "They have cute paws"}})},
                :contributors '({:username "travis"})}
-              {:body "They don't like people",
-               :supportingEvidence {:edges []},
-               :contributors []}]}}
+              ]}}
            (execute "{claims {body, supportingEvidence {edges { node {body}}}, contributors {username} } }" nil)))
     (is (= {:data
             {:claims
-             [{:body "Dogs are great",
+             [{:body "They don't like people",
+               :opposingEvidence {:edges []},
+               :contributors []}
+              {:body "A cat was mean to me",
+               :opposingEvidence {:edges []},
+               :contributors []}
+              {:body "Dogs are great",
                :opposingEvidence {:edges []},
                :contributors []}
               {:body "They have cute paws",
@@ -68,7 +82,5 @@
                :opposingEvidence
                {:edges [{:node {:body "They don't like people"}}]},
                :contributors [{:username "travis"}]}
-              {:body "They don't like people",
-               :opposingEvidence {:edges []},
-               :contributors []}]}}
+              ]}}
            (execute "{claims {body, opposingEvidence {edges { node {body}}}, contributors {username} } }" nil)))))

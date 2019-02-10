@@ -82,7 +82,7 @@
 
 (defn get-evidence-for-claim [db claim supports]
   (map first
-      (d/q '[:find (pull ?evidence-claim [* {:claim/creator [:user/username]}])
+      (d/q '[:find (pull ?evidence-claim [:claim/body {:claim/creator [:user/username]}])
              :in $ ?claim [?supports ...]
              :where
              [?claim :claim/evidence ?evidence]

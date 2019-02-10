@@ -26,7 +26,6 @@
 (def tani [:user/username "tani"])
 
 (def pet-claims
-
   (concat
    (map
     new-claim
@@ -42,7 +41,11 @@
                    :claim (new-claim
                            {:db/id "cute-paws"
                             :body "They have cute paws"
-                            :creator travis})
+                            :creator travis
+                            :votes (map
+                                    new-claim-vote
+                                    [{:voter chuchu :agree true}
+                                     {:voter toby :agree true}])})
                    :supports true
                    :votes (map
                            new-relevance-vote
@@ -67,11 +70,18 @@
                            [{:voter james :rating 100}
                             {:voter travis :rating 66}])}
                   {:creator travis
+                   :supports false
                    :claim (new-claim
                            {:db/id "dont-like-people"
                             :body "They don't like people"
-                            :creator travis})
-                   :supports false}
+                            :creator travis
+                            :evidence (map
+                                       new-evidence
+                                       [{:creator travis
+                                         :supports true
+                                         :claim (new-claim
+                                                 {:body "A cat was mean to me"
+                                                  :creator travis})}])})}
                   {:creator tani
                    :claim "dont-like-people"
                    :supports true}])}])))
