@@ -90,6 +90,47 @@
              [?evidence :evidence/claim ?evidence-claim]]
            db claim supports)))
 
+(def rules
+  '[[(agree-disagree ?claim ?uniqueness ?agree ?disagree)
+     (or-join [?claim ?uniqueness ?agree ?disagree]
+              (and
+               [?claim :claim/votes ?agree-vote]
+               [(identity ?agree-vote) ?uniqueness]
+               [?agree-vote :claim-vote/agree true]
+               [(ground 1) ?agree]
+               [(ground 0) ?disagree])
+              (and
+               [?claim :claim/votes ?disagree-vote]
+               [(identity ?disagree-vote) ?uniqueness]
+               [?disagree-vote :claim-vote/agree false]
+               [(ground 0) ?agree]
+               [(ground 1) ?disagree]))]
+    [(support-oppose ?claim ?uniqueness ?support ?oppose)
+     (or-join [?claim ?uniqueness ?support ?oppose]
+              (and
+               [?claim :claim/evidence ?supporting-evidence]
+               [(identity ?supporting-evidence) ?uniqueness]
+               [?supporting-evidence :evidence/supports true]
+               [(ground 1) ?support]
+               [(ground 0) ?oppose]
+               )
+              (and
+               [?claim :claim/evidence ?opposing-evidence]
+               [(identity ?opposing-evidence) ?uniqueness]
+               [?opposing-evidence :evidence/supports false]
+               [(ground 0) ?support]
+               [(ground 1) ?oppose]))]
+    [(claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
+     (or-join [?claim ?uniqueness ?agree ?disagree ?support ?oppose]
+              (and
+               [(ground 0) ?support]
+               [(ground 0) ?oppose]
+               (agree-disagree ?claim ?uniqueness ?agree ?disagree))
+              (and
+               [(ground 0) ?agree]
+               [(ground 0) ?disagree]
+               (support-oppose ?claim ?uniqueness ?support ?oppose)))]])
+
 (defn get-claim [db claim-ref]
   (let [[claim support-count oppose-count agree-count disagree-count]
         (d/q
@@ -101,45 +142,11 @@
                            ])
             (sum ?support) (sum ?oppose)
             (sum ?agree) (sum ?disagree)]
-           :in $ ?claim
+           :in $ % ?claim
            :with ?uniqueness
            :where
-           (or-join [?claim ?uniqueness ?agree ?disagree ?support ?oppose]
-                    (and
-                     [(ground 0) ?support]
-                     [(ground 0) ?oppose]
-                     (or-join [?claim ?uniqueness ?agree ?disagree]
-                              (and
-                               [?claim :claim/votes ?agree-vote]
-                               [(identity ?agree-vote) ?uniqueness]
-                               [?agree-vote :claim-vote/agree true]
-                               [(ground 1) ?agree]
-                               [(ground 0) ?disagree]
-                               )
-                              (and
-                               [?claim :claim/votes ?disagree-vote]
-                               [(identity ?disagree-vote) ?uniqueness]
-                               [?disagree-vote :claim-vote/agree false]
-                               [(ground 0) ?agree]
-                               [(ground 1) ?disagree])))
-                    (and
-                     [(ground 0) ?agree]
-                     [(ground 0) ?disagree]
-                     (or-join [?claim ?uniqueness ?agree ?disagree ?support ?oppose]
-                      (and
-                       [?claim :claim/evidence ?supporting-evidence]
-                       [(identity ?supporting-evidence) ?uniqueness]
-                       [?supporting-evidence :evidence/supports true]
-                       [(ground 1) ?support]
-                       [(ground 0) ?oppose]
-                       )
-                      (and
-                       [?claim :claim/evidence ?opposing-evidence]
-                       [(identity ?opposing-evidence) ?uniqueness]
-                       [?opposing-evidence :evidence/supports false]
-                       [(ground 0) ?support]
-                       [(ground 1) ?oppose]))))]
-         db claim-ref)]
+           (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)]
+         db rules claim-ref)]
 
     (assoc claim
            :support-count support-count :oppose-count oppose-count
@@ -154,14 +161,11 @@
                   {:evidence/claim
                    [:claim/body
                     {(:claim/contributors :default []) [:user/username]}
-                    {:claim/creator [:user/username]}
-
-                    ]}] )
-           (sum ?rating)
-           (sum ?rating-count)
-
-           (sum ?support) (sum ?oppose) (sum ?agree) (sum ?disagree)
-           :in $ ?parent-claim
+                    {:claim/creator [:user/username]}]}])
+           (sum ?rating) (sum ?rating-count)
+           (sum ?support) (sum ?oppose)
+           (sum ?agree) (sum ?disagree)
+           :in $ % ?parent-claim
            :with ?uniqueness
            :where
            [?parent-claim :claim/evidence ?evidence]
@@ -177,46 +181,11 @@
                      [(ground 0) ?support]
                      [(ground 0) ?oppose])
                     (and
-                     [?claim :claim/votes ?agree-vote]
-                     [(identity ?agree-vote) ?uniqueness]
-                     [?agree-vote :claim-vote/agree true]
+                     (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
                      [(ground 0) ?rating-count]
                      [(ground 0) ?rating]
-                     [(ground 1) ?agree]
-                     [(ground 0) ?disagree]
-                     [(ground 0) ?support]
-                     [(ground 0) ?oppose])
-                    (and
-                     [?claim :claim/votes ?disagree-vote]
-                     [(identity ?disagree-vote) ?uniqueness]
-                     [?disagree-vote :claim-vote/agree false]
-                     [(ground 0) ?rating-count]
-                     [(ground 0) ?rating]
-                     [(ground 0) ?agree]
-                     [(ground 1) ?disagree]
-                     [(ground 0) ?support]
-                     [(ground 0) ?oppose])
-                    (and
-                     [?claim :claim/evidence ?supporting-evidence]
-                     [(identity ?supporting-evidence) ?uniqueness]
-                     [?supporting-evidence :evidence/supports true]
-                     [(ground 0) ?rating-count]
-                     [(ground 0) ?rating]
-                     [(ground 1) ?support]
-                     [(ground 0) ?oppose]
-                     [(ground 0) ?agree]
-                     [(ground 0) ?disagree])
-                    (and
-                     [?claim :claim/evidence ?opposing-evidence]
-                     [(identity ?opposing-evidence) ?uniqueness]
-                     [?opposing-evidence :evidence/supports false]
-                     [(ground 0) ?rating-count]
-                     [(ground 0) ?rating]
-                     [(ground 0) ?support]
-                     [(ground 1) ?oppose]
-                     [(ground 0) ?agree]
-                     [(ground 0) ?disagree]))]
-         db parent-claim-ref)]
+                     ))]
+         db rules parent-claim-ref)]
     (for [[evidence relevance-rating-sum relevance-rating-count support-count oppose-count agree-count disagree-count] results]
       (assoc evidence
              :relevance
