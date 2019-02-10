@@ -5,12 +5,13 @@
             [truth.data :as data]
             [truth.domain :refer
              [uuid get-user-by-email get-all-claims get-evidence-for-claim
-              get-claim]]
+              get-claim get-claim-2]]
             ))
 
 (use-fixtures
   :once (fn [run-tests]
           (let [uri "datomic:mem://domain-test"]
+            (d/delete-database uri)
             (d/create-database uri)
             (let [conn (d/connect uri)]
               (schema/load conn)
@@ -35,8 +36,8 @@
                     :votes
                     [#:claim-vote{:agree true,
                                   :voter #:user{:username "travis"}}
-                     #:claim-vote{:agree false,
-                                  :voter #:user{:username "james"}}]
+                     #:claim-vote{:agree true,
+                                  :voter #:user{:username "toby"}}]
                     :evidence
                     [#:evidence{:supports true,
                                 :claim #:claim{:body "They have cute paws"}}]}
@@ -47,13 +48,18 @@
                     :contributors [#:user{:username "travis"}],
                     :votes
                     [#:claim-vote{:agree false,
-                                  :voter #:user{:username "travis"}}
+                                  :voter #:user{:username "toby"}}
                      #:claim-vote{:agree true,
-                                  :voter #:user{:username "james"}}]
+                                  :voter #:user{:username "james"}}
+                     #:claim-vote{:agree true,
+                                  :voter #:user{:username "chuchu"}}]
                     :evidence
                     [#:evidence{:supports true,
                                 :claim #:claim{:body "They have cute paws"}}
                      #:evidence{:supports false,
+                                :claim
+                                #:claim{:body "They don't like people"}}
+                     #:evidence{:supports true,
                                 :claim
                                 #:claim{:body "They don't like people"}}]}
             #:claim{:body "They don't like people",
@@ -74,6 +80,8 @@
                (get-evidence-for-claim fresh-db [:claim/body "Dogs are great"] [true false])))))
   (testing "about cats"
     (is (= [#:claim{:body "They have cute paws",
+                    :creator #:user{:username "travis"}}
+            #:claim{:body "They don't like people",
                     :creator #:user{:username "travis"}}]
            (map dissoc-ids
                 (get-evidence-for-claim fresh-db [:claim/body "Cats are great"] [true]))))
@@ -90,23 +98,23 @@
 
 
 (deftest test-get-claim
-  (testing "Cats are great"
-    (is (= {:claim/body "Cats are great",
-            :claim/contributors [#:user{:username "travis"}],
-            :claim/creator #:user{:username "james"},
-            :support-count 1,
-            :oppose-count 1
-            :agree-count 1
-            :disagree-count 1}
-           (dissoc-ids
-            (get-claim fresh-db [:claim/body "Cats are great"])))))
   (testing "Dogs are great"
     (is (= {:claim/body "Dogs are great",
             :claim/contributors [],
             :claim/creator #:user{:username "travis"},
             :support-count 1,
             :oppose-count 0
-            :agree-count 1
+            :agree-count 2
+            :disagree-count 0}
+           (dissoc-ids
+            (get-claim fresh-db [:claim/body "Dogs are great"])))))
+  (testing "Cats are great"
+    (is (= {:claim/body "Cats are great",
+            :claim/contributors [#:user{:username "travis"}],
+            :claim/creator #:user{:username "james"},
+            :support-count 2,
+            :oppose-count 1
+            :agree-count 2
             :disagree-count 1}
            (dissoc-ids
-            (get-claim fresh-db [:claim/body "Dogs are great"]))))))
+            (get-claim fresh-db [:claim/body "Cats are great"]))))))

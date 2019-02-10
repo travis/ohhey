@@ -13,11 +13,17 @@
      :email "james@truth.com"}
     {:username "toby"
      :email "toby@truth.com"}
+    {:username "chuchu"
+     :email "chuchu@truth.com"}
+    {:username "tani"
+     :email "tani@truth.com"}
     ]))
 
 (def james [:user/username "james"])
 (def travis [:user/username "travis"])
 (def toby [:user/username "toby"])
+(def chuchu [:user/username "chuchu"])
+(def tani [:user/username "tani"])
 
 (def pet-claims
 
@@ -29,7 +35,7 @@
       :votes (map
               new-claim-vote
               [{:voter travis :agree true}
-               {:voter james :agree false}])
+               {:voter toby :agree true}])
       :evidence (map
                  new-evidence
                  [{:creator travis
@@ -48,8 +54,9 @@
       :contributors [travis]
       :votes (map
               new-claim-vote
-              [{:voter travis :agree false}
-               {:voter james :agree true}])
+              [{:voter toby :agree false}
+               {:voter james :agree true}
+               {:voter chuchu :agree true}])
       :evidence (map
                  new-evidence
                  [{:creator james
@@ -61,9 +68,13 @@
                             {:voter travis :rating 66}])}
                   {:creator travis
                    :claim (new-claim
-                           {:body "They don't like people"
+                           {:db/id "dont-like-people"
+                            :body "They don't like people"
                             :creator travis})
-                   :supports false}])}])))
+                   :supports false}
+                  {:creator tani
+                   :claim "dont-like-people"
+                   :supports true}])}])))
 
 (defn load [conn]
   @(d/transact conn users)

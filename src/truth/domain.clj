@@ -101,12 +101,13 @@
                            ])
             (sum ?support) (sum ?oppose)
             (sum ?agree) (sum ?disagree)]
-
            :in $ ?claim
+           :with ?uniqueness
            :where
-           (or-join [?claim ?agree ?disagree ?support ?oppose]
+           (or-join [?claim ?uniqueness ?agree ?disagree ?support ?oppose]
                     (and
                      [?claim :claim/votes ?agree-vote]
+                     [(identity ?agree-vote) ?uniqueness]
                      [?agree-vote :claim-vote/agree true]
                      [(ground 1) ?agree]
                      [(ground 0) ?disagree]
@@ -114,6 +115,7 @@
                      [(ground 0) ?oppose])
                     (and
                      [?claim :claim/votes ?disagree-vote]
+                     [(identity ?disagree-vote) ?uniqueness]
                      [?disagree-vote :claim-vote/agree false]
                      [(ground 0) ?agree]
                      [(ground 1) ?disagree]
@@ -121,6 +123,7 @@
                      [(ground 0) ?oppose])
                     (and
                      [?claim :claim/evidence ?supporting-evidence]
+                     [(identity ?supporting-evidence) ?uniqueness]
                      [?supporting-evidence :evidence/supports true]
                      [(ground 1) ?support]
                      [(ground 0) ?oppose]
@@ -128,6 +131,7 @@
                      [(ground 0) ?disagree])
                     (and
                      [?claim :claim/evidence ?opposing-evidence]
+                     [(identity ?opposing-evidence) ?uniqueness]
                      [?opposing-evidence :evidence/supports false]
                      [(ground 0) ?support]
                      [(ground 1) ?oppose]
