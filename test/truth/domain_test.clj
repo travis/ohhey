@@ -5,7 +5,7 @@
             [truth.data :as data]
             [truth.domain :refer
              [uuid get-user-by-email get-all-claims get-evidence-for-claim
-              get-claim]]
+              get-claim get-claim-evidence]]
             ))
 
 (use-fixtures
@@ -126,3 +126,59 @@
             :disagree-count 1}
            (dissoc-ids
             (get-claim fresh-db [:claim/body "Cats are great"]))))))
+
+(deftest test-get-claim-evidence
+  (testing "Cats are great"
+    (is (= '({:evidence/supports true,
+              :evidence/claim
+              #:claim{:body "They have cute paws",
+                      :contributors [],
+                      :creator #:user{:username "travis"}},
+              :relevance 83,
+              :claim
+              {:support-count 0,
+               :oppose-count 0,
+               :agree-count 2,
+               :disagree-count 0}}
+             {:evidence/supports false,
+              :evidence/claim
+              #:claim{:body "They don't like people",
+                      :contributors [],
+                      :creator #:user{:username "travis"}},
+              :relevance 100,
+              :claim
+              {:support-count 1,
+               :oppose-count 0,
+               :agree-count 0,
+               :disagree-count 0}}
+             {:evidence/supports true,
+              :evidence/claim
+              #:claim{:body "They don't like people",
+                      :contributors [],
+                      :creator #:user{:username "travis"}},
+              :relevance 100,
+              :claim
+              {:support-count 1,
+               :oppose-count 0,
+               :agree-count 0,
+               :disagree-count 0}})
+           (get-claim-evidence fresh-db [:claim/body "Cats are great"]))))
+  (testing "Dogs are great"
+    (is (= '({:evidence/supports true,
+              :evidence/claim
+              #:claim{:body "They have cute paws",
+                      :contributors [],
+                      :creator #:user{:username "travis"}},
+              :relevance 133/2,
+              :claim
+              {:support-count 0,
+               :oppose-count 0,
+               :agree-count 2,
+               :disagree-count 0}})
+           (get-claim-evidence fresh-db [:claim/body "Dogs are great"]))))
+  )
+(comment
+  (get-claim fresh-db [:claim/body "They don't like people"])
+
+
+  )
