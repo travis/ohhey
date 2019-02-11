@@ -36,6 +36,7 @@ type Evidence {
 type Query {
   currentUser: User
   claims: [Claim]
+  evidenceForClaim(claimID: ID): [Evidence]
 }
 
 type Mutation {

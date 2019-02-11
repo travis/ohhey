@@ -3,18 +3,20 @@
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
 
-(defn new-user [{db-id :db/id username :username email :email}]
+(defn new-user [{db-id :db/id id :id
+                 username :username email :email}]
   {:db/id (or db-id (uuid))
-   :user/id (uuid)
+   :user/id (or id (uuid))
    :user/username username
    :user/email email})
 
-(defn new-claim [{db-id :db/id body :body creator :creator
+(defn new-claim [{db-id :db/id id :id
+                  body :body creator :creator
                   contributors :contributors evidence :evidence
                   votes :votes
                   :or {contributors [] evidence [] votes []}}]
   {:db/id (or db-id (uuid))
-   :claim/id (uuid)
+   :claim/id (or id (uuid))
    :claim/body body
    :claim/creator creator
    :claim/contributors contributors
@@ -22,25 +24,28 @@
    :claim/votes votes
    })
 
-(defn new-claim-vote [{db-id :db/id claim :claim voter :voter agree :agree}]
+(defn new-claim-vote [{db-id :db/id id :id
+                       claim :claim voter :voter agree :agree}]
   {:db/id (or db-id (uuid))
-   :claim-vote/id (uuid)
+   :claim-vote/id (or id (uuid))
    :claim-vote/voter voter
    :claim-vote/agree agree})
 
-(defn new-evidence [{db-id :db/id creator :creator claim :claim supports :supports
+(defn new-evidence [{db-id :db/id id :id
+                     creator :creator claim :claim supports :supports
                      votes :votes
                      :or {votes []}}]
   {:db/id (or db-id (uuid))
-   :evidence/id (uuid)
+   :evidence/id (or id (uuid))
    :evidence/creator creator
    :evidence/claim claim
    :evidence/supports supports
    :evidence/votes votes})
 
-(defn new-relevance-vote [{db-id :db/id evidence :evidence voter :voter rating :rating}]
+(defn new-relevance-vote [{db-id :db/id id :id
+                           evidence :evidence voter :voter rating :rating}]
   {:db/id (or db-id (uuid))
-   :relevance-vote/id (uuid)
+   :relevance-vote/id (or id (uuid))
    :relevance-vote/voter voter
    :relevance-vote/rating rating})
 

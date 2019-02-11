@@ -29,7 +29,8 @@
   (concat
    (map
     new-claim
-    [{:body "Dogs are great"
+    [{:id "dogs-are-great"
+      :body "Dogs are great"
       :creator travis
       :votes (map
               new-claim-vote

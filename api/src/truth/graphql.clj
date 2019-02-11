@@ -17,12 +17,16 @@
   {:resolvers
    {:Query
     {:currentUser
-     (fn [{db :db} arguments query]
+     (fn [{db :db} arguments parent]
        (get-user-by-email db "travis@truth.com"))
 
      :claims
-     (fn [{db :db} arguments query]
+     (fn [{db :db} arguments parent]
        (get-all-claims db))
+
+     :evidenceForClaim
+     (fn [{db :db} {claim-id :claimID} parent]
+       (get-claim-evidence db [:claim/id claim-id]))
      }
     :User
     {:username (dkey :user/username)}

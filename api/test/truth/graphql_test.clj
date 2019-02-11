@@ -6,13 +6,12 @@
             [truth.data :as data]
             [truth.graphql :refer [load-schema]]))
 
-(def schema (load-schema))
-
 (use-fixtures
   :once (fn [run-tests]
           (let [uri "datomic:mem://graphql-test"]
             (d/create-database uri)
-            (let [conn (d/connect uri)]
+            (let [schema (load-schema)
+                  conn (d/connect uri)]
               (schema/load conn)
               (data/load conn)
               (defn execute [query variables]
@@ -67,5 +66,7 @@
                :evidence {:edges []},
                :contributors []}
               ]}}
-           (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil)))
-    ))
+           (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil))))
+  (testing "evidenceForClaims {supports, claim {body}}"
+    (is (= {:data {:evidenceForClaim [{:supports true :claim {:body "They have cute paws"}}]}}
+           (execute "query EvidencForClaim($claimID: ID) {evidenceForClaim(claimID: $claimID) {supports, claim {body}}}" {:claimID "dogs-are-great"})))))
