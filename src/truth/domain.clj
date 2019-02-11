@@ -165,24 +165,28 @@
          :support-count support-count :oppose-count oppose-count
          :agree-count agree-count :disagree-count disagree-count))
 
-(defn get-claim [db claim-ref]
-  (let [[claim support-count oppose-count agree-count disagree-count]
-        (d/q
-         '[:find
-           [(pull ?claim  [:claim/body
-                           {(:claim/contributors :default []) [:user/username]}
-                           {:claim/creator [:user/username]}
-
-                           ])
-            (sum ?support) (sum ?oppose)
-            (sum ?agree) (sum ?disagree)]
-           :in $ % ?claim
-           :with ?uniqueness
-           :where
-           (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)]
-         db rules claim-ref)]
-
-    (assoc-claim-stats claim support-count oppose-count agree-count disagree-count)))
+(defn get-claim
+  ([db claim-ref]
+   (get-claim
+    db claim-ref
+    '[:claim/body
+      {(:claim/contributors :default []) [:user/username]}
+      {:claim/creator [:user/username]}]))
+  ([db claim-ref claim-spec]
+   (let [[claim support-count oppose-count agree-count disagree-count]
+         (d/q
+          (apply
+           conj
+           '[:find]
+           [(list 'pull '?claim claim-spec)
+            '(sum ?support) '(sum ?oppose)
+            '(sum ?agree) '(sum ?disagree)]
+           '[:in $ % ?claim
+             :with ?uniqueness
+             :where
+             (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)])
+          db rules claim-ref)]
+     (assoc-claim-stats claim support-count oppose-count agree-count disagree-count))))
 
 (defn assoc-evidence-stats [evidence relevance-rating-sum relevance-rating-count]
   (assoc evidence
@@ -191,30 +195,33 @@
            100
            (/ relevance-rating-sum relevance-rating-count))))
 
-(defn get-claim-evidence [db claim-ref]
-  (let [claim-spec '[:claim/body
-                     {(:claim/contributors :default []) [:user/username]}
-                     {:claim/creator [:user/username]}]
-        evidence-spec [:evidence/supports
-                       {:evidence/claim
-                        claim-spec}]
-        results
-        (d/q
-         (apply
-          conj
-          '[:find]
-          (list 'pull '?evidence evidence-spec)
-          '[(sum ?rating) (sum ?rating-count)
-            (sum ?support) (sum ?oppose)
-            (sum ?agree) (sum ?disagree)
-            :in $ % ?claim
-            :with ?uniqueness
-            :where
-            [?claim :claim/evidence ?evidence]
-            (evidence-stats ?evidence ?uniqueness ?agree ?disagree ?support ?oppose ?rating ?rating-count)])
-         db rules claim-ref)]
-    (for [[evidence relevance-rating-sum relevance-rating-count support-count oppose-count agree-count disagree-count] results]
-      (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count)
-             :claim (assoc-claim-stats (:claim evidence) support-count oppose-count agree-count disagree-count)
-             ))
-    ))
+(defn get-claim-evidence
+  ([db claim-ref]
+   (get-claim-evidence
+    db claim-ref
+    '[:evidence/supports
+      {:evidence/claim
+       [:claim/body
+        {(:claim/contributors :default []) [:user/username]}
+        {:claim/creator [:user/username]}]}]))
+  ([db claim-ref evidence-spec]
+   (let [results
+         (d/q
+          (apply
+           conj
+           '[:find]
+           (list 'pull '?evidence evidence-spec)
+           '[(sum ?rating) (sum ?rating-count)
+             (sum ?support) (sum ?oppose)
+             (sum ?agree) (sum ?disagree)
+             :in $ % ?claim
+             :with ?uniqueness
+             :where
+             [?claim :claim/evidence ?evidence]
+             (evidence-stats ?evidence ?uniqueness ?agree ?disagree ?support ?oppose ?rating ?rating-count)])
+          db rules claim-ref)]
+     (for [[evidence relevance-rating-sum relevance-rating-count support-count oppose-count agree-count disagree-count] results]
+       (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count)
+              :claim (assoc-claim-stats (:claim evidence) support-count oppose-count agree-count disagree-count)
+              ))
+     )))
