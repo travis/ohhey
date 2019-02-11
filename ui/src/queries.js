@@ -18,6 +18,7 @@ query EvidencForClaim($claimID: ID) {
   evidenceForClaim(claimID: $claimID) {
     id
     supports
+    relevance
     claim {
       id
       body

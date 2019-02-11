@@ -10,16 +10,23 @@ const client = new ApolloClient({
   uri: "/graphql"
 });
 
+const Evidence = ({evidence: {id, supports, claim, relevance}}) => {
+  const color = supports ? 'blue' : 'red'
+  return (
+    <div key={id} style={{color, border: `1px solid ${color}`}}>
+      {relevance} % relevant
+      <Claim claim={claim} key={claim.id}/>
+    </div>
+  )
+}
+
 const EvidenceList = graphql(queries.EvidenceForClaim, {
   props: ({data: {evidenceForClaim}}) => ({evidenceList: evidenceForClaim})
-}
-                      )(
+})(
   ({claim, evidenceList}) => (
     <Fragment>
-      {evidenceList && evidenceList.map(({id, supports, claim}) => (
-        <div key={id} style={{color: supports ? 'blue' : 'red'}}>
-          <Claim claim={claim} key={claim.id}/>
-        </div>
+      {evidenceList && evidenceList.map((evidence) => (
+        <Evidence evidence={evidence}/>
       ))}
     </Fragment>
   ))
@@ -30,7 +37,7 @@ const Claim = ({claim: {id, body, agreeCount, disagreeCount, supportCount, oppos
     <div style={{border: "1px dotted black"}}>
       <h5>{body}</h5>
       a: {agreeCount} d: {disagreeCount} s: {supportCount} o: {opposeCount}
-      <button onClick={() => setShowEvidence(!evidenceShown)}>Toggle Evidence</button>
+      <button onClick={() => setShowEvidence(!evidenceShown)}>{evidenceShown ? "Hide" : "Show"} Evidence</button>
       {evidenceShown ? (
         <EvidenceList claimID={id}/>
       ) : ("")}

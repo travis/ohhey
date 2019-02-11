@@ -31,6 +31,7 @@ type Evidence {
   cursor: String
   supports: Boolean
   claim: Claim
+  relevance: Float
 }
 
 type Query {
