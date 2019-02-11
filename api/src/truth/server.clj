@@ -1,14 +1,17 @@
 (ns truth.server
   (:require
-   [truth.graphql :as s]
+   [datomic.api :as d]
    [com.walmartlabs.lacinia :as lacinia]
    [com.walmartlabs.lacinia.pedestal :as lp]
    [io.pedestal.http :as http]
    [clojure.java.browse :refer [browse-url]]
-   [clojure.walk :as walk])
+   [clojure.walk :as walk]
+   [truth.graphql :as graphql]
+   [truth.schema :as schema]
+   [truth.data :as data])
   (:import (clojure.lang IPersistentMap)))
 
-(def schema (s/load-schema))
+(def schema (graphql/load-schema))
 
 (defn simplify
   "Converts all ordered maps nested within the map into standard hash maps, and
@@ -36,8 +39,16 @@
 
 (defn start-server
   [_]
-  (let [server (-> schema
-                   (lp/service-map {:graphiql true})
+  (let [uri "datomic:mem://dev"
+        _ (d/create-database uri)
+        conn (d/connect uri)
+        db (do
+             (schema/load conn)
+             (data/load conn)
+             (d/db conn))
+        server (-> schema
+                   (lp/service-map {:graphiql true
+                                    :app-context {:db db}})
                    http/create-server
                    http/start)]
     (browse-url "http://localhost:8888/")
