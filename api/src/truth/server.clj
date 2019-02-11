@@ -42,13 +42,20 @@
   (let [uri "datomic:mem://dev"
         _ (d/create-database uri)
         conn (d/connect uri)
-        db (do
-             (schema/load conn)
-             (data/load conn)
-             (d/db conn))
+        _ (do (schema/load conn)
+              (data/load conn))
         server (-> schema
                    (lp/service-map {:graphiql true
-                                    :app-context {:db db}})
+                                    :interceptors
+                                    (-> (lp/default-interceptors schema {})
+                                                      (lp/inject {:name ::set-app-context
+                                                                  :enter (fn [context]
+                                                                           (assoc-in context [:request :lacinia-app-context]
+                                                                                     {:db (d/db conn)})
+                                                                           )}
+                                                                 :replace :com.walmartlabs.lacinia.pedestal/inject-app-context)
+                                                      )
+                                    })
                    http/create-server
                    http/start)]
     (browse-url "http://localhost:8888/")
