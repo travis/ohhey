@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -10,16 +10,23 @@ const client = new ApolloClient({
   uri: "/graphql"
 });
 
+const Claim = ({claim: {body, agreeCount, disagreeCount, supportCount, opposeCount}}) => (
+  <div>
+    <h5>{body}</h5>
+    a: {agreeCount} d: {disagreeCount} s: {supportCount} o: {opposeCount}
+  </div>
+)
+
 const Claims = graphql(queries.Claims, {
   props: ({data: {claims}}) => ({claims})
 }
 )(
   ({claims}) => (
-  <ul>
-    {claims && claims.map(({body}) => (
-      <li>{body}</li>
+  <Fragment>
+    {claims && claims.map((claim) => (
+      <Claim claim={claim} key={claim.id}/>
     ))}
-  </ul>
+  </Fragment>
 ))
 
 class App extends Component {

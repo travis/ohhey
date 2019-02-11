@@ -53,18 +53,6 @@
                  [?user :user/email ?email]]
                db email))))
 
-(defn get-all-claims [db]
-  (map first
-   (d/q
-    '[:find (pull ?claim  [*
-                           {:claim/contributors [:user/username]}
-                           {:claim/creator [:user/username]}
-                           {:claim/evidence [:evidence/supports {:evidence/claim [:claim/body]}]}
-                           {:claim/votes [:claim-vote/agree {:claim-vote/voter [:user/username]}]}
-                           ])
-      :where [?claim :claim/id _]]
-    db)))
-
 (defn get-claim-by-body [db]
   (map first
        (d/q
@@ -165,13 +153,15 @@
          :support-count support-count :oppose-count oppose-count
          :agree-count agree-count :disagree-count disagree-count))
 
+(def default-claim-spec '[:db/id
+                          :claim/id
+                          :claim/body
+                          {(:claim/contributors :default []) [:user/username]}
+                          {:claim/creator [:user/username]}])
+
 (defn get-claim
   ([db claim-ref]
-   (get-claim
-    db claim-ref
-    '[:claim/body
-      {(:claim/contributors :default []) [:user/username]}
-      {:claim/creator [:user/username]}]))
+   (get-claim db claim-ref default-claim-spec))
   ([db claim-ref claim-spec]
    (let [[claim support-count oppose-count agree-count disagree-count]
          (d/q
@@ -187,6 +177,28 @@
              (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)])
           db rules claim-ref)]
      (assoc-claim-stats claim support-count oppose-count agree-count disagree-count))))
+
+(defn get-all-claims
+  ([db]
+   (get-all-claims
+    db
+    default-claim-spec))
+  ([db claim-spec]
+   (let [results
+         (d/q
+          (apply
+           conj
+           '[:find]
+           (list 'pull '?claim claim-spec)
+           '[(sum ?support) (sum ?oppose)
+             (sum ?agree) (sum ?disagree)
+             :in $ %
+             :with ?uniqueness
+             :where
+             [?claim :claim/id _]
+             (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)])
+          db rules)]
+     (map (fn [result] (apply assoc-claim-stats result)) results))))
 
 (defn assoc-evidence-stats [evidence relevance-rating-sum relevance-rating-count]
   (assoc evidence

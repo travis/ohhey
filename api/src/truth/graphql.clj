@@ -29,6 +29,10 @@
     :Claim
     {:id (dkey :claim/id)
      :body (dkey :claim/body)
+     :supportCount (dkey :support-count)
+     :opposeCount (dkey :oppose-count)
+     :agreeCount (dkey :agree-count)
+     :disagreeCount (dkey :disagree-count)
      :contributors
      (fn [{db :db} arguments {id :db/id contributors :claim/contributors}]
        (or contributors (get-contributors db id)))

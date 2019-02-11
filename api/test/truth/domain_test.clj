@@ -27,51 +27,6 @@
     (is (= {:user/username "travis", :user/email "travis@truth.com"}
            (dissoc-ids (get-user-by-email fresh-db "travis@truth.com"))))))
 
-
-(deftest test-get-all-claims
-  (testing "it returns all claims"
-    (is (= [#:claim{:body "They don't like people",
-                    :creator #:user{:username "travis"}
-                    :evidence [#:evidence{:supports true,
-                                          :claim #:claim{:body "A cat was mean to me"}}]}
-            #:claim{:body "A cat was mean to me",
-                    :creator #:user{:username "travis"}}
-            #:claim{:body "Dogs are great",
-                    :creator #:user{:username "travis"},
-                    :votes
-                    [#:claim-vote{:agree true,
-                                  :voter #:user{:username "travis"}}
-                     #:claim-vote{:agree true,
-                                  :voter #:user{:username "toby"}}]
-                    :evidence
-                    [#:evidence{:supports true,
-                                :claim #:claim{:body "They have cute paws"}}]}
-            #:claim{:body "They have cute paws",
-                    :creator #:user{:username "travis"}
-                    :votes
-                    [#:claim-vote{:agree true, :voter #:user{:username "chuchu"}}
-                     #:claim-vote{:agree true, :voter #:user{:username "toby"}}]}
-            #:claim{:body "Cats are great",
-                    :creator #:user{:username "james"},
-                    :contributors [#:user{:username "travis"}],
-                    :votes
-                    [#:claim-vote{:agree false,
-                                  :voter #:user{:username "toby"}}
-                     #:claim-vote{:agree true,
-                                  :voter #:user{:username "james"}}
-                     #:claim-vote{:agree true,
-                                  :voter #:user{:username "chuchu"}}]
-                    :evidence
-                    [#:evidence{:supports true,
-                                :claim #:claim{:body "They have cute paws"}}
-                     #:evidence{:supports false,
-                                :claim
-                                #:claim{:body "They don't like people"}}
-                     #:evidence{:supports true,
-                                :claim
-                                #:claim{:body "They don't like people"}}]}]
-           (map dissoc-ids (get-all-claims fresh-db))))))
-
 (def claim-spec
   '[:claim/body
     {(:claim/contributors :default []) [:user/username]}
@@ -167,7 +122,7 @@
   (d/pull fresh-db
           [:claim/body {:claim/evidence [{:evidence/claim [:claim/body]}]}]
           [:claim/body "They don't like people"])
-  (get-claim fresh-db [:claim/body "They don't like people"])
+  (get-all-claims fresh-db)
   (get-claim-evidence fresh-db [:claim/body "They don't like people"])
   (get-claim-evidence fresh-db [:claim/body "Dogs are great"])
   (get-claim-evidence fresh-db [:claim/body "Cats are great"])

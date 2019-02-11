@@ -29,30 +29,24 @@
   (testing "claims"
     (is (= {:data
             {:claims
-             [{:body "They don't like people"}
-              {:body "A cat was mean to me"}
-              {:body "Dogs are great"}
+             [{:body "Dogs are great"}
               {:body "They have cute paws"}
-              {:body "Cats are great"}]}}
+              {:body "Cats are great"}
+              {:body "They don't like people"}
+              {:body "A cat was mean to me"}]}}
            (execute "{claims {body } }" nil)))
     (is (= {:data
             {:claims
-             [{:body "They don't like people", :contributors []}
-              {:body "A cat was mean to me", :contributors []}
-              {:body "Dogs are great", :contributors []}
+             [{:body "Dogs are great", :contributors []}
               {:body "They have cute paws", :contributors []}
               {:body "Cats are great", :contributors [{:username "travis"}]}
+              {:body "They don't like people", :contributors []}
+              {:body "A cat was mean to me", :contributors []}
               ]}}
            (execute "{claims {body, contributors {username} } }" nil)))
     (is (= {:data
             {:claims
-             [{:body "They don't like people",
-               :evidence {:edges [{:claim {:body "A cat was mean to me"} :supports true}]},
-               :contributors []}
-              {:body "A cat was mean to me",
-               :evidence {:edges []},
-               :contributors []}
-              {:body "Dogs are great",
+             [{:body "Dogs are great",
                :evidence
                {:edges '({:claim {:body "They have cute paws"} :supports true})},
                :contributors []}
@@ -66,6 +60,12 @@
                          {:claim {:body "They don't like people"} :supports true}
                          )},
                :contributors '({:username "travis"})}
+              {:body "They don't like people",
+               :evidence {:edges [{:claim {:body "A cat was mean to me"} :supports true}]},
+               :contributors []}
+              {:body "A cat was mean to me",
+               :evidence {:edges []},
+               :contributors []}
               ]}}
            (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil)))
     ))

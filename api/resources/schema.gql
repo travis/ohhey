@@ -16,6 +16,10 @@ type Claim implements Node {
   body: String
   contributors: [User]
   evidence: EvidenceConnection
+  supportCount: Int
+  opposeCount: Int
+  agreeCount: Int
+  disagreeCount: Int
 }
 
 type EvidenceConnection {
