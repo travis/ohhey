@@ -68,5 +68,5 @@
               ]}}
            (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil))))
   (testing "evidenceForClaims {supports, claim {body}}"
-    (is (= {:data {:evidenceForClaim [{:supports true :claim {:body "They have cute paws"}}]}}
-           (execute "query EvidencForClaim($claimID: ID) {evidenceForClaim(claimID: $claimID) {supports, claim {body}}}" {:claimID "dogs-are-great"})))))
+    (is (= {:data {:evidenceForClaim [{:supports true :claim {:body "They have cute paws" :supportCount 0}}]}}
+           (execute "query EvidencForClaim($claimID: ID) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID "dogs-are-great"})))))

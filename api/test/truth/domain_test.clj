@@ -65,57 +65,54 @@
   (testing "Cats are great"
     (is (= '({:evidence/supports true,
               :evidence/claim
-              #:claim{:body "They have cute paws",
-                      :contributors [],
-                      :creator #:user{:username "travis"}},
-              :relevance 83,
-              :claim
-              {:support-count 0,
+              {:claim/body "They have cute paws",
+               :claim/contributors [],
+               :claim/creator #:user{:username "travis"}
+               :support-count 0,
                :oppose-count 0,
                :agree-count 2,
-               :disagree-count 0}}
+               :disagree-count 0},
+              :relevance 83}
              {:evidence/supports false,
               :evidence/claim
-              #:claim{:body "They don't like people",
-                      :contributors [],
-                      :creator #:user{:username "travis"}},
-              :relevance 100,
-              :claim
-              {:support-count 1,
+              {:claim/body "They don't like people",
+               :claim/contributors [],
+               :claim/creator #:user{:username "travis"}
+               :support-count 1,
                :oppose-count 0,
                :agree-count 0,
-               :disagree-count 0}}
+               :disagree-count 0},
+              :relevance 100}
              {:evidence/supports true,
               :evidence/claim
-              #:claim{:body "They don't like people",
-                      :contributors [],
-                      :creator #:user{:username "travis"}},
-              :relevance 100,
-              :claim
-              {:support-count 1,
+              {:claim/body "They don't like people",
+               :claim/contributors [],
+               :claim/creator #:user{:username "travis"}
+               :support-count 1,
                :oppose-count 0,
                :agree-count 0,
-               :disagree-count 0}})
+               :disagree-count 0},
+              :relevance 100})
            (get-claim-evidence fresh-db [:claim/body "Cats are great"] evidence-spec))))
   (testing "Dogs are great"
     (is (= '({:evidence/supports true,
               :evidence/claim
-              #:claim{:body "They have cute paws",
-                      :contributors [],
-                      :creator #:user{:username "travis"}},
-              :relevance 133/2,
-              :claim
-              {:support-count 0,
+              {:claim/body "They have cute paws",
+               :claim/contributors [],
+               :claim/creator #:user{:username "travis"}
+               :support-count 0,
                :oppose-count 0,
                :agree-count 2,
-               :disagree-count 0}})
+               :disagree-count 0},
+              :relevance 133/2})
            (get-claim-evidence fresh-db [:claim/body "Dogs are great"] evidence-spec))))
   (testing "They don't like people"
     (is (= '({:evidence/supports true,
-              :evidence/claim #:claim{:body "A cat was mean to me",
-                                      :contributors [],
-                                      :creator #:user{:username "travis"}},
-              :relevance 100, :claim {:support-count 0, :oppose-count 0, :agree-count 0, :disagree-count 0}})
+              :evidence/claim {:claim/body "A cat was mean to me",
+                               :claim/contributors [],
+                               :claim/creator #:user{:username "travis"}
+                               :support-count 0, :oppose-count 0, :agree-count 0, :disagree-count 0},
+              :relevance 100})
            (get-claim-evidence fresh-db [:claim/body "They don't like people"] evidence-spec)))))
 
 (comment

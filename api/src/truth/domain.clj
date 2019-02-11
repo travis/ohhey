@@ -212,15 +212,17 @@
            100
            (/ relevance-rating-sum relevance-rating-count))))
 
+(def default-evidence-spec
+  [:evidence/id
+   :evidence/supports
+    {:evidence/claim
+     default-claim-spec}])
+
 (defn get-claim-evidence
   ([db claim-ref]
    (get-claim-evidence
     db claim-ref
-    '[:evidence/supports
-      {:evidence/claim
-       [:claim/body
-        {(:claim/contributors :default []) [:user/username]}
-        {:claim/creator [:user/username]}]}]))
+    default-evidence-spec))
   ([db claim-ref evidence-spec]
    (let [results
          (d/q
@@ -239,6 +241,6 @@
           db rules claim-ref)]
      (for [[evidence relevance-rating-sum relevance-rating-count support-count oppose-count agree-count disagree-count] results]
        (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count)
-              :claim (assoc-claim-stats (:claim evidence) support-count oppose-count agree-count disagree-count)
+              :evidence/claim (assoc-claim-stats (:evidence/claim evidence) support-count oppose-count agree-count disagree-count)
               ))
      )))

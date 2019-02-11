@@ -12,3 +12,20 @@ query Claims {
   }
 }
 `
+
+export const EvidenceForClaim = gql`
+query EvidencForClaim($claimID: ID) {
+  evidenceForClaim(claimID: $claimID) {
+    id
+    supports
+    claim {
+      id
+      body
+      supportCount
+      opposeCount
+      agreeCount
+      disagreeCount
+    }
+  }
+}
+`
