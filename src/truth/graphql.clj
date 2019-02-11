@@ -5,7 +5,7 @@
             [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
             [com.walmartlabs.lacinia.schema :as schema]
             [com.walmartlabs.lacinia.parser.schema :refer [parse-schema]]
-            [truth.domain :refer [get-user-by-email get-all-claims get-contributors get-evidence-for-claim]]
+            [truth.domain :refer [get-user-by-email get-all-claims get-contributors get-claim-evidence]]
             [datomic.api :as d]))
 
 (defn dkey
@@ -31,13 +31,16 @@
      :contributors
      (fn [{db :db} arguments {id :db/id contributors :claim/contributors}]
        (or contributors (get-contributors db id)))
-     :supportingEvidence
+     :evidence
      (fn [{db :db} a {id :db/id}]
-       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim db id [true]))})
-     :opposingEvidence
-     (fn [{db :db} a {id :db/id}]
-       {:edges (map (fn [claim] {:node claim}) (get-evidence-for-claim db id [false]))})
-     }}})
+       {:edges (get-claim-evidence db id)})
+     }
+    :Evidence
+    {:supports (dkey :evidence/supports)
+     :claim (dkey :evidence/claim)
+     }
+
+}})
 
 (def schema
   (-> (parse-schema (slurp (clojure.java.io/resource "schema.gql")) resolvers)

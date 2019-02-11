@@ -15,8 +15,7 @@ type Claim implements Node {
   id: ID!
   body: String
   contributors: [User]
-  supportingEvidence: EvidenceConnection
-  opposingEvidence: EvidenceConnection
+  evidence: EvidenceConnection
 }
 
 type EvidenceConnection {
@@ -25,7 +24,8 @@ type EvidenceConnection {
 
 type Evidence {
   cursor: String
-  node: Claim
+  supports: Boolean
+  claim: Claim
 }
 
 type Query {
