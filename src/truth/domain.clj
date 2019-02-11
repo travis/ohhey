@@ -129,7 +129,29 @@
               (and
                [(ground 0) ?agree]
                [(ground 0) ?disagree]
-               (support-oppose ?claim ?uniqueness ?support ?oppose)))]])
+               (support-oppose ?claim ?uniqueness ?support ?oppose)))]
+    [(evidence-stats ?evidence ?uniqueness ?agree ?disagree ?support ?oppose ?rating ?rating-count)
+     (or-join [?evidence ?uniqueness ?agree ?disagree ?support ?oppose ?rating ?rating-count]
+              (and
+               [?evidence :evidence/votes ?relevance-vote]
+               [(identity ?relevance-vote) ?uniqueness]
+               [?relevance-vote :relevance-vote/rating ?rating]
+               [(ground 1) ?rating-count]
+               [(ground 0) ?agree]
+               [(ground 0) ?disagree]
+               [(ground 0) ?support]
+               [(ground 0) ?oppose])
+              (and
+               [?evidence :evidence/claim ?claim]
+               (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
+               [(ground 0) ?rating-count]
+               [(ground 0) ?rating]
+               ))]])
+
+(defn assoc-claim-stats [claim support-count oppose-count agree-count disagree-count]
+  (assoc claim
+         :support-count support-count :oppose-count oppose-count
+         :agree-count agree-count :disagree-count disagree-count))
 
 (defn get-claim [db claim-ref]
   (let [[claim support-count oppose-count agree-count disagree-count]
@@ -148,9 +170,14 @@
            (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)]
          db rules claim-ref)]
 
-    (assoc claim
-           :support-count support-count :oppose-count oppose-count
-           :agree-count agree-count :disagree-count disagree-count)))
+    (assoc-claim-stats claim support-count oppose-count agree-count disagree-count)))
+
+(defn assoc-evidence-stats [evidence relevance-rating-sum relevance-rating-count]
+  (assoc evidence
+         :relevance
+         (if (= relevance-rating-count 0)
+           100
+           (/ relevance-rating-sum relevance-rating-count))))
 
 (defn get-claim-evidence [db parent-claim-ref]
   (let [results
@@ -169,32 +196,10 @@
            :with ?uniqueness
            :where
            [?parent-claim :claim/evidence ?evidence]
-           [?evidence :evidence/claim ?claim]
-           (or-join [?claim ?evidence ?uniqueness ?agree ?disagree ?support ?oppose ?rating ?rating-count]
-                    (and
-                     [?evidence :evidence/votes ?relevance-vote]
-                     [(identity ?relevance-vote) ?uniqueness]
-                     [?relevance-vote :relevance-vote/rating ?rating]
-                     [(ground 1) ?rating-count]
-                     [(ground 0) ?agree]
-                     [(ground 0) ?disagree]
-                     [(ground 0) ?support]
-                     [(ground 0) ?oppose])
-                    (and
-                     (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
-                     [(ground 0) ?rating-count]
-                     [(ground 0) ?rating]
-                     ))]
+           (evidence-stats ?evidence ?uniqueness ?agree ?disagree ?support ?oppose ?rating ?rating-count)]
          db rules parent-claim-ref)]
     (for [[evidence relevance-rating-sum relevance-rating-count support-count oppose-count agree-count disagree-count] results]
-      (assoc evidence
-             :relevance
-             (if (= relevance-rating-count 0)
-               100
-               (/ relevance-rating-sum relevance-rating-count))
-             :claim
-             (assoc (:claim evidence)
-                    :support-count support-count :oppose-count oppose-count
-                    :agree-count agree-count :disagree-count disagree-count)
+      (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count)
+             :claim (assoc-claim-stats (:claim evidence) support-count oppose-count agree-count disagree-count)
              ))
     ))
