@@ -4,8 +4,7 @@
             [truth.schema :as schema]
             [truth.data :as data]
             [truth.domain :refer
-             [uuid get-user-by-email get-all-claims get-evidence-for-claim
-              get-claim get-claim-evidence]]
+             [uuid get-user-by-email get-all-claims get-claim get-claim-evidence]]
             ))
 
 (use-fixtures
@@ -72,38 +71,6 @@
                                 :claim
                                 #:claim{:body "They don't like people"}}]}]
            (map dissoc-ids (get-all-claims fresh-db))))))
-
-(deftest test-get-evidence-for-claims
-  (testing "about dogs"
-    (is (= [#:claim{:body "They have cute paws",
-                    :creator #:user{:username "travis"}}]
-          (map dissoc-ids
-               (get-evidence-for-claim fresh-db [:claim/body "Dogs are great"] [true]))))
-   (is (= []
-          (map dissoc-ids
-               (get-evidence-for-claim fresh-db [:claim/body "Dogs are great"] [false]))))
-   (is (= [#:claim{:body "They have cute paws",
-                   :creator #:user{:username "travis"}}]
-          (map dissoc-ids
-               (get-evidence-for-claim fresh-db [:claim/body "Dogs are great"] [true false])))))
-  (testing "about cats"
-    (is (= [#:claim{:body "They don't like people",
-                    :creator #:user{:username "travis"}}
-            #:claim{:body "They have cute paws",
-                    :creator #:user{:username "travis"}}]
-           (map dissoc-ids
-                (get-evidence-for-claim fresh-db [:claim/body "Cats are great"] [true]))))
-    (is (= [#:claim{:body "They don't like people",
-                    :creator #:user{:username "travis"}}]
-           (map dissoc-ids
-                (get-evidence-for-claim fresh-db [:claim/body "Cats are great"] [false]))))
-    (is (= [#:claim{:body "They don't like people",
-                    :creator #:user{:username "travis"}}
-            #:claim{:body "They have cute paws",
-                    :creator #:user{:username "travis"}}]
-           (map dissoc-ids
-                (get-evidence-for-claim fresh-db [:claim/body "Cats are great"] [false true]))))))
-
 
 (deftest test-get-claim
   (testing "Dogs are great"
@@ -176,10 +143,22 @@
                :agree-count 2,
                :disagree-count 0}})
            (get-claim-evidence fresh-db [:claim/body "Dogs are great"]))))
+  (testing "They don't like people"
+    (is (= '({:evidence/supports true,
+              :evidence/claim #:claim{:body "A cat was mean to me",
+                                      :contributors [],
+                                      :creator #:user{:username "travis"}},
+              :relevance 100, :claim {:support-count 0, :oppose-count 0, :agree-count 0, :disagree-count 0}})
+           (get-claim-evidence fresh-db [:claim/body "They don't like people"]))))
   )
 (comment
+  (d/pull fresh-db
+          [:claim/body {:claim/evidence [{:evidence/claim [:claim/body]}]}]
+          [:claim/body "They don't like people"])
   (get-claim fresh-db [:claim/body "They don't like people"])
+  (get-claim-evidence fresh-db [:claim/body "They don't like people"])
   (get-claim-evidence fresh-db [:claim/body "Dogs are great"])
+  (get-claim-evidence fresh-db [:claim/body "Cats are great"])
 
 
   )
