@@ -180,11 +180,12 @@
            (/ relevance-rating-sum relevance-rating-count))))
 
 (defn get-claim-evidence [db claim-ref]
-  (let [evidence-spec '[:evidence/supports
-                        {:evidence/claim
-                         [:claim/body
-                          {(:claim/contributors :default []) [:user/username]}
-                          {:claim/creator [:user/username]}]}]
+  (let [claim-spec '[:claim/body
+                     {(:claim/contributors :default []) [:user/username]}
+                     {:claim/creator [:user/username]}]
+        evidence-spec [:evidence/supports
+                       {:evidence/claim
+                        claim-spec}]
         results
         (d/q
          (apply
