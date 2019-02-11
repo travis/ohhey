@@ -4,7 +4,9 @@
             [clojure.test :refer :all]
             [truth.schema :as schema]
             [truth.data :as data]
-            [truth.graphql :refer [schema]]))
+            [truth.graphql :refer [load-schema]]))
+
+(def schema (load-schema))
 
 (use-fixtures
   :once (fn [run-tests]

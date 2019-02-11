@@ -44,6 +44,6 @@
 
 }})
 
-(def schema
+(defn load-schema []
   (-> (parse-schema (slurp (clojure.java.io/resource "schema.gql")) resolvers)
       schema/compile))

@@ -7,7 +7,8 @@
                                    :creds :gpg}}
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [com.datomic/datomic-pro "0.9.5786"]
-                 [com.walmartlabs/lacinia "0.32.0"]]
+                 [com.walmartlabs/lacinia-pedestal "0.11.0"]
+                 [io.aviso/logging "0.3.1"]]
   :profiles {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-389"]]}}
   :aliases {"kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]}
   :repl-options {:init-ns truth.core})
