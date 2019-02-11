@@ -23,6 +23,7 @@ type EvidenceConnection {
 }
 
 type Evidence {
+  id: ID!
   cursor: String
   supports: Boolean
   claim: Claim

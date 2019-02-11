@@ -27,7 +27,8 @@
     :User
     {:username (dkey :user/username)}
     :Claim
-    {:body (dkey :claim/body)
+    {:id (dkey :claim/id)
+     :body (dkey :claim/body)
      :contributors
      (fn [{db :db} arguments {id :db/id contributors :claim/contributors}]
        (or contributors (get-contributors db id)))
@@ -36,7 +37,8 @@
        {:edges (get-claim-evidence db id)})
      }
     :Evidence
-    {:supports (dkey :evidence/supports)
+    {:id (dkey :evidence/id)
+     :supports (dkey :evidence/supports)
      :claim (dkey :evidence/claim)
      }
 
