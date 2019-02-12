@@ -4,7 +4,8 @@
             [clojure.test :refer :all]
             [truth.schema :as schema]
             [truth.data :as data]
-            [truth.graphql :refer [load-schema]]))
+            [truth.graphql :refer [load-schema]]
+            [truth.domain :as t]))
 
 (use-fixtures
   :once (fn [run-tests]
@@ -16,7 +17,11 @@
               (data/load conn)
               (defn execute [query variables]
                 (gql/execute schema query variables
-                             {:db (d/db conn)}))
+                             (let [db (d/db conn)
+                                   current-user (t/get-user-by-email db "travis@truth.com")]
+                               {:db db
+                                :conn conn
+                                :current-user current-user})))
               ))
           (run-tests)
           ))

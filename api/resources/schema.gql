@@ -5,6 +5,7 @@ interface Node {
 type User {
   id: ID
   username: String
+  email: String
 }
 
 input ClaimInput {

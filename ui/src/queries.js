@@ -1,5 +1,14 @@
 import gql from 'graphql-tag';
 
+export const CurrentUser = gql`
+  query CurrentUser {
+    currentUser {
+      email
+      username
+    }
+  }
+`
+
 const fullClaimFieldsFragment = gql`
 fragment fullClaimFields on Claim {
   id

@@ -6,19 +6,29 @@ import { ApolloProvider } from "react-apollo";
 
 import {client} from './clients'
 import Claims from './Claims'
+import {AuthenticationProvider, withAuth} from './authentication'
 
+const Header = withAuth(({currentUser}) => (
+  <header className="App-header">
+    <h4>
+      TRUTH
+    </h4>
+    {currentUser && (
+      <p>
+        welcome, {currentUser.username}
+      </p>
+    )}
+  </header>
+))
 
 const App = () => (
   <ApolloProvider client={client}>
-    <div className="App">
-      <header className="App-header">
-        <p>
-          TRUTH
-        </p>
-      </header>
-
-      <Claims/>
-    </div>
+    <AuthenticationProvider>
+      <div className="App">
+        <Header/>
+        <Claims/>
+      </div>
+    </AuthenticationProvider>
   </ApolloProvider>
 );
 

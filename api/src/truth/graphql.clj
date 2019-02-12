@@ -18,8 +18,8 @@
   {:resolvers
    {:Query
     {:currentUser
-     (fn [{db :db} arguments parent]
-       (get-user-by-email db "travis@truth.com"))
+     (fn [{db :db current-user :current-user} arguments parent]
+       current-user)
 
      :claims
      (fn [{db :db} arguments parent]
@@ -43,7 +43,9 @@
      }
 
     :User
-    {:username (dkey :user/username)}
+    {:username (dkey :user/username)
+     :email (dkey :user/email)
+     }
     :Claim
     {:id (dkey :claim/id)
      :body (dkey :claim/body)
@@ -62,9 +64,7 @@
     {:id (dkey :evidence/id)
      :supports (dkey :evidence/supports)
      :claim (dkey :evidence/claim)
-     }
-
-}})
+     }}})
 
 (defn load-schema []
   (-> (parse-schema (slurp (clojure.java.io/resource "schema.gql")) resolvers)

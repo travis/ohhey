@@ -8,7 +8,8 @@
    [clojure.walk :as walk]
    [truth.graphql :as graphql]
    [truth.schema :as schema]
-   [truth.data :as data])
+   [truth.data :as data]
+   [truth.context :refer [context]])
   (:import (clojure.lang IPersistentMap)))
 
 (def schema (graphql/load-schema))
@@ -49,9 +50,9 @@
                                     :interceptors
                                     (-> (lp/default-interceptors schema {})
                                                       (lp/inject {:name ::set-app-context
-                                                                  :enter (fn [context]
-                                                                           (assoc-in context [:request :lacinia-app-context]
-                                                                                     {:db (d/db conn)})
+                                                                  :enter (fn [request-context]
+                                                                           (assoc-in request-context [:request :lacinia-app-context]
+                                                                                     (context {:conn conn :request (:request request-context)}))
                                                                            )}
                                                                  :replace :com.walmartlabs.lacinia.pedestal/inject-app-context)
                                                       )
@@ -75,3 +76,8 @@
   []
   (alter-var-root #'server stop-server)
   :stopped)
+
+(defn restart []
+  (do
+   (stop)
+   (start)))
