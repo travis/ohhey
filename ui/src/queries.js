@@ -1,32 +1,42 @@
 import gql from 'graphql-tag';
 
+const fullClaimFieldsFragment = gql`
+fragment fullClaimFields on Claim {
+  id
+  body
+  supportCount
+  opposeCount
+  agreeCount
+  disagreeCount
+}
+`
+
+const fullEvidenceFieldsFragment = gql`
+${fullClaimFieldsFragment}
+fragment fullEvidenceFields on Evidence {
+  id
+  supports
+  relevance
+  claim {
+  ...fullClaimFields
+  }
+}
+`
+
 export const Claims = gql`
+${fullClaimFieldsFragment}
 query Claims {
   claims {
-    id
-    body
-    supportCount
-    opposeCount
-    agreeCount
-    disagreeCount
+    ...fullClaimFields
   }
 }
 `
 
 export const EvidenceForClaim = gql`
+${fullEvidenceFieldsFragment}
 query EvidencForClaim($claimID: ID) {
   evidenceForClaim(claimID: $claimID) {
-    id
-    supports
-    relevance
-    claim {
-      id
-      body
-      supportCount
-      opposeCount
-      agreeCount
-      disagreeCount
-    }
+    ...fullEvidenceFields
   }
 }
 `
@@ -61,3 +71,12 @@ export const SubscribeToComments = gql`
     }
   }
 `;
+
+export const AddEvidence = gql`
+  ${fullEvidenceFieldsFragment}
+  mutation AddEvidence($claimID: ID!, $supports: Boolean!, $claim: ClaimInput!) {
+    addEvidence(claimID: $claimID, supports: $supports, claim: $claim) {
+      ...fullEvidenceFields
+    }
+  }
+`

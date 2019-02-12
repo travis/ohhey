@@ -5,7 +5,8 @@
             [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
             [com.walmartlabs.lacinia.schema :as schema]
             [com.walmartlabs.lacinia.parser.schema :refer [parse-schema]]
-            [truth.domain :refer [get-user-by-email get-all-claims get-contributors get-claim-evidence]]
+            [truth.domain :as t
+             :refer [get-user-by-email get-all-claims get-contributors get-claim-evidence]]
             [datomic.api :as d]))
 
 (defn dkey
@@ -28,6 +29,19 @@
      (fn [{db :db} {claim-id :claimID} parent]
        (get-claim-evidence db [:claim/id claim-id]))
      }
+    :Mutation
+    {:addEvidence
+     (fn [{db :db} {claim-id :claimID claim :claim supports :supports} parent]
+       (-> (t/new-evidence {:supports supports
+                            :claim (assoc (t/new-claim claim)
+                                          :support-count 0
+                                          :oppose-count 0
+                                          :agree-count 0
+                                          :disagree-count 0)})
+           (assoc :relevance 100))
+       )
+     }
+
     :User
     {:username (dkey :user/username)}
     :Claim
