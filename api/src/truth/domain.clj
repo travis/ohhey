@@ -184,7 +184,22 @@
        [?evidence :evidence/claim ?claim]
        (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
        [(ground 0) ?rating-count]
-       [(ground 0) ?rating]))]])
+       [(ground 0) ?rating]))]
+    [(claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)
+     (or
+      (and
+       [?user]
+       (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
+       [(ground 0) ?i-agree]
+       [(ground 0) ?i-disagree]
+       )
+      (and
+       (agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree)
+       [(ground 0) ?agree]
+       [(ground 0) ?disagree]
+       [(ground 0) ?support]
+       [(ground 0) ?oppose]
+       ))]])
 
 (defn assoc-claim-stats
   ([claim support-count oppose-count agree-count disagree-count]
@@ -219,21 +234,7 @@
            '[:in $ % ?claim ?user
              :with ?uniqueness
              :where
-             (or
-              (and
-               [?user]
-               (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
-               [(ground 0) ?i-agree]
-               [(ground 0) ?i-disagree]
-               )
-              (and
-               (agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree)
-               [(ground 0) ?agree]
-               [(ground 0) ?disagree]
-               [(ground 0) ?support]
-               [(ground 0) ?oppose]
-               ))
-             ])
+             (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)])
           db rules claim-ref (or user-ref [:user/username "anon"]))]
      (apply assoc-claim-stats result))))
 
