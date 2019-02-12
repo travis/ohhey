@@ -129,6 +129,19 @@
              :relevance 100}]
            (get-claim-evidence fresh-db [:claim/body "They don't like people"] evidence-spec)))))
 
+#_(deftest test-get-claim-evidence-as
+  (testing "Dogs are great"
+    (is (= [{:evidence/supports true,
+             :evidence/claim cute-paws
+             :relevance 133/2}]
+           (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "anon"] evidence-spec))))
+  (testing "They don't like people"
+    (is (= [{:evidence/supports true,
+             :evidence/claim mean-cat
+             :relevance 100}]
+           (t/get-claim-evidence-as fresh-db [:claim/body "They don't like people"] [:user/username "anon"] evidence-spec)))))
+
+
 (comment
   (d/pull fresh-dbp
           [:claim/body {:claim/evidence [{:evidence/claim [:claim/body]}]}]

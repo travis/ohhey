@@ -217,6 +217,8 @@
                           {(:claim/contributors :default []) [:user/username]}
                           {:claim/creator [:user/username]}])
 
+(def anon-user-ref [:user/username "anon"])
+
 (defn get-claim-as
   ([db claim-ref user-ref]
    (get-claim-as db claim-ref user-ref default-claim-spec))
@@ -235,7 +237,7 @@
              :with ?uniqueness
              :where
              (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)])
-          db rules claim-ref (or user-ref [:user/username "anon"]))]
+          db rules claim-ref (or user-ref anon-user-ref))]
      (apply assoc-claim-stats result))))
 
 (defn get-claim
@@ -244,12 +246,10 @@
   ([db claim-ref claim-spec]
    (get-claim-as db claim-ref nil claim-spec)))
 
-(defn get-all-claims
-  ([db]
-   (get-all-claims
-    db
-    default-claim-spec))
-  ([db claim-spec]
+(defn get-all-claims-as
+  ([db user-ref]
+   (get-all-claims-as db default-claim-spec))
+  ([db user-ref claim-spec]
    (let [results
          (d/q
           (apply
@@ -258,13 +258,21 @@
            (list 'pull '?claim claim-spec)
            '[(sum ?support) (sum ?oppose)
              (sum ?agree) (sum ?disagree)
-             :in $ %
+             (sum ?i-agree) (sum ?i-disagree)
+             :in $ % ?user
              :with ?uniqueness
              :where
              [?claim :claim/id _]
-             (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)])
-          db rules)]
+             (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)])
+          db rules (or user-ref anon-user-ref))]
      (map (fn [result] (apply assoc-claim-stats result)) results))))
+
+(defn get-all-claims
+  ([db]
+   (get-all-claims db default-claim-spec))
+  ([db claim-spec]
+   (get-all-claims-as db nil claim-spec)))
+
 
 (defn assoc-evidence-stats [evidence relevance-rating-sum relevance-rating-count]
   (assoc evidence
