@@ -6,13 +6,14 @@ import Comments from './Comments'
 
 export const Claim = ({claim}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
+  const [commentsShown, setShowComments] = useState(false)
   const {id, body, agreeCount, disagreeCount, supportCount, opposeCount} = claim
   return (
     <div style={{border: "1px dotted black"}}>
       <h5>{body}</h5>
       a: {agreeCount} d: {disagreeCount} s: {supportCount} o: {opposeCount}
-
-      <Comments claim={claim}/>
+      <button onClick={() => setShowComments(!commentsShown)}>{commentsShown ? "Hide" : "Show"} Comments</button>
+      {commentsShown && (<Comments claim={claim}/>)}
       <button onClick={() => setShowEvidence(!evidenceShown)}>{evidenceShown ? "Hide" : "Show"} Evidence</button>
       {evidenceShown && (
         <EvidenceList claimID={id}/>
