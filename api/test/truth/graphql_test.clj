@@ -8,7 +8,7 @@
             [truth.domain :as t]))
 
 (use-fixtures
-  :once (fn [run-tests]
+  :each (fn [run-tests]
           (let [uri "datomic:mem://graphql-test"]
             (d/create-database uri)
             (let [schema (load-schema)

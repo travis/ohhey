@@ -31,8 +31,20 @@
      }
     :Mutation
     {:addEvidence
-     (fn [{db :db current-user :current-user}
+     (fn [{conn :conn db :db current-user :current-user}
           {claim-id :claimID claim :claim supports :supports} parent]
+       (let [creator [:user/email (:user/email current-user)]
+             evidence (t/new-evidence {:supports supports
+                                       :creator creator
+                                       :claim (t/new-claim
+                                               (assoc claim :creator creator))})]
+         @(d/transact
+           conn
+           [{:claim/id claim-id
+             :claim/evidence
+             evidence}
+            ]))
+
        (-> (t/new-evidence {:supports supports
                             :claim (assoc (t/new-claim (assoc claim
                                                               :creator current-user))
