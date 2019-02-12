@@ -58,7 +58,7 @@
                                     })
                    http/create-server
                    http/start)]
-    (browse-url "http://localhost:8888/")
+    #_(browse-url "http://localhost:8888/")
     server))
 
 (defn stop-server
