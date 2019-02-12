@@ -31,9 +31,11 @@
      }
     :Mutation
     {:addEvidence
-     (fn [{db :db} {claim-id :claimID claim :claim supports :supports} parent]
+     (fn [{db :db current-user :current-user}
+          {claim-id :claimID claim :claim supports :supports} parent]
        (-> (t/new-evidence {:supports supports
-                            :claim (assoc (t/new-claim claim)
+                            :claim (assoc (t/new-claim (assoc claim
+                                                              :creator current-user))
                                           :support-count 0
                                           :oppose-count 0
                                           :agree-count 0
@@ -53,6 +55,7 @@
      :opposeCount (dkey :oppose-count)
      :agreeCount (dkey :agree-count)
      :disagreeCount (dkey :disagree-count)
+     :creator (dkey :claim/creator)
      :contributors
      (fn [{db :db} arguments {id :db/id contributors :claim/contributors}]
        (or contributors (get-contributors db id)))

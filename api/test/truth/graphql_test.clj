@@ -74,4 +74,18 @@
            (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil))))
   (testing "evidenceForClaims {supports, claim {body}}"
     (is (= {:data {:evidenceForClaim [{:supports true :claim {:body "They have cute paws" :supportCount 0}}]}}
-           (execute "query EvidencForClaim($claimID: ID) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID "dogs-are-great"})))))
+           (execute "query EvidenceForClaim($claimID: ID) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID "dogs-are-great"}))))
+  (testing "addEvidence"
+    (is (= {:data
+            {:addEvidence
+             {:supports true, :claim {:body "SO FRIENDLY!!", :supportCount 0, :creator {:username "travis"}}}}}
+           (execute "
+mutation($claimID: ID!, $supports: Boolean!, $claim: ClaimInput!) {
+  addEvidence(claimID: $claimID, supports: $supports, claim: $claim) {
+    supports, claim {
+      body, supportCount
+      creator { username }
+    }
+  }
+}"
+                    {:claimID "dogs-are-great", :supports "true", :claim {:body "SO FRIENDLY!!"}})))))

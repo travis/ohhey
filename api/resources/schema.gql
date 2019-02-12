@@ -15,6 +15,7 @@ input ClaimInput {
 type Claim implements Node {
   id: ID!
   body: String
+  creator: User
   contributors: [User]
   evidence: EvidenceConnection
   supportCount: Int
