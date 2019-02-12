@@ -13,6 +13,7 @@ const fullClaimFieldsFragment = gql`
 fragment fullClaimFields on Claim {
   id
   body
+  creator { username }
   supportCount
   opposeCount
   agreeCount

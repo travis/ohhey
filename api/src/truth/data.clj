@@ -7,7 +7,9 @@
 (def users
   (map
    new-user
-   [{:username "travis"
+   [{:username "anon"
+     :email "anon@truth.com"}
+    {:username "travis"
      :email "travis@truth.com"}
     {:username "james"
      :email "james@truth.com"}

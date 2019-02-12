@@ -3,8 +3,8 @@
             [clojure.test :refer :all]
             [truth.schema :as schema]
             [truth.data :as data]
-            [truth.domain :refer
-             [uuid get-user-by-email get-all-claims get-claim get-claim-evidence]]
+            [truth.domain :as t
+             :refer [uuid get-user-by-email get-all-claims get-claim get-claim-evidence]]
             ))
 
 (use-fixtures
@@ -32,27 +32,45 @@
     {(:claim/contributors :default []) [:user/username]}
     {:claim/creator [:user/username]}])
 
+(def dogs-are-great
+  {:claim/body "Dogs are great",
+   :claim/contributors [],
+   :claim/creator #:user{:username "travis"},
+   :support-count 1 :oppose-count 0 :agree-count 2 :disagree-count 0
+   :agree false :disagree false})
+
+(def cats-are-great
+  {:claim/body "Cats are great",
+   :claim/contributors [#:user{:username "travis"}],
+   :claim/creator #:user{:username "james"},
+   :support-count 2 :oppose-count 1 :agree-count 2 :disagree-count 1
+   :agree false :disagree false})
+
 (deftest test-get-claim
   (testing "Dogs are great"
-    (is (= {:claim/body "Dogs are great",
-            :claim/contributors [],
-            :claim/creator #:user{:username "travis"},
-            :support-count 1,
-            :oppose-count 0
-            :agree-count 2
-            :disagree-count 0}
-           (dissoc-ids
-            (get-claim fresh-db [:claim/body "Dogs are great"] claim-spec)))))
+    (is (= dogs-are-great
+           (get-claim fresh-db [:claim/body "Dogs are great"] claim-spec))))
   (testing "Cats are great"
-    (is (= {:claim/body "Cats are great",
-            :claim/contributors [#:user{:username "travis"}],
-            :claim/creator #:user{:username "james"},
-            :support-count 2,
-            :oppose-count 1
-            :agree-count 2
-            :disagree-count 1}
-           (dissoc-ids
-            (get-claim fresh-db [:claim/body "Cats are great"] claim-spec))))))
+    (is (= cats-are-great
+           (get-claim fresh-db [:claim/body "Cats are great"] claim-spec)))))
+
+(deftest test-get-claim-as
+  (testing "Dogs are great"
+    (is (= dogs-are-great
+           (t/get-claim-as fresh-db [:claim/body "Dogs are great"] [:user/username "anon"] claim-spec)))
+    (is (= dogs-are-great
+           (t/get-claim-as fresh-db [:claim/body "Dogs are great"] [:user/username "james"] claim-spec)))
+    (is (= (assoc dogs-are-great :agree true)
+           (t/get-claim-as fresh-db [:claim/body "Dogs are great"] [:user/username "travis"] claim-spec))))
+  (testing "Cats are great"
+    (is (= cats-are-great
+           (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "anon"] claim-spec)))
+    (is (= cats-are-great
+           (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "travis"] claim-spec)))
+    (is (= (assoc cats-are-great :disagree true)
+           (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "toby"] claim-spec)))
+    (is (= (assoc cats-are-great :agree true)
+           (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "chuchu"] claim-spec)))))
 
 (def evidence-spec
   '[:evidence/supports
@@ -61,65 +79,64 @@
       {(:claim/contributors :default []) [:user/username]}
       {:claim/creator [:user/username]}]}])
 
+(def cute-paws
+  {:claim/body "They have cute paws",
+   :claim/contributors [],
+   :claim/creator #:user{:username "travis"}
+   :support-count 0,
+   :oppose-count 0,
+   :agree-count 2,
+   :disagree-count 0,
+   :agree false :disagree false})
+
+(def dont-like-people
+  {:claim/body "They don't like people",
+   :claim/contributors [],
+   :claim/creator #:user{:username "travis"}
+   :support-count 1,
+   :oppose-count 0,
+   :agree-count 0,
+   :disagree-count 0,
+   :agree false :disagree false})
+
+(def mean-cat
+  {:claim/body "A cat was mean to me",
+   :claim/contributors [],
+   :claim/creator #:user{:username "travis"}
+   :support-count 0, :oppose-count 0, :agree-count 0, :disagree-count 0
+   :agree false :disagree false})
+
 (deftest test-get-claim-evidence
   (testing "Cats are great"
-    (is (= '({:evidence/supports true,
-              :evidence/claim
-              {:claim/body "They have cute paws",
-               :claim/contributors [],
-               :claim/creator #:user{:username "travis"}
-               :support-count 0,
-               :oppose-count 0,
-               :agree-count 2,
-               :disagree-count 0},
-              :relevance 83}
-             {:evidence/supports false,
-              :evidence/claim
-              {:claim/body "They don't like people",
-               :claim/contributors [],
-               :claim/creator #:user{:username "travis"}
-               :support-count 1,
-               :oppose-count 0,
-               :agree-count 0,
-               :disagree-count 0},
-              :relevance 100}
-             {:evidence/supports true,
-              :evidence/claim
-              {:claim/body "They don't like people",
-               :claim/contributors [],
-               :claim/creator #:user{:username "travis"}
-               :support-count 1,
-               :oppose-count 0,
-               :agree-count 0,
-               :disagree-count 0},
-              :relevance 100})
+    (is (= [{:evidence/supports true,
+             :evidence/claim cute-paws,
+             :relevance 83}
+            {:evidence/supports false,
+             :evidence/claim dont-like-people
+             :relevance 100}
+            {:evidence/supports true,
+             :evidence/claim dont-like-people
+             :relevance 100}]
            (get-claim-evidence fresh-db [:claim/body "Cats are great"] evidence-spec))))
   (testing "Dogs are great"
-    (is (= '({:evidence/supports true,
-              :evidence/claim
-              {:claim/body "They have cute paws",
-               :claim/contributors [],
-               :claim/creator #:user{:username "travis"}
-               :support-count 0,
-               :oppose-count 0,
-               :agree-count 2,
-               :disagree-count 0},
-              :relevance 133/2})
+    (is (= [{:evidence/supports true,
+             :evidence/claim cute-paws
+             :relevance 133/2}]
            (get-claim-evidence fresh-db [:claim/body "Dogs are great"] evidence-spec))))
   (testing "They don't like people"
-    (is (= '({:evidence/supports true,
-              :evidence/claim {:claim/body "A cat was mean to me",
-                               :claim/contributors [],
-                               :claim/creator #:user{:username "travis"}
-                               :support-count 0, :oppose-count 0, :agree-count 0, :disagree-count 0},
-              :relevance 100})
+    (is (= [{:evidence/supports true,
+             :evidence/claim mean-cat
+             :relevance 100}]
            (get-claim-evidence fresh-db [:claim/body "They don't like people"] evidence-spec)))))
 
 (comment
-  (d/pull fresh-db
+  (d/pull fresh-dbp
           [:claim/body {:claim/evidence [{:evidence/claim [:claim/body]}]}]
           [:claim/body "They don't like people"])
   (get-all-claims fresh-db)
+  (t/get-claim fresh-db [:claim/body "Cats are great"])
+  (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "james"])
+  (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "anon"])
   (get-claim-evidence fresh-db [:claim/body "They don't like people"])
   (get-claim-evidence fresh-db [:claim/body "Dogs are great"])
   (get-claim-evidence fresh-db [:claim/body "Cats are great"])

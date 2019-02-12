@@ -104,6 +104,39 @@
        [(identity ?claim) ?uniqueness]
        [(ground 0) ?agree]
        [(ground 0) ?disagree]))]
+    [(agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree)
+     (or-join
+      [?claim ?user ?uniqueness ?i-agree ?i-disagree]
+      (and
+       [?claim :claim/votes ?vote]
+       [(identity ?vote) ?uniqueness]
+       (or-join
+        [?user ?vote ?i-agree ?i-disagree]
+        (and
+         [?vote :claim-vote/agree true]
+         [?vote :claim-vote/voter ?user]
+         [(ground 1) ?i-agree]
+         [(ground 0) ?i-disagree])
+        (and
+         [?vote :claim-vote/agree true]
+         (not [?vote :claim-vote/voter ?user])
+         [(ground 0) ?i-agree]
+         [(ground 0) ?i-disagree])
+        (and
+         [?vote :claim-vote/agree false]
+         [?vote :claim-vote/voter ?user]
+         [(ground 0) ?i-agree]
+         [(ground 1) ?i-disagree])
+        (and
+         [?vote :claim-vote/agree false]
+         (not [?vote :claim-vote/voter ?user])
+         [(ground 0) ?i-agree]
+         [(ground 0) ?i-disagree])))
+      (and
+       [(identity ?claim) ?uniqueness]
+       [(ground 0) ?i-agree]
+       [(ground 0) ?i-disagree]
+       ))]
     [(support-oppose ?claim ?uniqueness ?support ?oppose)
      (or-join
       [?claim ?uniqueness ?support ?oppose]
@@ -153,10 +186,15 @@
        [(ground 0) ?rating-count]
        [(ground 0) ?rating]))]])
 
-(defn assoc-claim-stats [claim support-count oppose-count agree-count disagree-count]
-  (assoc claim
-         :support-count support-count :oppose-count oppose-count
-         :agree-count agree-count :disagree-count disagree-count))
+(defn assoc-claim-stats
+  ([claim support-count oppose-count agree-count disagree-count]
+   (assoc-claim-stats claim support-count oppose-count agree-count disagree-count 0 0)
+   )
+  ([claim support-count oppose-count agree-count disagree-count i-agree-count i-disagree-count]
+   (assoc claim
+          :support-count support-count :oppose-count oppose-count
+          :agree-count agree-count :disagree-count disagree-count
+          :agree (< 0 i-agree-count) :disagree (< 0 i-disagree-count))))
 
 (def default-claim-spec '[:db/id
                           :claim/id
@@ -164,24 +202,46 @@
                           {(:claim/contributors :default []) [:user/username]}
                           {:claim/creator [:user/username]}])
 
-(defn get-claim
-  ([db claim-ref]
-   (get-claim db claim-ref default-claim-spec))
-  ([db claim-ref claim-spec]
-   (let [[claim support-count oppose-count agree-count disagree-count]
+(defn get-claim-as
+  ([db claim-ref user-ref]
+   (get-claim-as db claim-ref user-ref default-claim-spec))
+  ([db claim-ref user-ref claim-spec]
+   (let [result
          (d/q
           (apply
            conj
            '[:find]
            [(list 'pull '?claim claim-spec)
             '(sum ?support) '(sum ?oppose)
-            '(sum ?agree) '(sum ?disagree)]
-           '[:in $ % ?claim
+            '(sum ?agree) '(sum ?disagree)
+            '(sum ?i-agree) '(sum ?i-disagree)
+            ]
+           '[:in $ % ?claim ?user
              :with ?uniqueness
              :where
-             (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)])
-          db rules claim-ref)]
-     (assoc-claim-stats claim support-count oppose-count agree-count disagree-count))))
+             (or
+              (and
+               [?user]
+               (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
+               [(ground 0) ?i-agree]
+               [(ground 0) ?i-disagree]
+               )
+              (and
+               (agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree)
+               [(ground 0) ?agree]
+               [(ground 0) ?disagree]
+               [(ground 0) ?support]
+               [(ground 0) ?oppose]
+               ))
+             ])
+          db rules claim-ref (or user-ref [:user/username "anon"]))]
+     (apply assoc-claim-stats result))))
+
+(defn get-claim
+  ([db claim-ref]
+   (get-claim db claim-ref default-claim-spec))
+  ([db claim-ref claim-spec]
+   (get-claim-as db claim-ref nil claim-spec)))
 
 (defn get-all-claims
   ([db]
