@@ -30,3 +30,34 @@ query EvidencForClaim($claimID: ID) {
   }
 }
 `
+
+export const CommentsQuery = gql`
+  query Comments($ref: String!) {
+    comments @rtdbQuery(ref: $ref, type: "Comment") @array {
+      id @key
+      body
+    }
+  }
+`;
+
+export const CreateComment = gql`
+  fragment CommentInput on firebase {
+    body: String
+  }
+
+  mutation($ref: String!, $input: CommentInput!) {
+    createComment(input: $input) @rtdbPush(ref: $ref) {
+      id @pushKey
+      body
+    }
+  }
+`
+
+export const SubscribeToComments = gql`
+  subscription($ref: String!) {
+    newComment @rtdbSub(ref: $ref, event: "child_added", type: "Comment") {
+      id @key
+      body
+    }
+  }
+`;

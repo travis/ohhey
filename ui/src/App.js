@@ -3,12 +3,10 @@ import logo from './logo.svg';
 import './App.css';
 
 import ApolloClient from "apollo-boost";
-import { ApolloProvider, graphql } from "react-apollo";
+import { ApolloProvider, graphql, compose } from "react-apollo";
 import * as queries from './queries';
 
-const client = new ApolloClient({
-  uri: "/graphql"
-});
+import {client, firebaseClient} from './clients'
 
 const Evidence = ({evidence: {id, supports, claim, relevance}}) => {
   const color = supports ? 'blue' : 'red'
@@ -22,21 +20,76 @@ const Evidence = ({evidence: {id, supports, claim, relevance}}) => {
 
 const EvidenceList = graphql(queries.EvidenceForClaim, {
   props: ({data: {evidenceForClaim}}) => ({evidenceList: evidenceForClaim})
-})(
-  ({claim, evidenceList}) => (
+})(({claim, evidenceList}) => (
     <Fragment>
       {evidenceList && evidenceList.map((evidence) => (
         <Evidence evidence={evidence}/>
       ))}
     </Fragment>
-  ))
+  )
+)
 
-const Claim = ({claim: {id, body, agreeCount, disagreeCount, supportCount, opposeCount}}) => {
+const Comments = compose(
+  graphql(queries.CommentsQuery, {
+    options: ({claim}) => ({
+      variables: {ref: `/claims/${claim.id}/comments`},
+      client: firebaseClient
+    }),
+    props: ({data: {comments}}) => ({comments})
+  }),
+  graphql(queries.SubscribeToComments, {
+    options: ({claim}) => ({
+      variables: {ref: `/claims/${claim.id}/comments`},
+      onSubscriptionData: ({client, subscriptionData: {data: {newComment}}}) => {
+        try {
+          const cacheSpec = {
+            query: queries.CommentsQuery,
+            variables: { ref: `/claims/${claim.id}/comments` }
+          };
+          const data = client.readQuery(cacheSpec)
+          data.comments.push(newComment)
+          client.writeQuery({...cacheSpec, data})
+        } catch(err){
+          console.log("err in sub handler!", err)
+        }
+
+      },
+      client: firebaseClient
+    })
+  }),
+  graphql(queries.CreateComment, {
+    options: (props) => ({
+      client: firebaseClient
+    }),
+    props: ({ ownProps: {claim}, mutate }) => ({
+      createComment: (body) => mutate({
+        variables: {
+          ref: `/claims/${claim.id}/comments`,
+          input: {body}
+        }
+      })
+    })
+  })
+)(
+  ({comments, createComment}) => (
+  <div>
+    {comments && comments.map(({id, body}, i) => (
+      <div key={i}>{body}</div>
+    ))}
+    <button onClick={() => createComment("HI!")}>Say Hi</button>
+    <button onClick={() => createComment("hello")}>Say hello</button>
+  </div>
+)
+                          )
+
+const Claim = ({claim}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
+  const {id, body, agreeCount, disagreeCount, supportCount, opposeCount} = claim
   return (
     <div style={{border: "1px dotted black"}}>
       <h5>{body}</h5>
       a: {agreeCount} d: {disagreeCount} s: {supportCount} o: {opposeCount}
+      <Comments claim={claim}/>
       <button onClick={() => setShowEvidence(!evidenceShown)}>{evidenceShown ? "Hide" : "Show"} Evidence</button>
       {evidenceShown ? (
         <EvidenceList claimID={id}/>
