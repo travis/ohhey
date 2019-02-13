@@ -159,7 +159,12 @@
     (is (= [{:evidence/supports true,
              :evidence/claim (assoc animals-are-awesome :agree true)
              :relevance 133/2}]
-           (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "toby"] evidence-spec)))))
+           (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "toby"] evidence-spec)))
+    (is (= [{:evidence/supports true,
+             :evidence/claim animals-are-awesome
+             :my-relevance-rating 33
+             :relevance 133/2}]
+           (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "james"] evidence-spec)))))
 
 
 (comment
@@ -170,8 +175,8 @@
   (t/get-claim fresh-db [:claim/body "Cats are great"])
   (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "james"])
   (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "anon"])
+  (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "james"])
   (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "toby"])
-  (t/get-claim-evidence-as fresh-db [:claim/body "Cats are great"] [:user/username "toby"])
   (get-claim-evidence fresh-db [:claim/body "They don't like people"])
   (get-claim-evidence fresh-db [:claim/body "Dogs are great"])
   (get-claim-evidence fresh-db [:claim/body "Cats are great"])

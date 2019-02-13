@@ -183,14 +183,28 @@
        [(ground 0) ?support]
        [(ground 0) ?oppose]
        ))]
-    [(evidence-stats-as ?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count)
+    [(evidence-stats-as ?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating)
      (or-join
-      [?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count]
+      [?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating]
+      (and
+       [(identity ?relevance-vote) ?uniqueness]
+       [?evidence :evidence/votes ?relevance-vote]
+       [?relevance-vote :relevance-vote/voter ?user]
+       [?relevance-vote :relevance-vote/rating ?my-rating]
+       [(ground 0) ?rating-count]
+       [(ground 0) ?rating]
+       [(ground 0) ?agree]
+       [(ground 0) ?disagree]
+       [(ground 0) ?support]
+       [(ground 0) ?oppose]
+       [(ground 0) ?i-agree]
+       [(ground 0) ?i-disagree])
       (and
        [?user]
        [?evidence :evidence/votes ?relevance-vote]
        [(identity ?relevance-vote) ?uniqueness]
        [?relevance-vote :relevance-vote/rating ?rating]
+       [(ground -1) ?my-rating]
        [(ground 1) ?rating-count]
        [(ground 0) ?agree]
        [(ground 0) ?disagree]
@@ -201,6 +215,7 @@
       (and
        [?evidence :evidence/claim ?claim]
        (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)
+       [(ground -1) ?my-rating]
        [(ground 0) ?rating-count]
        [(ground 0) ?rating]))]
     ])
@@ -278,12 +293,13 @@
    (get-all-claims-as db nil claim-spec)))
 
 
-(defn assoc-evidence-stats [evidence relevance-rating-sum relevance-rating-count]
-  (assoc evidence
-         :relevance
-         (if (= relevance-rating-count 0)
-           100
-           (/ relevance-rating-sum relevance-rating-count))))
+(defn assoc-evidence-stats [evidence relevance-rating-sum relevance-rating-count my-rating]
+  (-> evidence
+   (assoc :relevance
+          (if (= relevance-rating-count 0)
+            100
+            (/ relevance-rating-sum relevance-rating-count)))
+   (cond-> (>= my-rating 0) (assoc :my-relevance-rating my-rating))))
 
 (def default-evidence-spec
   [:evidence/id
@@ -300,7 +316,7 @@
            conj
            '[:find]
            (list 'pull '?evidence evidence-spec)
-           '[(sum ?rating) (sum ?rating-count)
+           '[(sum ?rating) (sum ?rating-count) (max ?my-rating)
              (sum ?support) (sum ?oppose)
              (sum ?agree) (sum ?disagree)
              (sum ?i-agree) (sum ?i-disagree)
@@ -311,12 +327,12 @@
              (evidence-stats-as
               ?evidence ?user ?uniqueness
               ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree
-              ?rating ?rating-count)])
+              ?rating ?rating-count ?my-rating)])
           db rules claim-ref (or user-ref anon-user-ref))]
-     (for [[evidence relevance-rating-sum relevance-rating-count
+     (for [[evidence relevance-rating-sum relevance-rating-count my-relevance-rating
             support-count oppose-count agree-count disagree-count i-agree i-disagree]
            results]
-       (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count)
+       (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count my-relevance-rating)
               :evidence/claim (assoc-claim-stats
                                (:evidence/claim evidence)
                                support-count oppose-count
