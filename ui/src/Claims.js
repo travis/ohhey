@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
 import { Button, Box } from 'grommet'
-import { Add, Like, Dislike, Chat, ChatOption } from "grommet-icons";
+import { Add, Like, Dislike, Chat, ChatOption, AddCircle, SubtractCircle, New } from "grommet-icons";
 
 import {Form, Text, GrommetText, TextArea} from './form'
 
@@ -31,14 +31,15 @@ export const Claim = graphql(
       pad="small"
       border={{ color: 'brand', size: 'medium' }}
       round="large"
+      width="50em"
     >
       <h3>{body}</h3>
       <p>by {creator.username}</p>
       <p>a: {agreeCount} d: {disagreeCount} s: {supportCount} o: {opposeCount}</p>
       <p>{agree && "I AGREE"} {disagree && "I DISAGREE"}</p>
       <div>
-        <Button icon={<Like />} label="Agree" onClick={() => vote(true)}/>
-        <Button icon={<Dislike />} label="Disagree" onClick={() => vote(false)}/>
+        <Button primary={agree} icon={<Like />} label="Agree" onClick={() => vote(true)}/>
+        <Button primary={disagree} icon={<Dislike />} label="Disagree" onClick={() => vote(false)}/>
       </div>
       <Button icon={<Chat/>} onClick={() => setShowComments(!commentsShown)}>{commentsShown ? "Hide" : "Show"} Comments</Button>
       {commentsShown && (<Comments claim={claim}/>)}
@@ -93,7 +94,10 @@ const EvidenceAdder = graphql(
   return (
     <Form onSubmit={addEvidence} style={{color, border: `1px solid ${color}`}}>
       <TextArea field="body" placeholder="Make an argument!"/>
-      <Button type="submit">Create Argument</Button>
+      <Button
+        icon={<New/>}
+        label="Create Argument"
+        type="submit"/>
     </Form>
   )
 })
@@ -113,8 +117,12 @@ const EvidenceList = graphql(
       {evidenceList && evidenceList.map((evidence) => (
         <Evidence evidence={evidence} key={evidence.id}/>
       ))}
-      <Button onClick={() => setEvidenceAdder("support")}>{evidenceAdder == 'support' ? "Hide" : "Show"} Add Supporting Argument</Button>
-      <Button onClick={() => setEvidenceAdder("oppose")}>{evidenceAdder == 'oppose' ? "Hide" : "Show"} Add Counter Argument</Button>
+      <Button icon={<AddCircle/>}
+              label="Add Supporting Argument"
+        onClick={() => setEvidenceAdder("support")}/>
+      <Button icon={<SubtractCircle/>}
+              label="Add Counter Argument"
+        onClick={() => setEvidenceAdder("oppose")}/>
       {evidenceAdder && (
         <EvidenceAdder supports={evidenceAdder == 'support'} claim={claim}/>
       )}
