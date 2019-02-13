@@ -102,3 +102,12 @@ export const VoteOnClaim = gql`
     }
   }
 `
+
+export const VoteOnEvidence = gql`
+  ${fullEvidenceFieldsFragment}
+  mutation VoteOnEvidence($evidenceID: ID!, $rating: Int!) {
+    voteOnEvidence(evidenceID: $evidenceID, rating: $rating) {
+      ...fullEvidenceFields
+    }
+  }
+`

@@ -1,7 +1,10 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
 import { Button, Box, Layer } from 'grommet'
-import { Add, Like, Dislike, Chat, ChatOption, AddCircle, SubtractCircle, New, Close } from "grommet-icons";
+import {
+  Add, Like, Dislike, Chat, ChatOption, AddCircle, SubtractCircle, New, Close,
+  WifiNone, Wifi, WifiLow, WifiMedium
+} from "grommet-icons";
 
 import {Form, Text, GrommetText, TextArea} from './form'
 
@@ -64,18 +67,40 @@ export const Claim = graphql(
 })
 
 
-const Evidence = ({evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {
+const Evidence = graphql(
+  queries.VoteOnEvidence, {
+    props: ({ ownProps: {evidence}, mutate }) => ({
+      relevanceVote: (rating) => mutate({
+        variables: {
+          evidenceID: evidence.id,
+          rating
+        }
+      })
+    })
+  }
+)(({relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {
   const color = supports ? 'blue' : 'red'
   return (
     <div key={id} style={{color, border: `1px solid ${color}`}}>
       <p>{relevance} % relevant</p>
-      <p>my vote: {myRelevanceRating}</p>
+      {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
+      <Button label="0%"
+              primary={myRelevanceRating === 0}
+              onClick={() => relevanceVote(0)}/>
+      <Button label="33%"
+              primary={myRelevanceRating === 33}
+              onClick={() => relevanceVote(33)}/>
+      <Button label="66%"
+              primary={myRelevanceRating === 66}
+              onClick={() => relevanceVote(66)}/>
+      <Button label="100%"
+              primary={myRelevanceRating === 100}
+              onClick={() => relevanceVote(100)}/>
 
       <Claim claim={claim} key={claim.id}/>
     </div>
   )
-}
-
+})
 
 const EvidenceAdder = graphql(
   queries.AddEvidence, {
