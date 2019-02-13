@@ -5,6 +5,7 @@ import {firebaseClient} from './clients'
 import * as queries from './queries';
 
 import {Form, Text} from './form'
+import { Button, Box, Layer } from 'grommet'
 
 export default compose(
   graphql(queries.CommentsQuery, {
@@ -55,10 +56,10 @@ export default compose(
       ))}
       <Form onSubmit={({comment}) => createComment(comment)}>
         <Text field="comment"/>
-        <button type="submit">Comment</button>
+        <Button type="submit" label="Comment"/>
       </Form>
-      <button onClick={() => createComment("HI!")}>Say Hi</button>
-      <button onClick={() => createComment("hello")}>Say hello</button>
+      <Button label="Say Hi" onClick={() => createComment("HI!")}/>
+      <Button label="Say hello" onClick={() => createComment("hello")}/>
     </div>
   )
 )
