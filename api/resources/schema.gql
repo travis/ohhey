@@ -38,6 +38,7 @@ type Evidence {
   claim: Claim
   relevance: Float
   myRelevanceRating: Int
+  parentClaim: Claim
 }
 
 type Query {

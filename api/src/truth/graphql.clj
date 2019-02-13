@@ -99,6 +99,11 @@
      :supports (dkey :evidence/supports)
      :claim (dkey :evidence/claim)
      :myRelevanceRating (dkey :my-relevance-rating)
+     :parentClaim
+     (fn [{conn :conn db :db current-user :current-user}
+          {} {evidence-id :evidence/id}]
+
+       (t/get-parent-claim-as (d/db conn) [:evidence/id evidence-id] (:db/id current-user)))
      }}})
 
 (defn load-schema []

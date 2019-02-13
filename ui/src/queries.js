@@ -91,6 +91,9 @@ export const AddEvidence = gql`
   mutation AddEvidence($claimID: ID!, $supports: Boolean!, $claim: ClaimInput!) {
     addEvidence(claimID: $claimID, supports: $supports, claim: $claim) {
       ...fullEvidenceFields
+      parentClaim {
+        ...fullClaimFields
+      }
     }
   }
 `

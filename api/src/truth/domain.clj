@@ -276,6 +276,7 @@
 
 (def anon-user-ref [:user/username "anon"])
 
+
 (defn get-claim-as
   ([db claim-ref user-ref]
    (get-claim-as db claim-ref user-ref default-claim-spec))
@@ -296,6 +297,29 @@
              :where
              (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)])
           db rules claim-ref (or user-ref anon-user-ref))]
+     (apply assoc-claim-stats result))))
+
+(defn get-parent-claim-as
+  ([db claim-ref user-ref]
+   (get-parent-claim-as db claim-ref user-ref default-claim-spec))
+  ([db evidence-ref user-ref claim-spec]
+   (let [result
+         (d/q
+          (apply
+           conj
+           '[:find]
+           [(list 'pull '?claim claim-spec)
+            '(sum ?support) '(sum ?oppose)
+            '(sum ?agree) '(sum ?disagree)
+            '(sum ?i-agree) '(sum ?i-disagree)
+            '(sum ?score)
+            ]
+           '[:in $ % ?evidence ?user
+             :with ?uniqueness
+             :where
+             [?claim :claim/evidence ?evidence]
+             (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)])
+          db rules evidence-ref (or user-ref anon-user-ref))]
      (apply assoc-claim-stats result))))
 
 (defn get-claim
