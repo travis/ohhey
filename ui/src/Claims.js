@@ -46,12 +46,19 @@ export const Claim = graphql(
         <Button icon={<Chat/>} onClick={() => setShowComments(!commentsShown)}>{commentsShown ? "Hide" : "Show"} Comments</Button>
         {commentsShown && (
           <Layer full="vertical" position="right">
-            <Box
-              justify="center"
-              align="center">
-              <Button icon={<Close/>} onClick={() => setShowComments(false)}></Button>
-              <h3>Comments on {body}</h3>
-              <Comments claim={claim}/>
+            <Box fill style={{ minWidth: "378px" }}>
+              <Box
+                direction="row"
+                align="center"
+                as="header"
+                elevation="small"
+                justify="between">
+                <h3>Comments on {body}</h3>
+                <Button icon={<Close/>} onClick={() => setShowComments(false)}></Button>
+              </Box>
+              <Box flex overflow="auto" pad="xsmall">
+                <Comments claim={claim}/>
+              </Box>
             </Box>
           </Layer>
         )}

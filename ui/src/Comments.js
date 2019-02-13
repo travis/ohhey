@@ -4,7 +4,7 @@ import {  graphql, compose } from "react-apollo";
 import {firebaseClient} from './clients'
 import * as queries from './queries';
 
-import {Form, Text} from './form'
+import {Form, Text, TextArea} from './form'
 import { Button, Box, Layer } from 'grommet'
 
 const commentInList = (comments, comment) =>
@@ -55,16 +55,18 @@ export default compose(
   })
 )(
   ({comments, createComment}) => (
-    <div>
-      {comments && comments.map(({id, body}, i) => (
-        <div key={i}>{body}</div>
+    <Fragment>
+      {comments && comments.map(({id, body}) => (
+        <span key={id}>
+          {body}
+        </span>
       ))}
       <Form onSubmit={({comment}) => createComment(comment)}>
-        <Text field="comment"/>
+        <TextArea field="comment"/>
         <Button type="submit" label="Comment"/>
+        <Button label="Say Hi" onClick={() => createComment("HI!")}/>
+        <Button label="Say hello" onClick={() => createComment("hello")}/>
       </Form>
-      <Button label="Say Hi" onClick={() => createComment("HI!")}/>
-      <Button label="Say hello" onClick={() => createComment("hello")}/>
-    </div>
+    </Fragment>
   )
 )
