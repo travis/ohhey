@@ -61,6 +61,18 @@
                            {:voter (:db/id current-user)
                             :agree agree})})])
        (t/get-claim-as (d/db conn) [:claim/id claim-id] (:db/id current-user)))
+     :voteOnEvidence
+     (fn [{conn :conn db :db current-user :current-user}
+          {evidence-id :evidenceID rating :rating} parent]
+       @(d/transact
+         conn
+         [(if-let [vote-id (t/get-vote-for-user-and-evidence db (:db/id current-user) [:evidence/id evidence-id])]
+            {:db/id vote-id :relevance-vote/rating rating}
+            {:evidence/id evidence-id
+             :evidence/votes (t/new-relevance-vote
+                              {:voter (:db/id current-user)
+                               :rating rating})})])
+       (t/get-evidence-as (d/db conn) [:evidence/id evidence-id] (:db/id current-user)))
      }
 
     :User

@@ -58,6 +58,14 @@
                  [?user :user/email ?email]]
                db email))))
 
+(defn get-user-by-username [db username]
+  (first (first
+          (d/q '[:find (pull ?user [*])
+                 :in $ ?username
+                 :where
+                 [?user :user/username ?username]]
+               db username))))
+
 (defn get-vote-for-user-and-claim [db user-ref claim-ref]
   (first
    (first
@@ -67,6 +75,16 @@
            [?vote :claim-vote/voter ?user]
            [?claim :claim/votes ?vote]]
          db user-ref claim-ref))))
+
+(defn get-vote-for-user-and-evidence [db user-ref evidence-ref]
+  (first
+   (first
+    (d/q '[:find ?vote
+           :in $ ?user ?evidence
+           :where
+           [?vote :relevance-vote/voter ?user]
+           [?evidence :evidence/votes ?vote]]
+         db user-ref evidence-ref))))
 
 (defn get-claim-by-body [db]
   (map first

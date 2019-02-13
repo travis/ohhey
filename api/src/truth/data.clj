@@ -40,7 +40,8 @@
                {:voter toby :agree true}])
       :evidence (map
                  new-evidence
-                 [{:creator travis
+                 [{:id "ara-supports-dag"
+                   :creator travis
                    :claim (new-claim
                            {:id "animals-are-awesome"
                             :db/id "animals-are-awesome"
@@ -73,7 +74,8 @@
                            new-relevance-vote
                            [{:voter james :rating 100}
                             {:voter travis :rating 66}])}
-                  {:creator travis
+                  {:id "dlp-opposes-cag"
+                   :creator travis
                    :supports false
                    :claim (new-claim
                            {:db/id "dont-like-people"

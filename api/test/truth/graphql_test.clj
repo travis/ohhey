@@ -16,13 +16,15 @@
                   conn (d/connect uri)]
               (schema/load conn)
               (data/load conn)
-              (defn execute [query variables]
-                (gql/execute schema query variables
-                             (let [db (d/db conn)
-                                   current-user (t/get-user-by-email db "travis@truth.com")]
-                               {:db db
-                                :conn conn
-                                :current-user current-user})))
+              (defn execute
+                ([query variables] (execute query variables "travis"))
+                ([query variables current-username]
+                 (gql/execute schema query variables
+                              (let [db (d/db conn)
+                                    current-user (t/get-user-by-username db current-username)]
+                                {:db db
+                                 :conn conn
+                                 :current-user current-user}))))
               )
             (run-tests)
             (d/delete-database uri)
@@ -119,3 +121,26 @@ mutation VoteOnClaim($claimID: ID!, $agree: Boolean!) {
             {:voteOnClaim
              {:agree true, :disagree false}}}
            (execute vote-query {:claimID "animals-are-awesome", :agree true})))))
+
+(def evidence-vote-query "
+  mutation VoteOnEvidence($evidenceID: ID!, $rating: Int!) {
+    voteOnEvidence(evidenceID: $evidenceID, rating: $rating) {
+      relevance, myRelevanceRating
+    }
+  }
+  ")
+(deftest test-voteOnEvidence
+  (testing "voteOnEvidence"
+    (is (= {:data
+            {:voteOnEvidence
+             {:myRelevanceRating 66, :relevance 49.5}}}
+           (execute evidence-vote-query { :rating 66, :evidenceID "ara-supports-dag"})))
+    (is (= {:data
+            {:voteOnEvidence
+             {:myRelevanceRating 33, :relevance 33.0}}}
+           (execute evidence-vote-query {:rating 33, :evidenceID "ara-supports-dag"})))
+    (is (= {:data
+            {:voteOnEvidence
+             {:myRelevanceRating 66, :relevance 44.0}}}
+           (execute evidence-vote-query {:rating 66, :evidenceID "ara-supports-dag"}
+                    "toby")))))
