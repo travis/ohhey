@@ -355,3 +355,37 @@
   ([db claim-ref] (get-claim-evidence db claim-ref default-evidence-spec))
   ([db claim-ref evidence-spec]
    (get-claim-evidence-as db claim-ref nil evidence-spec)))
+
+(defn get-evidence-as
+  ([db evidence-ref user-ref] (get-evidence-as db evidence-ref user-ref default-evidence-spec))
+  ([db evidence-ref user-ref evidence-spec]
+   (first
+    (let [results
+          (d/q
+           (apply
+            conj
+            '[:find]
+            (list 'pull '?evidence evidence-spec)
+            '[(sum ?rating) (sum ?rating-count) (max ?my-rating)
+              (sum ?support) (sum ?oppose)
+              (sum ?agree) (sum ?disagree)
+              (sum ?i-agree) (sum ?i-disagree)
+              :in $ % ?evidence ?user
+              :with ?uniqueness
+              :where
+              (evidence-stats-as
+               ?evidence ?user ?uniqueness
+               ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree
+               ?rating ?rating-count ?my-rating)])
+           db rules evidence-ref (or user-ref anon-user-ref))]
+      (for [[evidence relevance-rating-sum relevance-rating-count my-relevance-rating
+             support-count oppose-count agree-count disagree-count i-agree i-disagree]
+            results]
+        (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count my-relevance-rating)
+               :evidence/claim (assoc-claim-stats
+                                (:evidence/claim evidence)
+                                support-count oppose-count
+                                agree-count disagree-count
+                                i-agree i-disagree)
+               ))
+      ))))

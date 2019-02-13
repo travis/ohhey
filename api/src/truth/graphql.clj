@@ -42,15 +42,12 @@
          @(d/transact
            conn
            [{:claim/id claim-id
-             :claim/evidence evidence}]))
-       (-> (t/new-evidence {:supports supports
-                            :claim (assoc (t/new-claim (assoc claim
-                                                              :creator current-user))
-                                          :support-count 0
-                                          :oppose-count 0
-                                          :agree-count 0
-                                          :disagree-count 0)})
-           (assoc :relevance 100))
+             :claim/evidence evidence}])
+         (t/get-evidence-as (d/db conn)
+                            [:evidence/id (:evidence/id evidence)]
+                            (:db/id current-user)))
+
+
        )
      :voteOnClaim
      (fn [{conn :conn db :db current-user :current-user}
