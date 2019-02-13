@@ -1,7 +1,9 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
+import { Button, Box } from 'grommet'
+import { Add, Like, Dislike, Chat, ChatOption } from "grommet-icons";
 
-import {Form, Text} from './form'
+import {Form, Text, GrommetText, TextArea} from './form'
 
 import * as queries from './queries';
 import Comments from './Comments'
@@ -22,22 +24,32 @@ export const Claim = graphql(
   const [commentsShown, setShowComments] = useState(false)
   const {id, body, creator, agreeCount, disagreeCount, supportCount, opposeCount, agree, disagree} = claim
   return (
-    <div style={{border: "1px dotted black"}}>
+    <Fragment>
+    <Box
+      justify="center"
+      align="center"
+      pad="small"
+      border={{ color: 'brand', size: 'medium' }}
+      round="large"
+    >
       <h3>{body}</h3>
       <p>by {creator.username}</p>
       <p>a: {agreeCount} d: {disagreeCount} s: {supportCount} o: {opposeCount}</p>
       <p>{agree && "I AGREE"} {disagree && "I DISAGREE"}</p>
       <div>
-        <button onClick={() => vote(true)}>Agree</button>
-        <button onClick={() => vote(false)}>Disagree</button>
+        <Button icon={<Like />} label="Agree" onClick={() => vote(true)}/>
+        <Button icon={<Dislike />} label="Disagree" onClick={() => vote(false)}/>
       </div>
-      <button onClick={() => setShowComments(!commentsShown)}>{commentsShown ? "Hide" : "Show"} Comments</button>
+      <Button icon={<Chat/>} onClick={() => setShowComments(!commentsShown)}>{commentsShown ? "Hide" : "Show"} Comments</Button>
       {commentsShown && (<Comments claim={claim}/>)}
-      <button onClick={() => setShowEvidence(!evidenceShown)}>{evidenceShown ? "Hide" : "Show"} Evidence</button>
+      <Button icon={<ChatOption/>}
+              label={`${evidenceShown ? "Hide" : "Show"} Evidence`}
+              onClick={() => setShowEvidence(!evidenceShown)}/>
+    </Box>
       {evidenceShown && (
         <EvidenceList claim={claim}/>
       )}
-    </div>
+    </Fragment>
   )
 })
 
@@ -80,8 +92,8 @@ const EvidenceAdder = graphql(
   const color = supports ? 'blue' : 'red'
   return (
     <Form onSubmit={addEvidence} style={{color, border: `1px solid ${color}`}}>
-      <Text field="body" placeholder="Make an argument!"/>
-      <button type="submit">Create Argument</button>
+      <TextArea field="body" placeholder="Make an argument!"/>
+      <Button type="submit">Create Argument</Button>
     </Form>
   )
 })
@@ -97,16 +109,16 @@ const EvidenceList = graphql(
   const [evidenceAdder, setEvidenceAdder] = useState(null)
 
   return (
-    <Fragment>
+    <div style={{"margin-left": "4em"}} >
       {evidenceList && evidenceList.map((evidence) => (
         <Evidence evidence={evidence} key={evidence.id}/>
       ))}
-      <button onClick={() => setEvidenceAdder("support")}>{evidenceAdder == 'support' ? "Hide" : "Show"} Add Supporting Argument</button>
-      <button onClick={() => setEvidenceAdder("oppose")}>{evidenceAdder == 'oppose' ? "Hide" : "Show"} Add Counter Argument</button>
+      <Button onClick={() => setEvidenceAdder("support")}>{evidenceAdder == 'support' ? "Hide" : "Show"} Add Supporting Argument</Button>
+      <Button onClick={() => setEvidenceAdder("oppose")}>{evidenceAdder == 'oppose' ? "Hide" : "Show"} Add Counter Argument</Button>
       {evidenceAdder && (
         <EvidenceAdder supports={evidenceAdder == 'support'} claim={claim}/>
       )}
-    </Fragment>
+    </div>
   )
 })
 

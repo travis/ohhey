@@ -1,5 +1,21 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 
-import {Form, Text} from 'informed';
+import {Form, asField} from 'informed';
 
-export {Form, Text};
+import * as g from 'grommet';
+
+
+const asInformed = (GrommetInput) => asField(
+  ({fieldState, fieldApi: {setValue}, ...props}) => (
+    <Fragment>
+      <GrommetInput {...props} onChange={(e) => setValue(e.target.value)}/>
+      {fieldState.error ? (<small style={{color: 'red'}}>{fieldState.error}</small>) : null}
+    </Fragment>
+  )
+)
+
+export const TextArea = asInformed(g.TextArea)
+export const Text = asInformed(g.TextInput)
+
+
+export {Form};
