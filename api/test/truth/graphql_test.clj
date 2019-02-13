@@ -7,9 +7,10 @@
             [truth.graphql :refer [load-schema]]
             [truth.domain :as t]))
 
+(def uri "datomic:mem://graphql-test-interactive")
 (use-fixtures
   :each (fn [run-tests]
-          (let [uri "datomic:mem://graphql-test"]
+          (let [uri (str "datomic:mem://graphql-test-" (t/uuid))]
             (d/create-database uri)
             (let [schema (load-schema)
                   conn (d/connect uri)]
@@ -22,9 +23,10 @@
                                {:db db
                                 :conn conn
                                 :current-user current-user})))
-              ))
-          (run-tests)
-          ))
+              )
+            (run-tests)
+            (d/delete-database uri)
+            )))
 
 (deftest test-currentUser
   (testing "currentUser"
@@ -95,3 +97,25 @@ mutation($claimID: ID!, $supports: Boolean!, $claim: ClaimInput!) {
   }
 }"
                     {:claimID "dogs-are-great", :supports true, :claim {:body "SO FRIENDLY!!"}})))))
+
+(def vote-query "
+mutation VoteOnClaim($claimID: ID!, $agree: Boolean!) {
+  voteOnClaim(claimID: $claimID, agree: $agree) {
+    agree, disagree
+  }
+}
+")
+(deftest test-voteOnClaim
+  (testing "voteOnClaim"
+    (is (= {:data
+            {:voteOnClaim
+             {:agree true, :disagree false}}}
+           (execute vote-query {:claimID "dogs-are-great", :agree true})))
+    (is (= {:data
+            {:voteOnClaim
+             {:agree false, :disagree true}}}
+           (execute vote-query {:claimID "dogs-are-great", :agree false})))
+    (is (= {:data
+            {:voteOnClaim
+             {:agree true, :disagree false}}}
+           (execute vote-query {:claimID "animals-are-awesome", :agree true})))))

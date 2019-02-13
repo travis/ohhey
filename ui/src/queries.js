@@ -93,3 +93,12 @@ export const AddEvidence = gql`
     }
   }
 `
+
+export const VoteOnClaim = gql`
+  ${fullClaimFieldsFragment}
+  mutation VoteOnClaim($claimID: ID!, $agree: Boolean!) {
+    voteOnClaim(claimID: $claimID, agree: $agree) {
+      ...fullClaimFields
+    }
+  }
+`

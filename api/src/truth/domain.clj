@@ -58,6 +58,16 @@
                  [?user :user/email ?email]]
                db email))))
 
+(defn get-vote-for-user-and-claim [db user-ref claim-ref]
+  (first
+   (first
+    (d/q '[:find ?vote
+           :in $ ?user ?claim
+           :where
+           [?vote :claim-vote/voter ?user]
+           [?claim :claim/votes ?vote]]
+         db user-ref claim-ref))))
+
 (defn get-claim-by-body [db]
   (map first
        (d/q

@@ -2,7 +2,8 @@
   (:require [datomic.api :as d]
             [truth.schema :as schema]
             [truth.data :as data]
-            [truth.db :as db]))
+            [truth.db :as db]
+            [truth.domain :as t]))
 
 (comment
   (do
@@ -15,6 +16,7 @@
 
    )
 
+  (t/get-vote-for-user-and-claim db [:user/username "travis"] [:claim/body "Dogs are great"])
 
   (d/q all-claims-q db)
   (d/q all-evidence-claims-q db)

@@ -42,7 +42,8 @@
                  new-evidence
                  [{:creator travis
                    :claim (new-claim
-                           {:db/id "animals-are-awesome"
+                           {:id "animals-are-awesome"
+                            :db/id "animals-are-awesome"
                             :body "Animals are awesome"
                             :creator travis
                             :votes (map

@@ -42,10 +42,7 @@
          @(d/transact
            conn
            [{:claim/id claim-id
-             :claim/evidence
-             evidence}
-            ]))
-
+             :claim/evidence evidence}]))
        (-> (t/new-evidence {:supports supports
                             :claim (assoc (t/new-claim (assoc claim
                                                               :creator current-user))
@@ -55,6 +52,18 @@
                                           :disagree-count 0)})
            (assoc :relevance 100))
        )
+     :voteOnClaim
+     (fn [{conn :conn db :db current-user :current-user}
+          {claim-id :claimID agree :agree} parent]
+       @(d/transact
+         conn
+         [(if-let [vote-id (t/get-vote-for-user-and-claim db (:db/id current-user) [:claim/id claim-id])]
+            {:db/id vote-id :claim-vote/agree agree}
+            {:claim/id claim-id
+             :claim/votes (t/new-claim-vote
+                           {:voter (:db/id current-user)
+                            :agree agree})})])
+       (t/get-claim-as (d/db conn) [:claim/id claim-id] (:db/id current-user)))
      }
 
     :User

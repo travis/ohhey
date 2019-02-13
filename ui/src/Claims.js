@@ -6,7 +6,18 @@ import {Form, Text} from './form'
 import * as queries from './queries';
 import Comments from './Comments'
 
-export const Claim = ({claim}) => {
+export const Claim = graphql(
+  queries.VoteOnClaim, {
+    props: ({ ownProps: {claim}, mutate }) => ({
+      vote: (agree) => mutate({
+        variables: {
+          claimID: claim.id,
+          agree
+        }
+      })
+    })
+  }
+)(({claim, vote}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
   const {id, body, creator, agreeCount, disagreeCount, supportCount, opposeCount, agree, disagree} = claim
@@ -15,7 +26,11 @@ export const Claim = ({claim}) => {
       <h3>{body}</h3>
       <p>by {creator.username}</p>
       <p>a: {agreeCount} d: {disagreeCount} s: {supportCount} o: {opposeCount}</p>
-      <p>{agree && "AGREE"} {disagree && "DISAGREE"}</p>
+      <p>{agree && "I AGREE"} {disagree && "I DISAGREE"}</p>
+      <div>
+        <button onClick={() => vote(true)}>Agree</button>
+        <button onClick={() => vote(false)}>Disagree</button>
+      </div>
       <button onClick={() => setShowComments(!commentsShown)}>{commentsShown ? "Hide" : "Show"} Comments</button>
       {commentsShown && (<Comments claim={claim}/>)}
       <button onClick={() => setShowEvidence(!evidenceShown)}>{evidenceShown ? "Hide" : "Show"} Evidence</button>
@@ -24,7 +39,7 @@ export const Claim = ({claim}) => {
       )}
     </div>
   )
-}
+})
 
 
 const Evidence = ({evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {

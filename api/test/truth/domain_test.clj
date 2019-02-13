@@ -180,6 +180,6 @@
   (get-claim-evidence fresh-db [:claim/body "They don't like people"])
   (get-claim-evidence fresh-db [:claim/body "Dogs are great"])
   (get-claim-evidence fresh-db [:claim/body "Cats are great"])
-
+  (t/get-vote-for-user-and-claim fresh-db [:user/username "travis"] [:claim/body "Dogs are great"])
 
   )
