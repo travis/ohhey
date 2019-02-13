@@ -37,14 +37,14 @@
    :claim/contributors [],
    :claim/creator #:user{:username "travis"},
    :support-count 1 :oppose-count 0 :agree-count 2 :disagree-count 0
-   :agree false :disagree false :score 0})
+   :agree false :disagree false :score 4})
 
 (def cats-are-great
   {:claim/body "Cats are great",
    :claim/contributors [#:user{:username "travis"}],
    :claim/creator #:user{:username "james"},
    :support-count 2 :oppose-count 1 :agree-count 2 :disagree-count 1
-   :agree false :disagree false :score 0})
+   :agree false :disagree false :score 3})
 
 (deftest test-get-claim
   (testing "Dogs are great"
@@ -88,7 +88,7 @@
    :agree-count 2,
    :disagree-count 0,
    :agree false :disagree false
-   :score 0})
+   :score 2})
 
 (def dont-like-people
   {:claim/body "They don't like people",
@@ -99,7 +99,7 @@
    :agree-count 0,
    :disagree-count 0,
    :agree false :disagree false
-   :score 0})
+   :score 2})
 
 (def mean-cat
   {:claim/body "A cat was mean to me",

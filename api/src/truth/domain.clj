@@ -113,24 +113,26 @@
 
 (def rules
   '[[(agree-disagree ?claim ?uniqueness ?agree ?disagree ?score)
-     [(ground 0) ?score]
      (or-join
-      [?claim ?uniqueness ?agree ?disagree]
+      [?claim ?uniqueness ?agree ?disagree ?score]
       (and
        [?claim :claim/votes ?vote]
        [(identity ?vote) ?uniqueness]
        (or-join
-        [?vote ?agree ?disagree]
+        [?vote ?agree ?disagree ?score]
         (and
          [?vote :claim-vote/agree true]
+         [(ground 1) ?score]
          [(ground 1) ?agree]
          [(ground 0) ?disagree])
         (and
          [?vote :claim-vote/agree false]
+         [(ground -1) ?score]
          [(ground 0) ?agree]
          [(ground 1) ?disagree])))
       (and
        [(identity ?claim) ?uniqueness]
+       [(ground 0) ?score]
        [(ground 0) ?agree]
        [(ground 0) ?disagree]))]
     [(agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree ?score)
@@ -168,23 +170,25 @@
        [(ground 0) ?i-disagree]
        ))]
     [(support-oppose ?claim ?uniqueness ?support ?oppose ?score)
-     [(ground 0) ?score]
      (or-join
-      [?claim ?uniqueness ?support ?oppose]
+      [?claim ?uniqueness ?support ?oppose ?score]
       (and
        [?claim :claim/evidence ?evidence]
        [(identity ?evidence) ?uniqueness]
        (or-join
-        [?evidence ?support ?oppose]
+        [?evidence ?support ?oppose ?score]
         (and
          [?evidence :evidence/supports true]
+         [(ground 2) ?score]
          [(ground 1) ?support]
          [(ground 0) ?oppose])
         (and
          [?evidence :evidence/supports false]
+         [(ground -2) ?score]
          [(ground 0) ?support]
          [(ground 1) ?oppose])))
       (and
+       [(ground 0) ?score]
        [(identity ?claim) ?uniqueness]
        [(ground 0) ?support]
        [(ground 0) ?oppose]))]
