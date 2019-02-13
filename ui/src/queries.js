@@ -20,6 +20,7 @@ fragment fullClaimFields on Claim {
   disagreeCount
   agree
   disagree
+  score
 }
 `
 

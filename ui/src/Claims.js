@@ -25,7 +25,7 @@ export const Claim = graphql(
 )(({claim, vote}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
-  const {id, body, creator, agreeCount, disagreeCount, supportCount, opposeCount, agree, disagree} = claim
+  const {id, body, creator, agreeCount, disagreeCount, supportCount, opposeCount, agree, disagree, score} = claim
   return (
     <Fragment>
       <Box
@@ -39,6 +39,7 @@ export const Claim = graphql(
         <h3>{body}</h3>
         <p>by {creator.username}</p>
         <p>agree: {agreeCount} disagree: {disagreeCount} supporting: {supportCount} opposing: {opposeCount}</p>
+        <h4>{score}</h4>
         <div>
           <Button primary={agree} icon={<Like />} label="Agree" onClick={() => vote(true)}/>
           <Button primary={disagree} icon={<Dislike />} label="Disagree" onClick={() => vote(false)}/>
