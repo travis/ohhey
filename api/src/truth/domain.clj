@@ -112,7 +112,8 @@
            db claim supports)))
 
 (def rules
-  '[[(agree-disagree ?claim ?uniqueness ?agree ?disagree)
+  '[[(agree-disagree ?claim ?uniqueness ?agree ?disagree ?score)
+     [(ground 0) ?score]
      (or-join
       [?claim ?uniqueness ?agree ?disagree]
       (and
@@ -132,7 +133,8 @@
        [(identity ?claim) ?uniqueness]
        [(ground 0) ?agree]
        [(ground 0) ?disagree]))]
-    [(agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree)
+    [(agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree ?score)
+     [(ground 0) ?score]
      (or-join
       [?claim ?user ?uniqueness ?i-agree ?i-disagree]
       (and
@@ -165,7 +167,8 @@
        [(ground 0) ?i-agree]
        [(ground 0) ?i-disagree]
        ))]
-    [(support-oppose ?claim ?uniqueness ?support ?oppose)
+    [(support-oppose ?claim ?uniqueness ?support ?oppose ?score)
+     [(ground 0) ?score]
      (or-join
       [?claim ?uniqueness ?support ?oppose]
       (and
@@ -185,36 +188,37 @@
        [(identity ?claim) ?uniqueness]
        [(ground 0) ?support]
        [(ground 0) ?oppose]))]
-    [(claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
+    [(claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose ?score)
      (or-join
-      [?claim ?uniqueness ?agree ?disagree ?support ?oppose]
+      [?claim ?uniqueness ?agree ?disagree ?support ?oppose ?score]
       (and
        [(ground 0) ?support]
        [(ground 0) ?oppose]
-       (agree-disagree ?claim ?uniqueness ?agree ?disagree))
+       (agree-disagree ?claim ?uniqueness ?agree ?disagree ?score))
       (and
        [(ground 0) ?agree]
        [(ground 0) ?disagree]
-       (support-oppose ?claim ?uniqueness ?support ?oppose)))]
-    [(claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)
+       (support-oppose ?claim ?uniqueness ?support ?oppose ?score)))]
+    [(claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)
      (or
       (and
        [?user]
-       (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
+       (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose ?score)
        [(ground 0) ?i-agree]
        [(ground 0) ?i-disagree]
        )
       (and
-       (agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree)
+       (agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree ?score)
        [(ground 0) ?agree]
        [(ground 0) ?disagree]
        [(ground 0) ?support]
        [(ground 0) ?oppose]
        ))]
-    [(evidence-stats-as ?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating)
+    [(evidence-stats-as ?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating ?score)
      (or-join
-      [?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating]
+      [?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating ?score]
       (and
+       [(ground 0) ?score]
        [(identity ?relevance-vote) ?uniqueness]
        [?evidence :evidence/votes ?relevance-vote]
        [?relevance-vote :relevance-vote/voter ?user]
@@ -228,6 +232,7 @@
        [(ground 0) ?i-agree]
        [(ground 0) ?i-disagree])
       (and
+       [(ground 0) ?score]
        [?user]
        [?evidence :evidence/votes ?relevance-vote]
        [(identity ?relevance-vote) ?uniqueness]
@@ -242,21 +247,22 @@
        [(ground 0) ?i-disagree])
       (and
        [?evidence :evidence/claim ?claim]
-       (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)
+       (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)
        [(ground -1) ?my-rating]
        [(ground 0) ?rating-count]
        [(ground 0) ?rating]))]
     ])
 
 (defn assoc-claim-stats
-  ([claim support-count oppose-count agree-count disagree-count]
-   (assoc-claim-stats claim support-count oppose-count agree-count disagree-count 0 0)
+  ([claim support-count oppose-count agree-count disagree-count score]
+   (assoc-claim-stats claim support-count oppose-count agree-count disagree-count 0 0 score)
    )
-  ([claim support-count oppose-count agree-count disagree-count i-agree-count i-disagree-count]
+  ([claim support-count oppose-count agree-count disagree-count i-agree-count i-disagree-count score]
    (assoc claim
           :support-count support-count :oppose-count oppose-count
           :agree-count agree-count :disagree-count disagree-count
-          :agree (< 0 i-agree-count) :disagree (< 0 i-disagree-count))))
+          :agree (< 0 i-agree-count) :disagree (< 0 i-disagree-count)
+          :score score)))
 
 (def default-claim-spec '[:db/id
                           :claim/id
@@ -279,11 +285,12 @@
             '(sum ?support) '(sum ?oppose)
             '(sum ?agree) '(sum ?disagree)
             '(sum ?i-agree) '(sum ?i-disagree)
+            '(sum ?score)
             ]
            '[:in $ % ?claim ?user
              :with ?uniqueness
              :where
-             (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)])
+             (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)])
           db rules claim-ref (or user-ref anon-user-ref))]
      (apply assoc-claim-stats result))))
 
@@ -306,11 +313,12 @@
            '[(sum ?support) (sum ?oppose)
              (sum ?agree) (sum ?disagree)
              (sum ?i-agree) (sum ?i-disagree)
+             (sum ?score)
              :in $ % ?user
              :with ?uniqueness
              :where
              [?claim :claim/id _]
-             (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)])
+             (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)])
           db rules (or user-ref anon-user-ref))]
      (map (fn [result] (apply assoc-claim-stats result)) results))))
 
@@ -348,6 +356,7 @@
              (sum ?support) (sum ?oppose)
              (sum ?agree) (sum ?disagree)
              (sum ?i-agree) (sum ?i-disagree)
+             (sum ?score)
              :in $ % ?claim ?user
              :with ?uniqueness
              :where
@@ -355,17 +364,18 @@
              (evidence-stats-as
               ?evidence ?user ?uniqueness
               ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree
-              ?rating ?rating-count ?my-rating)])
+              ?rating ?rating-count ?my-rating ?score)])
           db rules claim-ref (or user-ref anon-user-ref))]
      (for [[evidence relevance-rating-sum relevance-rating-count my-relevance-rating
-            support-count oppose-count agree-count disagree-count i-agree i-disagree]
+            support-count oppose-count agree-count disagree-count i-agree i-disagree
+            score]
            results]
        (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count my-relevance-rating)
               :evidence/claim (assoc-claim-stats
                                (:evidence/claim evidence)
                                support-count oppose-count
                                agree-count disagree-count
-                               i-agree i-disagree)
+                               i-agree i-disagree score)
               ))
      )))
 
@@ -388,22 +398,24 @@
               (sum ?support) (sum ?oppose)
               (sum ?agree) (sum ?disagree)
               (sum ?i-agree) (sum ?i-disagree)
+              (sum ?score)
               :in $ % ?evidence ?user
               :with ?uniqueness
               :where
               (evidence-stats-as
                ?evidence ?user ?uniqueness
                ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree
-               ?rating ?rating-count ?my-rating)])
+               ?rating ?rating-count ?my-rating
+               ?score)])
            db rules evidence-ref (or user-ref anon-user-ref))]
       (for [[evidence relevance-rating-sum relevance-rating-count my-relevance-rating
-             support-count oppose-count agree-count disagree-count i-agree i-disagree]
+             support-count oppose-count agree-count disagree-count i-agree i-disagree ?score]
             results]
         (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count my-relevance-rating)
                :evidence/claim (assoc-claim-stats
                                 (:evidence/claim evidence)
                                 support-count oppose-count
                                 agree-count disagree-count
-                                i-agree i-disagree)
+                                i-agree i-disagree ?score)
                ))
       ))))
