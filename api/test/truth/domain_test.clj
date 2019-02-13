@@ -79,8 +79,8 @@
       {(:claim/contributors :default []) [:user/username]}
       {:claim/creator [:user/username]}]}])
 
-(def cute-paws
-  {:claim/body "They have cute paws",
+(def animals-are-awesome
+  {:claim/body "Animals are awesome",
    :claim/contributors [],
    :claim/creator #:user{:username "travis"}
    :support-count 0,
@@ -109,7 +109,7 @@
 (deftest test-get-claim-evidence
   (testing "Cats are great"
     (is (= [{:evidence/supports true,
-             :evidence/claim cute-paws,
+             :evidence/claim animals-are-awesome,
              :relevance 83}
             {:evidence/supports false,
              :evidence/claim dont-like-people
@@ -120,7 +120,7 @@
            (get-claim-evidence fresh-db [:claim/body "Cats are great"] evidence-spec))))
   (testing "Dogs are great"
     (is (= [{:evidence/supports true,
-             :evidence/claim cute-paws
+             :evidence/claim animals-are-awesome
              :relevance 133/2}]
            (get-claim-evidence fresh-db [:claim/body "Dogs are great"] evidence-spec))))
   (testing "They don't like people"

@@ -34,7 +34,7 @@
     (is (= {:data
             {:claims
              [{:body "Dogs are great"}
-              {:body "They have cute paws"}
+              {:body "Animals are awesome"}
               {:body "Cats are great"}
               {:body "They don't like people"}
               {:body "A cat was mean to me"}]}}
@@ -42,7 +42,7 @@
     (is (= {:data
             {:claims
              [{:body "Dogs are great", :contributors []}
-              {:body "They have cute paws", :contributors []}
+              {:body "Animals are awesome", :contributors []}
               {:body "Cats are great", :contributors [{:username "travis"}]}
               {:body "They don't like people", :contributors []}
               {:body "A cat was mean to me", :contributors []}
@@ -52,14 +52,14 @@
             {:claims
              [{:body "Dogs are great",
                :evidence
-               {:edges '({:claim {:body "They have cute paws"} :supports true})},
+               {:edges '({:claim {:body "Animals are awesome"} :supports true})},
                :contributors []}
-              {:body "They have cute paws",
+              {:body "Animals are awesome",
                :evidence {:edges []},
                :contributors []}
               {:body "Cats are great",
                :evidence
-               {:edges '({:claim {:body "They have cute paws"} :supports true}
+               {:edges '({:claim {:body "Animals are awesome"} :supports true}
                          {:claim {:body "They don't like people"} :supports false}
                          {:claim {:body "They don't like people"} :supports true}
                          )},
@@ -73,7 +73,7 @@
               ]}}
            (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil))))
   (testing "evidenceForClaims {supports, claim {body}}"
-    (is (= {:data {:evidenceForClaim [{:supports true :claim {:body "They have cute paws" :supportCount 0}}]}}
+    (is (= {:data {:evidenceForClaim [{:supports true :claim {:body "Animals are awesome" :supportCount 0}}]}}
            (execute "query EvidenceForClaim($claimID: ID) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID "dogs-are-great"}))))
   (testing "addEvidence"
     (is (= {:data

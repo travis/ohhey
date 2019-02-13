@@ -1,4 +1,4 @@
-(ns truth.data
+ (ns truth.data
   (:require [datomic.api :as d]
             [truth.domain :refer [new-user new-claim new-claim-vote
                                   new-evidence new-relevance-vote]]))
@@ -42,8 +42,8 @@
                  new-evidence
                  [{:creator travis
                    :claim (new-claim
-                           {:db/id "cute-paws"
-                            :body "They have cute paws"
+                           {:db/id "animals-are-awesome"
+                            :body "Animals are awesome"
                             :creator travis
                             :votes (map
                                     new-claim-vote
@@ -66,7 +66,7 @@
       :evidence (map
                  new-evidence
                  [{:creator james
-                   :claim "cute-paws"
+                   :claim "animals-are-awesome"
                    :supports true
                    :votes (map
                            new-relevance-vote
