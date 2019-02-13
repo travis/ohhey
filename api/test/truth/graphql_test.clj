@@ -26,10 +26,12 @@
           (run-tests)
           ))
 
-(deftest test-schema
+(deftest test-currentUser
   (testing "currentUser"
     (is (= {:data {:currentUser {:username "travis"}}}
-           (execute "{currentUser {username} }" nil))))
+           (execute "{currentUser {username} }" nil)))))
+
+(deftest test-claims
   (testing "claims"
     (is (= {:data
             {:claims
@@ -71,10 +73,14 @@
                :evidence {:edges []},
                :contributors []}
               ]}}
-           (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil))))
+           (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil)))))
+
+(deftest test-evidenceForClaims
   (testing "evidenceForClaims {supports, claim {body}}"
     (is (= {:data {:evidenceForClaim [{:supports true :claim {:body "Animals are awesome" :supportCount 0}}]}}
-           (execute "query EvidenceForClaim($claimID: ID) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID "dogs-are-great"}))))
+           (execute "query EvidenceForClaim($claimID: ID) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID "dogs-are-great"})))))
+
+(deftest test-addEvidence
   (testing "addEvidence"
     (is (= {:data
             {:addEvidence
@@ -88,4 +94,4 @@ mutation($claimID: ID!, $supports: Boolean!, $claim: ClaimInput!) {
     }
   }
 }"
-                    {:claimID "dogs-are-great", :supports "true", :claim {:body "SO FRIENDLY!!"}})))))
+                    {:claimID "dogs-are-great", :supports true, :claim {:body "SO FRIENDLY!!"}})))))
