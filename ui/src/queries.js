@@ -18,6 +18,8 @@ fragment fullClaimFields on Claim {
   opposeCount
   agreeCount
   disagreeCount
+  agree
+  disagree
 }
 `
 
@@ -27,6 +29,7 @@ fragment fullEvidenceFields on Evidence {
   id
   supports
   relevance
+  myRelevanceRating
   claim {
   ...fullClaimFields
   }

@@ -22,12 +22,13 @@
        current-user)
 
      :claims
-     (fn [{db :db} arguments parent]
-       (get-all-claims db))
+     (fn [{db :db current-user :current-user} arguments parent]
+       (println (t/get-all-claims-as db (:db/id current-user)))
+       (t/get-all-claims-as db (:db/id current-user)))
 
      :evidenceForClaim
-     (fn [{db :db} {claim-id :claimID} parent]
-       (get-claim-evidence db [:claim/id claim-id]))
+     (fn [{db :db current-user :current-user} {claim-id :claimID} parent]
+       (t/get-claim-evidence-as db [:claim/id claim-id] (:db/id current-user)))
      }
     :Mutation
     {:addEvidence
@@ -72,13 +73,14 @@
      (fn [{db :db} arguments {id :db/id contributors :claim/contributors}]
        (or contributors (get-contributors db id)))
      :evidence
-     (fn [{db :db} a {id :db/id}]
-       {:edges (get-claim-evidence db id)})
+     (fn [{db :db current-user :current-user} a {id :db/id}]
+       {:edges (t/get-claim-evidence-as db id (:db/id current-user))})
      }
     :Evidence
     {:id (dkey :evidence/id)
      :supports (dkey :evidence/supports)
      :claim (dkey :evidence/claim)
+     :myRelevanceRating (dkey :my-relevance-rating)
      }}})
 
 (defn load-schema []

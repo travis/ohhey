@@ -9,12 +9,13 @@ import Comments from './Comments'
 export const Claim = ({claim}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
-  const {id, body, creator, agreeCount, disagreeCount, supportCount, opposeCount} = claim
+  const {id, body, creator, agreeCount, disagreeCount, supportCount, opposeCount, agree, disagree} = claim
   return (
     <div style={{border: "1px dotted black"}}>
       <h3>{body}</h3>
       <p>by {creator.username}</p>
       <p>a: {agreeCount} d: {disagreeCount} s: {supportCount} o: {opposeCount}</p>
+      <p>{agree && "AGREE"} {disagree && "DISAGREE"}</p>
       <button onClick={() => setShowComments(!commentsShown)}>{commentsShown ? "Hide" : "Show"} Comments</button>
       {commentsShown && (<Comments claim={claim}/>)}
       <button onClick={() => setShowEvidence(!evidenceShown)}>{evidenceShown ? "Hide" : "Show"} Evidence</button>
@@ -26,11 +27,13 @@ export const Claim = ({claim}) => {
 }
 
 
-const Evidence = ({evidence: {id, supports, claim, relevance}}) => {
+const Evidence = ({evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {
   const color = supports ? 'blue' : 'red'
   return (
     <div key={id} style={{color, border: `1px solid ${color}`}}>
-      {relevance} % relevant
+      <p>{relevance} % relevant</p>
+      <p>my vote: {myRelevanceRating}</p>
+
       <Claim claim={claim} key={claim.id}/>
     </div>
   )

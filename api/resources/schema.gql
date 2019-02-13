@@ -22,6 +22,8 @@ type Claim implements Node {
   opposeCount: Int
   agreeCount: Int
   disagreeCount: Int
+  agree: Boolean
+  disagree: Boolean
 }
 
 type EvidenceConnection {
@@ -34,6 +36,7 @@ type Evidence {
   supports: Boolean
   claim: Claim
   relevance: Float
+  myRelevanceRating: Int
 }
 
 type Query {

@@ -267,7 +267,7 @@
 
 (defn get-all-claims-as
   ([db user-ref]
-   (get-all-claims-as db default-claim-spec))
+   (get-all-claims-as db user-ref default-claim-spec))
   ([db user-ref claim-spec]
    (let [results
          (d/q
