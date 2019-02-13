@@ -7,6 +7,9 @@ import * as queries from './queries';
 import {Form, Text} from './form'
 import { Button, Box, Layer } from 'grommet'
 
+const commentInList = (comments, comment) =>
+      (comments.filter((existingComment) => existingComment.id == comment.id).length > 0)
+
 export default compose(
   graphql(queries.CommentsQuery, {
     options: ({claim}) => ({
@@ -25,10 +28,12 @@ export default compose(
             variables: { ref: `/claims/${claim.id}/comments` }
           };
           const data = client.readQuery(cacheSpec)
-          data.comments.push(newComment)
-          client.writeQuery({...cacheSpec, data})
+          if (data.comments && !commentInList(data.comments, newComment)) {
+            data.comments.push(newComment)
+            client.writeQuery({...cacheSpec, data})
+          }
         } catch(err){
-          console.log("err in sub handler!", err)
+          //console.log("err in sub handler!", err)
         }
 
       },
