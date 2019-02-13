@@ -168,23 +168,6 @@
        [(ground 0) ?agree]
        [(ground 0) ?disagree]
        (support-oppose ?claim ?uniqueness ?support ?oppose)))]
-    [(evidence-stats ?evidence ?uniqueness ?agree ?disagree ?support ?oppose ?rating ?rating-count)
-     (or-join
-      [?evidence ?uniqueness ?agree ?disagree ?support ?oppose ?rating ?rating-count]
-      (and
-       [?evidence :evidence/votes ?relevance-vote]
-       [(identity ?relevance-vote) ?uniqueness]
-       [?relevance-vote :relevance-vote/rating ?rating]
-       [(ground 1) ?rating-count]
-       [(ground 0) ?agree]
-       [(ground 0) ?disagree]
-       [(ground 0) ?support]
-       [(ground 0) ?oppose])
-      (and
-       [?evidence :evidence/claim ?claim]
-       (claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose)
-       [(ground 0) ?rating-count]
-       [(ground 0) ?rating]))]
     [(claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)
      (or
       (and
@@ -199,7 +182,28 @@
        [(ground 0) ?disagree]
        [(ground 0) ?support]
        [(ground 0) ?oppose]
-       ))]])
+       ))]
+    [(evidence-stats-as ?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count)
+     (or-join
+      [?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count]
+      (and
+       [?user]
+       [?evidence :evidence/votes ?relevance-vote]
+       [(identity ?relevance-vote) ?uniqueness]
+       [?relevance-vote :relevance-vote/rating ?rating]
+       [(ground 1) ?rating-count]
+       [(ground 0) ?agree]
+       [(ground 0) ?disagree]
+       [(ground 0) ?support]
+       [(ground 0) ?oppose]
+       [(ground 0) ?i-agree]
+       [(ground 0) ?i-disagree])
+      (and
+       [?evidence :evidence/claim ?claim]
+       (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree)
+       [(ground 0) ?rating-count]
+       [(ground 0) ?rating]))]
+    ])
 
 (defn assoc-claim-stats
   ([claim support-count oppose-count agree-count disagree-count]
@@ -287,12 +291,9 @@
     {:evidence/claim
      default-claim-spec}])
 
-(defn get-claim-evidence
-  ([db claim-ref]
-   (get-claim-evidence
-    db claim-ref
-    default-evidence-spec))
-  ([db claim-ref evidence-spec]
+(defn get-claim-evidence-as
+  ([db claim-ref user-ref] (get-claim-evidence-as db claim-ref user-ref default-evidence-spec))
+  ([db claim-ref user-ref evidence-spec]
    (let [results
          (d/q
           (apply
@@ -302,14 +303,29 @@
            '[(sum ?rating) (sum ?rating-count)
              (sum ?support) (sum ?oppose)
              (sum ?agree) (sum ?disagree)
-             :in $ % ?claim
+             (sum ?i-agree) (sum ?i-disagree)
+             :in $ % ?claim ?user
              :with ?uniqueness
              :where
              [?claim :claim/evidence ?evidence]
-             (evidence-stats ?evidence ?uniqueness ?agree ?disagree ?support ?oppose ?rating ?rating-count)])
-          db rules claim-ref)]
-     (for [[evidence relevance-rating-sum relevance-rating-count support-count oppose-count agree-count disagree-count] results]
+             (evidence-stats-as
+              ?evidence ?user ?uniqueness
+              ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree
+              ?rating ?rating-count)])
+          db rules claim-ref (or user-ref anon-user-ref))]
+     (for [[evidence relevance-rating-sum relevance-rating-count
+            support-count oppose-count agree-count disagree-count i-agree i-disagree]
+           results]
        (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count)
-              :evidence/claim (assoc-claim-stats (:evidence/claim evidence) support-count oppose-count agree-count disagree-count)
+              :evidence/claim (assoc-claim-stats
+                               (:evidence/claim evidence)
+                               support-count oppose-count
+                               agree-count disagree-count
+                               i-agree i-disagree)
               ))
      )))
+
+(defn get-claim-evidence
+  ([db claim-ref] (get-claim-evidence db claim-ref default-evidence-spec))
+  ([db claim-ref evidence-spec]
+   (get-claim-evidence-as db claim-ref nil evidence-spec)))

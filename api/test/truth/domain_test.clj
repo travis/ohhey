@@ -129,17 +129,37 @@
              :relevance 100}]
            (get-claim-evidence fresh-db [:claim/body "They don't like people"] evidence-spec)))))
 
-#_(deftest test-get-claim-evidence-as
+(deftest test-get-claim-evidence-as
+  (testing "Cats are great"
+    (is (= [{:evidence/supports true,
+             :evidence/claim animals-are-awesome,
+             :relevance 83}
+            {:evidence/supports false,
+             :evidence/claim dont-like-people
+             :relevance 100}
+            {:evidence/supports true,
+             :evidence/claim dont-like-people
+             :relevance 100}]
+           (t/get-claim-evidence-as fresh-db [:claim/body "Cats are great"] [:user/username "anon"] evidence-spec)))
+    (is (= [{:evidence/supports true,
+             :evidence/claim (assoc animals-are-awesome :agree true),
+             :relevance 83}
+            {:evidence/supports false,
+             :evidence/claim dont-like-people
+             :relevance 100}
+            {:evidence/supports true,
+             :evidence/claim dont-like-people
+             :relevance 100}]
+           (t/get-claim-evidence-as fresh-db [:claim/body "Cats are great"] [:user/username "toby"] evidence-spec))))
   (testing "Dogs are great"
     (is (= [{:evidence/supports true,
-             :evidence/claim cute-paws
+             :evidence/claim animals-are-awesome
              :relevance 133/2}]
-           (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "anon"] evidence-spec))))
-  (testing "They don't like people"
+           (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "anon"] evidence-spec)))
     (is (= [{:evidence/supports true,
-             :evidence/claim mean-cat
-             :relevance 100}]
-           (t/get-claim-evidence-as fresh-db [:claim/body "They don't like people"] [:user/username "anon"] evidence-spec)))))
+             :evidence/claim (assoc animals-are-awesome :agree true)
+             :relevance 133/2}]
+           (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "toby"] evidence-spec)))))
 
 
 (comment
@@ -150,6 +170,8 @@
   (t/get-claim fresh-db [:claim/body "Cats are great"])
   (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "james"])
   (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "anon"])
+  (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "toby"])
+  (t/get-claim-evidence-as fresh-db [:claim/body "Cats are great"] [:user/username "toby"])
   (get-claim-evidence fresh-db [:claim/body "They don't like people"])
   (get-claim-evidence fresh-db [:claim/body "Dogs are great"])
   (get-claim-evidence fresh-db [:claim/body "Cats are great"])
