@@ -228,24 +228,22 @@
                [(ground -1) ?my-rating]))
      ]
     [(evidence-stats-as ?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating ?score)
+
+     [?evidence :evidence/claim ?claim]
+     (claim-stats-as ?claim ?user _ ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)
      (or-join
-      [?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating ?score]
+      [?evidence ?claim ?user ?uniqueness ?rating ?rating-count ?my-rating]
       (and
        [?evidence :evidence/votes ?relevance-vote]
        [(identity ?relevance-vote) ?uniqueness]
        [?relevance-vote :relevance-vote/rating ?rating]
        [(ground 1) ?rating-count]
        (my-rating ?relevance-vote ?user ?my-rating)
-       [(ground 0) ?score]
-       [(ground 0) ?agree]
-       [(ground 0) ?disagree]
-       [(ground 0) ?support]
-       [(ground 0) ?oppose]
-       [(ground 0) ?i-agree]
-       [(ground 0) ?i-disagree])
+       )
       (and
-       [?evidence :evidence/claim ?claim]
-       (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)
+       (not-join [?evidence]
+                 [?evidence :evidence/votes ?relevance-vote])
+       [(identity ?claim) ?uniqueness]
        [(ground -1) ?my-rating]
        [(ground 0) ?rating-count]
        [(ground 0) ?rating]))]
