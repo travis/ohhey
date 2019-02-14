@@ -227,8 +227,7 @@
                (not [?relevance-vote :relevance-vote/voter ?user])
                [(ground -1) ?my-rating]))
      ]
-    [(evidence-stats-as ?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating ?score)
-
+    [(evidence-stats-as [?evidence ?user] ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating ?score)
      [?evidence :evidence/claim ?claim]
      (claim-stats-as ?claim ?user _ ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)
      (or-join
