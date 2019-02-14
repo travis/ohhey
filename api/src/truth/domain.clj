@@ -127,7 +127,7 @@
       (and
        [(identity ?claim) ?uniqueness]
        [(ground 0) ?score]))]
-    [(support-oppose-score ?claim ?uniqueness ?score)
+    [(support-oppose-score [?claim ?depth] ?uniqueness ?score)
      (or-join
       [?claim ?uniqueness ?score]
       (and
@@ -144,10 +144,14 @@
       (and
        [(ground 0) ?score]
        [(identity ?claim) ?uniqueness]))]
-    [(claim-score ?claim ?uniqueness ?score)
+    [(claim-score [?claim ?depth] ?uniqueness ?score)
+     [(/ 1 ?depth) ?depth-multiplier]
+     [(* ?sub-score ?depth-multiplier) ?score]
      (or
-      (agree-disagree-score ?claim ?uniqueness ?score)
-      (support-oppose-score ?claim ?uniqueness ?score))]
+      (and
+       [?depth]
+       (agree-disagree-score ?claim ?uniqueness ?sub-score))
+      (support-oppose-score ?claim ?depth ?uniqueness ?sub-score))]
     [(agree-disagree ?claim ?uniqueness ?agree ?disagree)
      (or-join [?claim ?uniqueness ?agree ?disagree]
       (and
@@ -221,7 +225,7 @@
        [(ground 0) ?support]
        [(ground 0) ?oppose]))]
     [(claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose ?score)
-     (claim-score ?claim ?uniqueness ?score)
+     (claim-score ?claim 1 ?uniqueness ?score)
      (or-join [?claim ?uniqueness ?agree ?disagree ?support ?oppose]
               (and
                (agree-disagree ?claim ?uniqueness ?agree ?disagree)
@@ -256,6 +260,20 @@
                (not [?relevance-vote :relevance-vote/voter ?user])
                [(ground -1) ?my-rating]))
      ]
+    [(evidence-rating [?evidence ?user] ?uniqueness ?rating ?rating-count)
+     [?evidence :evidence/claim ?claim]
+     (or-join [?evidence ?claim ?user ?uniqueness ?rating ?rating-count]
+              (and
+               [?evidence :evidence/votes ?relevance-vote]
+               [(identity ?relevance-vote) ?uniqueness]
+               [?relevance-vote :relevance-vote/rating ?rating]
+               [(ground 1) ?rating-count])
+              (and
+               (not-join [?evidence]
+                         [?evidence :evidence/votes ?relevance-vote])
+               [(identity ?claim) ?uniqueness]
+               [(ground 0) ?rating]
+               [(ground 0) ?rating-count]))]
     [(evidence-stats-as [?evidence ?user] ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating ?score)
      [?evidence :evidence/claim ?claim]
      (claim-stats-as ?claim ?user _ ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)
