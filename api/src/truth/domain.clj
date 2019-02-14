@@ -169,26 +169,39 @@
        [(ground 0) ?i-agree]
        [(ground 0) ?i-disagree]
        ))]
-    [(support-oppose ?claim ?uniqueness ?support ?oppose ?score)
+    [(support-oppose-score ?claim ?uniqueness ?score)
      (or-join
-      [?claim ?uniqueness ?support ?oppose ?score]
+      [?claim ?uniqueness ?score]
+      (and
+       [?claim :claim/evidence ?evidence]
+       [(identity ?evidence) ?uniqueness]
+       (or-join [?evidence ?score]
+        (and
+         [?evidence :evidence/supports true]
+         [(ground 2) ?score])
+        (and
+         [?evidence :evidence/supports false]
+         [(ground -2) ?score])))
+      (and
+       [(ground 0) ?score]
+       [(identity ?claim) ?uniqueness]))]
+    [(support-oppose ?claim ?uniqueness ?support ?oppose)
+     (or-join
+      [?claim ?uniqueness ?support ?oppose]
       (and
        [?claim :claim/evidence ?evidence]
        [(identity ?evidence) ?uniqueness]
        (or-join
-        [?evidence ?support ?oppose ?score]
+        [?evidence ?support ?oppose]
         (and
          [?evidence :evidence/supports true]
-         [(ground 2) ?score]
          [(ground 1) ?support]
          [(ground 0) ?oppose])
         (and
          [?evidence :evidence/supports false]
-         [(ground -2) ?score]
          [(ground 0) ?support]
          [(ground 1) ?oppose])))
       (and
-       [(ground 0) ?score]
        [(identity ?claim) ?uniqueness]
        [(ground 0) ?support]
        [(ground 0) ?oppose]))]
@@ -202,7 +215,8 @@
       (and
        [(ground 0) ?agree]
        [(ground 0) ?disagree]
-       (support-oppose ?claim ?uniqueness ?support ?oppose ?score)))]
+       (support-oppose-score ?claim ?uniqueness ?score)
+       (support-oppose ?claim ?uniqueness ?support ?oppose)))]
     [(claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)
      (or
       (and
