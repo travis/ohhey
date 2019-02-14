@@ -112,31 +112,41 @@
            db claim supports)))
 
 (def rules
-  '[[(agree-disagree ?claim ?uniqueness ?agree ?disagree ?score)
-     (or-join
-      [?claim ?uniqueness ?agree ?disagree ?score]
+  '[[(agree-disagree-score ?claim ?uniqueness ?score)
+     (or-join [?claim ?uniqueness ?score]
+      (and
+       [?claim :claim/votes ?vote]
+       [(identity ?vote) ?uniqueness]
+       (or-join [?vote ?score]
+        (and
+         [?vote :claim-vote/agree true]
+         [(ground 1) ?score])
+        (and
+         [?vote :claim-vote/agree false]
+         [(ground -1) ?score])))
+      (and
+       [(identity ?claim) ?uniqueness]
+       [(ground 0) ?score]))]
+    [(agree-disagree ?claim ?uniqueness ?agree ?disagree)
+     (or-join [?claim ?uniqueness ?agree ?disagree]
       (and
        [?claim :claim/votes ?vote]
        [(identity ?vote) ?uniqueness]
        (or-join
-        [?vote ?agree ?disagree ?score]
+        [?vote ?agree ?disagree]
         (and
          [?vote :claim-vote/agree true]
-         [(ground 1) ?score]
          [(ground 1) ?agree]
          [(ground 0) ?disagree])
         (and
          [?vote :claim-vote/agree false]
-         [(ground -1) ?score]
          [(ground 0) ?agree]
          [(ground 1) ?disagree])))
       (and
        [(identity ?claim) ?uniqueness]
-       [(ground 0) ?score]
        [(ground 0) ?agree]
        [(ground 0) ?disagree]))]
-    [(agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree ?score)
-     [(ground 0) ?score]
+    [(agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree)
      (or-join
       [?claim ?user ?uniqueness ?i-agree ?i-disagree]
       (and
@@ -206,17 +216,17 @@
        [(ground 0) ?support]
        [(ground 0) ?oppose]))]
     [(claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose ?score)
-     (or-join
-      [?claim ?uniqueness ?agree ?disagree ?support ?oppose ?score]
-      (and
-       [(ground 0) ?support]
-       [(ground 0) ?oppose]
-       (agree-disagree ?claim ?uniqueness ?agree ?disagree ?score))
-      (and
-       [(ground 0) ?agree]
-       [(ground 0) ?disagree]
-       (support-oppose-score ?claim ?uniqueness ?score)
-       (support-oppose ?claim ?uniqueness ?support ?oppose)))]
+     (or-join [?claim ?uniqueness ?agree ?disagree ?support ?oppose ?score]
+              (and
+               (agree-disagree ?claim ?uniqueness ?agree ?disagree)
+               (agree-disagree-score ?claim ?uniqueness ?score)
+               [(ground 0) ?support]
+               [(ground 0) ?oppose])
+              (and
+               (support-oppose ?claim ?uniqueness ?support ?oppose)
+               (support-oppose-score ?claim ?uniqueness ?score)
+               [(ground 0) ?agree]
+               [(ground 0) ?disagree]))]
     [(claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)
      (or
       (and
@@ -226,7 +236,8 @@
        [(ground 0) ?i-disagree]
        )
       (and
-       (agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree ?score)
+       (agree-disagree-as ?claim ?user ?uniqueness ?i-agree ?i-disagree)
+       [(ground 0) ?score]
        [(ground 0) ?agree]
        [(ground 0) ?disagree]
        [(ground 0) ?support]
