@@ -127,6 +127,27 @@
       (and
        [(identity ?claim) ?uniqueness]
        [(ground 0) ?score]))]
+    [(support-oppose-score ?claim ?uniqueness ?score)
+     (or-join
+      [?claim ?uniqueness ?score]
+      (and
+       [?claim :claim/evidence ?evidence]
+       [(identity ?evidence) ?uniqueness]
+       [?evidence :evidence/claim ?evidence-claim]
+       (or-join [?evidence ?score]
+                (and
+                 [?evidence :evidence/supports true]
+                 [(ground 2) ?score])
+                (and
+                 [?evidence :evidence/supports false]
+                 [(ground -2) ?score])))
+      (and
+       [(ground 0) ?score]
+       [(identity ?claim) ?uniqueness]))]
+    [(claim-score ?claim ?uniqueness ?score)
+     (or
+      (agree-disagree-score ?claim ?uniqueness ?score)
+      (support-oppose-score ?claim ?uniqueness ?score))]
     [(agree-disagree ?claim ?uniqueness ?agree ?disagree)
      (or-join [?claim ?uniqueness ?agree ?disagree]
       (and
@@ -179,22 +200,6 @@
        [(ground 0) ?i-agree]
        [(ground 0) ?i-disagree]
        ))]
-    [(support-oppose-score ?claim ?uniqueness ?score)
-     (or-join
-      [?claim ?uniqueness ?score]
-      (and
-       [?claim :claim/evidence ?evidence]
-       [(identity ?evidence) ?uniqueness]
-       (or-join [?evidence ?score]
-        (and
-         [?evidence :evidence/supports true]
-         [(ground 2) ?score])
-        (and
-         [?evidence :evidence/supports false]
-         [(ground -2) ?score])))
-      (and
-       [(ground 0) ?score]
-       [(identity ?claim) ?uniqueness]))]
     [(support-oppose ?claim ?uniqueness ?support ?oppose)
      (or-join
       [?claim ?uniqueness ?support ?oppose]
@@ -216,15 +221,14 @@
        [(ground 0) ?support]
        [(ground 0) ?oppose]))]
     [(claim-stats ?claim ?uniqueness ?agree ?disagree ?support ?oppose ?score)
-     (or-join [?claim ?uniqueness ?agree ?disagree ?support ?oppose ?score]
+     (claim-score ?claim ?uniqueness ?score)
+     (or-join [?claim ?uniqueness ?agree ?disagree ?support ?oppose]
               (and
                (agree-disagree ?claim ?uniqueness ?agree ?disagree)
-               (agree-disagree-score ?claim ?uniqueness ?score)
                [(ground 0) ?support]
                [(ground 0) ?oppose])
               (and
                (support-oppose ?claim ?uniqueness ?support ?oppose)
-               (support-oppose-score ?claim ?uniqueness ?score)
                [(ground 0) ?agree]
                [(ground 0) ?disagree]))]
     [(claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)
