@@ -218,31 +218,25 @@
        [(ground 0) ?support]
        [(ground 0) ?oppose]
        ))]
+    [(my-rating [?relevance-vote ?user] ?my-rating)
+     (or-join [?relevance-vote ?user ?my-rating]
+              (and
+               [?relevance-vote :relevance-vote/voter ?user]
+               [?relevance-vote :relevance-vote/rating ?my-rating])
+              (and
+               (not [?relevance-vote :relevance-vote/voter ?user])
+               [(ground -1) ?my-rating]))
+     ]
     [(evidence-stats-as ?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating ?score)
      (or-join
       [?evidence ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?rating ?rating-count ?my-rating ?score]
       (and
-       [(ground 0) ?score]
-       [(identity ?relevance-vote) ?uniqueness]
-       [?evidence :evidence/votes ?relevance-vote]
-       [?relevance-vote :relevance-vote/voter ?user]
-       [?relevance-vote :relevance-vote/rating ?my-rating]
-       [(ground 0) ?rating-count]
-       [(ground 0) ?rating]
-       [(ground 0) ?agree]
-       [(ground 0) ?disagree]
-       [(ground 0) ?support]
-       [(ground 0) ?oppose]
-       [(ground 0) ?i-agree]
-       [(ground 0) ?i-disagree])
-      (and
-       [(ground 0) ?score]
-       [?user]
        [?evidence :evidence/votes ?relevance-vote]
        [(identity ?relevance-vote) ?uniqueness]
        [?relevance-vote :relevance-vote/rating ?rating]
-       [(ground -1) ?my-rating]
        [(ground 1) ?rating-count]
+       (my-rating ?relevance-vote ?user ?my-rating)
+       [(ground 0) ?score]
        [(ground 0) ?agree]
        [(ground 0) ?disagree]
        [(ground 0) ?support]
