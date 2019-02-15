@@ -10,12 +10,12 @@
    {:db/ident :user/id
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one
-    :db/unique :db.unique/identity
+    :db/unique :db.unique/value
     :db/doc "The user's id"}
    {:db/ident :user/email
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one
-    :db/unique :db.unique/identity
+    :db/unique :db.unique/value
     :db/doc "The user's email"}
    ])
 
@@ -23,11 +23,12 @@
   [{:db/ident :claim/body
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one
-    :db/doc "The text of the claim"}
+    :db/doc "The text of the claim"
+    :db/fulltext true}
    {:db/ident :claim/slug
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one
-    :db/unique :db.unique/identity
+    :db/unique :db.unique/value
     :db/doc "The url slug of the claim"}
    {:db/ident :claim/id
     :db/valueType :db.type/string
@@ -45,10 +46,12 @@
    {:db/ident :claim/evidence
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many
+    :db/isComponent true
     :db/doc "Supporting and counter evidence for this claim"}
    {:db/ident :claim/votes
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many
+    :db/isComponent true
     :db/doc "Votes on this claim"}])
 
 (def claim-vote
@@ -88,6 +91,7 @@
    {:db/ident :evidence/votes
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many
+    :db/isComponent true
     :db/doc "Votes about the relevance of this evidence"}
    ])
 
