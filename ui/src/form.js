@@ -15,7 +15,6 @@ const asInformed = (GrommetInput) => asField(
 )
 
 export const TextArea = asInformed(g.TextArea)
-export const Text = asInformed(g.TextInput)
 export const TextInput = asInformed(g.TextInput)
 
 

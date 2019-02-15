@@ -6,7 +6,7 @@ import {
   WifiNone, Wifi, WifiLow, WifiMedium
 } from "grommet-icons";
 
-import {Form, Text, GrommetText, TextArea} from './form'
+import {Form, TextArea} from './form'
 
 import * as queries from './queries';
 import Comments from './Comments'

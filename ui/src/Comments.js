@@ -4,7 +4,7 @@ import {  graphql, compose } from "react-apollo";
 import {firebaseClient} from './clients'
 import * as queries from './queries';
 
-import {Form, Text, TextArea} from './form'
+import {Form, TextArea} from './form'
 import { Button, Box, Layer } from 'grommet'
 
 const commentInList = (comments, comment) =>
