@@ -2,6 +2,7 @@
   (:require [datomic.api :as d]
             [com.walmartlabs.lacinia :as gql]
             [clojure.test :refer :all]
+            [expectations.clojure.test :refer :all]
             [truth.schema :as schema]
             [truth.data :as data]
             [truth.graphql :refer [load-schema]]
@@ -12,19 +13,20 @@
   :each (fn [run-tests]
           (let [uri (str "datomic:mem://graphql-test-" (t/uuid))]
             (d/create-database uri)
-            (let [schema (load-schema)
-                  conn (d/connect uri)]
+            (let [schema (load-schema)]
+              (def conn (d/connect uri))
               (schema/load conn)
               (data/load conn)
               (defn execute
                 ([query variables] (execute query variables "travis"))
                 ([query variables current-username]
                  (gql/execute schema query variables
-                              (let [db (d/db conn)
-                                    current-user (t/get-user-by-username db current-username)]
-                                {:db db
-                                 :conn conn
-                                 :current-user current-user}))))
+                              (do
+                                (def db (d/db conn))
+                                (let [current-user (t/get-user-by-username db current-username)]
+                                  {:db db
+                                   :conn conn
+                                   :current-user current-user})))))
               )
             (run-tests)
             (d/delete-database uri)
@@ -129,6 +131,7 @@ mutation VoteOnClaim($claimID: ID!, $agree: Boolean!) {
     }
   }
   ")
+
 (deftest test-voteOnEvidence
   (testing "voteOnEvidence"
     (is (= {:data
@@ -144,3 +147,29 @@ mutation VoteOnClaim($claimID: ID!, $agree: Boolean!) {
              {:myRelevanceRating 66, :relevance 44.0}}}
            (execute evidence-vote-query {:rating 66, :evidenceID "ara-supports-dag"}
                     "toby")))))
+
+(def add-claim-mutation "
+mutation AddClaim($claim: ClaimInput!) {
+  addClaim(claim: $claim) {
+    body
+    slug
+    creator {
+      username
+    }
+  }
+}")
+
+(deftest addClaim
+  (testing "happy path"
+    (is (= {:data {:addClaim {:body "this test will pass!"
+                              :slug "this-test-will-pass"
+                              :creator {:username "travis"}}}}
+           (execute add-claim-mutation {:claim {:body "this test will pass!"}}))))
+  (testing "slug uniqueness"
+    (expect #:db{:error :db.error/unique-conflict}
+            (in
+             (->
+              (do
+                (execute add-claim-mutation {:claim {:body "this mutation should return errors"}})
+                (execute add-claim-mutation {:claim {:body "this mutation should return errors"}}))
+              :errors first :extensions :data)))))

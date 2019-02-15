@@ -9,7 +9,8 @@
                  [com.datomic/datomic-pro "0.9.5786"]
                  [com.walmartlabs/lacinia-pedestal "0.11.0"]
                  [io.aviso/logging "0.3.1"]
-                 [slugger "1.0.1"]]
+                 [slugger "1.0.1"]
+                 [expectations/clojure-test "1.1.1"]]
   :profiles {:kaocha {:dependencies [[lambdaisland/kaocha "0.0-389"]]}}
   :aliases {"kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]}
   :repl-options {:init-ns truth.core})
