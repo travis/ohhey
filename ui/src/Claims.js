@@ -1,10 +1,20 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
-import { Button, Box, Layer } from 'grommet'
-import {
-  Add, Like, Dislike, Chat, ChatOption, AddCircle, SubtractCircle, New, Close,
-  WifiNone, Wifi, WifiLow, WifiMedium
-} from "grommet-icons";
+import { Link } from "react-router-dom";
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Fab from '@material-ui/core/Fab';
+import Chat from '@material-ui/icons/Chat';
+import Like from '@material-ui/icons/ThumbUp';
+import Dislike from '@material-ui/icons/ThumbDown';
+import Close from '@material-ui/icons/Close';
+import Forum from '@material-ui/icons/Forum';
+import Create from '@material-ui/icons/Create';
+import AddCircle from '@material-ui/icons/AddCircle';
+import SubtractCircle from '@material-ui/icons/RemoveCircle';
+
 
 import {Form, TextArea} from './form'
 
@@ -25,54 +35,48 @@ export const Claim = graphql(
 )(({claim, vote}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
-  const {id, body, creator, agreeCount, disagreeCount, supportCount, opposeCount, agree, disagree, score} = claim
+  const {id, body, slug, creator, agreeCount, disagreeCount, supportCount, opposeCount, agree, disagree, score} = claim
   return (
     <Fragment>
-      <Box
-        justify="center"
-        align="center"
-        pad="small"
-        border={{ color: 'brand', size: 'small' }}
-        round="medium"
-        width="50em"
-      >
-        <h3>{body}</h3>
+      <Paper>
+        <Link to={`/ibelieve/${slug}`}><h3>{body}</h3></Link>
         <p>by {creator.username}</p>
         <p>agree: {agreeCount} disagree: {disagreeCount} supporting: {supportCount} opposing: {opposeCount}</p>
         <h4>{score}</h4>
         <div>
-          <Button primary={agree} icon={<Like />} label="Agree" onClick={() => vote(true)}/>
-          <Button primary={disagree} icon={<Dislike />} label="Disagree" onClick={() => vote(false)}/>
+          <Button color={agree ? 'secondary' : 'default'} onClick={() => vote(true)}>
+            Agree
+          </Button>
+          <Button color={disagree ? 'secondary' : 'default'} onClick={() => vote(false)}>
+            Disagree
+          </Button>
         </div>
-        <Button icon={<Chat/>} onClick={() => setShowComments(!commentsShown)}>{commentsShown ? "Hide" : "Show"} Comments</Button>
+        <IconButton onClick={() => setShowComments(!commentsShown)}>
+          <Chat/>
+        </IconButton>
         {commentsShown && (
-          <Layer full="vertical" position="right">
-            <Box fill style={{ minWidth: "378px" }}>
-              <Box
-                direction="row"
-                align="center"
-                as="header"
-                elevation="small"
-                justify="between">
-                <h3>Comments on {body}</h3>
-                <Button icon={<Close/>} onClick={() => setShowComments(false)}></Button>
-              </Box>
-              <Box flex overflow="auto" pad="xsmall">
-                <Comments claim={claim}/>
-              </Box>
-            </Box>
-          </Layer>
+          <Paper>
+            <h3>Comments on {body}</h3>
+            <IconButton onClick={() => setShowComments(false)}><Close/></IconButton>
+            <Comments claim={claim}/>
+          </Paper>
         )}
-        <Button icon={<ChatOption/>}
-                label={`${evidenceShown ? "Hide" : "Show"} Evidence`}
-                onClick={() => setShowEvidence(!evidenceShown)}/>
-      </Box>
+        <Button variant="contained" onClick={() => setShowEvidence(!evidenceShown)}>
+          <Forum/>{evidenceShown ? "Hide" : "Show"} Evidence
+        </Button>
+      </Paper>
       {evidenceShown && (
         <EvidenceList claim={claim}/>
       )}
     </Fragment>
   )
 })
+
+const RelevanceButton = ({relevance, myRelevanceRating, relevanceVote}) =>
+      <Button color={(myRelevanceRating === relevance) ? 'secondary' : 'default'}
+              onClick={() => relevanceVote(relevance)}>
+        {relevance}%
+      </Button>
 
 
 const Evidence = graphql(
@@ -92,19 +96,10 @@ const Evidence = graphql(
     <div key={id} style={{color, border: `1px solid ${color}`}}>
       <p>{relevance} % relevant</p>
       {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
-      <Button label="0%"
-              primary={myRelevanceRating === 0}
-              onClick={() => relevanceVote(0)}/>
-      <Button label="33%"
-              primary={myRelevanceRating === 33}
-              onClick={() => relevanceVote(33)}/>
-      <Button label="66%"
-              primary={myRelevanceRating === 66}
-              onClick={() => relevanceVote(66)}/>
-      <Button label="100%"
-              primary={myRelevanceRating === 100}
-              onClick={() => relevanceVote(100)}/>
-
+      <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+      <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+      <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+      <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
       <Claim claim={claim} key={claim.id}/>
     </div>
   )
@@ -136,10 +131,9 @@ const EvidenceAdder = graphql(
   return (
     <Form onSubmit={addEvidence} style={{color, border: `1px solid ${color}`}}>
       <TextArea field="body" placeholder="Make an argument!"/>
-      <Button
-        icon={<New/>}
-        label="Create Argument"
-        type="submit"/>
+      <Button type="submit">
+        <Create/>Create Argument
+      </Button>
     </Form>
   )
 })
@@ -155,20 +149,20 @@ const EvidenceList = graphql(
   const [evidenceAdder, setEvidenceAdder] = useState(null)
 
   return (
-    <Box margin={{left: "2em"}} border={{ color: 'brand', size: 'medium' }}>
+    <Paper>
       {evidenceList && evidenceList.map((evidence) => (
         <Evidence evidence={evidence} key={evidence.id}/>
       ))}
-      <Button icon={<AddCircle/>}
-              label="Add Supporting Argument"
-        onClick={() => setEvidenceAdder("support")}/>
-      <Button icon={<SubtractCircle/>}
-              label="Add Counter Argument"
-        onClick={() => setEvidenceAdder("oppose")}/>
+      <Button onClick={() => setEvidenceAdder("support")}>
+        <AddCircle/> Add Supporting Argument
+      </Button>
+      <Button onClick={() => setEvidenceAdder("oppose")}>
+        <SubtractCircle/> Add Counter Argument
+      </Button>
       {evidenceAdder && (
         <EvidenceAdder supports={evidenceAdder == 'support'} claim={claim}/>
       )}
-    </Box>
+    </Paper>
   )
 })
 

@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
-import { Button, Box, Layer } from 'grommet'
+import Paper from '@material-ui/core/Paper';
 import { withRouter } from "react-router-dom";
 
 import {Claim} from '../Claims'
@@ -19,7 +19,7 @@ export default compose(
     }
   )
 )(({claim}) => (
-  <Box>
+  <Paper>
     {claim && <Claim claim={claim} />}
-  </Box>
+  </Paper>
 ))

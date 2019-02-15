@@ -1,21 +1,18 @@
 import React, {Fragment} from 'react';
 
 import {Form, asField} from 'informed';
+import Input from '@material-ui/core/Input';
+import * as informed from 'informed';
 
-import * as g from 'grommet';
-
-
-const asInformed = (GrommetInput) => asField(
-  ({fieldState, fieldApi: {setValue}, ...props}) => (
-    <Fragment>
-      <GrommetInput {...props} onChange={(e) => setValue(e.target.value)}/>
-      {fieldState.error ? (<small style={{color: 'red'}}>{fieldState.error}</small>) : null}
-    </Fragment>
-  )
-)
-
-export const TextArea = asInformed(g.TextArea)
-export const TextInput = asInformed(g.TextInput)
+export const TextArea = ({inputProps, field, ...props}) =>
+  (<Input multiline={true}
+          inputComponent={({inputRef, ...props}) => <informed.TextArea {...props}/>}
+          inputProps={{field}}
+          {...props} />)
+export const TextInput = ({inputProps, field, ...props}) =>
+  (<Input inputComponent={({inputRef, ...props}) => <informed.Text {...props}/>}
+          inputProps={{field}}
+          {...props} />)
 
 
 export {Form};

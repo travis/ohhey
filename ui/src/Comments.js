@@ -5,7 +5,12 @@ import {firebaseClient} from './clients'
 import * as queries from './queries';
 
 import {Form, TextArea} from './form'
-import { Button, Box, Layer } from 'grommet'
+
+import Button from '@material-ui/core/Button';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
 
 const commentInList = (comments, comment) =>
       (comments.filter((existingComment) => existingComment.id == comment.id).length > 0)
@@ -56,16 +61,16 @@ export default compose(
 )(
   ({comments, createComment}) => (
     <Fragment>
-      {comments && comments.map(({id, body}) => (
-        <span key={id}>
-          {body}
-        </span>
-      ))}
+      <List>
+        {comments && comments.map(({id, body}) => (
+          <ListItem key={id}>
+            <ListItemText>{body}</ListItemText>
+          </ListItem>
+        ))}
+      </List>
       <Form onSubmit={({comment}) => createComment(comment)}>
         <TextArea field="comment"/>
-        <Button type="submit" label="Comment"/>
-        <Button label="Say Hi" onClick={() => createComment("HI!")}/>
-        <Button label="Say hello" onClick={() => createComment("hello")}/>
+        <Button type="submit">Comment</Button>
       </Form>
     </Fragment>
   )
