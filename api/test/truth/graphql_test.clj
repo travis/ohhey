@@ -166,10 +166,9 @@ mutation AddClaim($claim: ClaimInput!) {
                               :creator {:username "travis"}}}}
            (execute add-claim-mutation {:claim {:body "this test will pass!"}}))))
   (testing "slug uniqueness"
-    (expect #:db{:error :db.error/unique-conflict}
-            (in
-             (->
-              (do
-                (execute add-claim-mutation {:claim {:body "this mutation should return errors"}})
-                (execute add-claim-mutation {:claim {:body "this mutation should return errors"}}))
-              :errors first :extensions :data)))))
+    (is (= {:truth.error/type :truth.error/unique-conflict}
+           (->
+            (do
+              (execute add-claim-mutation {:claim {:body "this mutation should return errors"}})
+              (execute add-claim-mutation {:claim {:body "this mutation should return errors"}}))
+            :errors first :extensions :data)))))

@@ -1,6 +1,7 @@
 (ns truth.graphql
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [clojure.tools.logging :as log]
             [com.walmartlabs.lacinia :refer [execute]]
             [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
             [com.walmartlabs.lacinia.schema :as schema]
@@ -15,13 +16,25 @@
   (fn [context args value]
     (get value key)))
 
-(defn handle-errors [resolver]
+(defn handle-errors [resolver resolver-path]
   (fn [context variables parent]
     (try
       (resolver context variables parent)
+      (catch java.util.concurrent.ExecutionException e
+        (let [exception-map  (Throwable->map e)]
+          (if (= (:data exception-map) #:db{:error :db.error/unique-conflict})
+            (do
+              (log/debug e (str "caught :db.error/unique-conflict while resolving "resolver-path))
+              (resolve-as nil {:message "this mutation attempted to assert a duplicate value"
+                               :data {:truth.error/type :truth.error/unique-conflict}}))
+            (do
+              (log/error e (str "caught execution exception while resolving "resolver-path))
+              (resolve-as nil {:message "unknown execution exception - please contact the administrator"
+                               :data {:truth.error/type :truth.error/unknown-execution-exception}})))))
       (catch Throwable t
-        (resolve-as nil {:message (str t)
-                         :data (:data (Throwable->map t))})))))
+        (log/error t (str "caught error while resolving "resolver-path))
+        (resolve-as nil {:message "unknown error - please contact the administrator"
+                         :data {:truth.error/type :truth.error/unknown-error}})))))
 
 (defn apply-middleware [resolvers middlewares]
  (update-in resolvers [:resolvers]
@@ -31,7 +44,7 @@
                  (assoc m datatype
                         (reduce
                          (fn [n [property resolver]]
-                           (assoc n property (reduce (fn [r middleware] (middleware r)) resolver middlewares)))
+                           (assoc n property (reduce (fn [r middleware] (middleware r [datatype property])) resolver middlewares)))
                          {}
                          property-resolvers)))
                {}
@@ -60,7 +73,7 @@
       }
      :Mutation
      {:addClaim
-      (fn [{conn :conn db :db current-user :current-user} {claim-input :claim} parent]
+      (fn addClaim [{conn :conn db :db current-user :current-user} {claim-input :claim} parent]
         (let [creator [:user/email (:user/email current-user)]
               claim (t/new-claim
                      (assoc claim-input :creator creator))]
