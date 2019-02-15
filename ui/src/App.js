@@ -8,7 +8,7 @@ import { BrowserRouter, Route, Link } from "react-router-dom";
 import {client} from './clients'
 import Claims from './Claims'
 import ClaimPage from './pages/Claim'
-import Home from './Home'
+import HomePage from './pages/Home'
 import {AuthenticationProvider, withAuth} from './authentication'
 
 const Header = withAuth(({currentUser}) => (
@@ -27,7 +27,7 @@ const App = () => (
     <AuthenticationProvider>
       <BrowserRouter>
         <div className="App">
-          <Route exact path="/" component={Home}/>
+          <Route exact path="/" component={HomePage}/>
           <Route path="/claims" component={Claims}/>
           <Route path="/ibelieve/:slug" component={ClaimPage}/>
         </div>

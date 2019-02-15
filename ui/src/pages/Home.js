@@ -8,8 +8,8 @@ import {
   WifiNone, Wifi, WifiLow, WifiMedium
 } from "grommet-icons";
 
-import {Form, TextArea} from './form'
-import * as queries from './queries';
+import {Form, TextArea} from '../form'
+import * as queries from '../queries';
 
 export default compose(
   withRouter,
