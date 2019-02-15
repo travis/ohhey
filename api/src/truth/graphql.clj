@@ -21,9 +21,12 @@
      (fn [{db :db current-user :current-user} arguments parent]
        current-user)
 
+     :claim
+     (fn [{db :db current-user :current-user} {slug :slug} parent]
+       (t/get-claim-as db [:claim/slug slug] (:db/id current-user)))
+
      :claims
      (fn [{db :db current-user :current-user} arguments parent]
-       (println (t/get-all-claims-as db (:db/id current-user)))
        (t/get-all-claims-as db (:db/id current-user)))
 
      :evidenceForClaim
@@ -31,7 +34,16 @@
        (t/get-claim-evidence-as db [:claim/id claim-id] (:db/id current-user)))
      }
     :Mutation
-    {:addEvidence
+    {:addClaim
+     (fn [{conn :conn db :db current-user :current-user} {claim :claim} parent]
+       (let [creator [:user/email (:user/email current-user)]
+             claim (t/new-claim
+                    (assoc claim :creator creator))]
+         @(d/transact conn [claim])
+         (t/get-claim-as (d/db conn)
+                         [:claim/id (:claim/id claim)]
+                         (:db/id current-user))))
+     :addEvidence
      (fn [{conn :conn db :db current-user :current-user}
           {claim-id :claimID claim :claim supports :supports} parent]
        (let [creator [:user/email (:user/email current-user)]
@@ -82,6 +94,7 @@
     :Claim
     {:id (dkey :claim/id)
      :body (dkey :claim/body)
+     :slug (dkey :claim/slug)
      :supportCount (dkey :support-count)
      :opposeCount (dkey :oppose-count)
      :agreeCount (dkey :agree-count)

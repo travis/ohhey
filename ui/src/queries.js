@@ -13,6 +13,7 @@ const fullClaimFieldsFragment = gql`
 fragment fullClaimFields on Claim {
   id
   body
+  slug
   creator { username }
   supportCount
   opposeCount
@@ -41,6 +42,15 @@ export const Claims = gql`
 ${fullClaimFieldsFragment}
 query Claims {
   claims {
+    ...fullClaimFields
+  }
+}
+`
+
+export const Claim = gql`
+${fullClaimFieldsFragment}
+query Claim($slug: String) {
+  claim(slug: $slug) {
     ...fullClaimFields
   }
 }
@@ -94,6 +104,15 @@ export const AddEvidence = gql`
       parentClaim {
         ...fullClaimFields
       }
+    }
+  }
+`
+
+export const AddClaim = gql`
+  ${fullClaimFieldsFragment}
+  mutation AddClaim($claim: ClaimInput!) {
+    addClaim(claim: $claim) {
+      ...fullClaimFields
     }
   }
 `

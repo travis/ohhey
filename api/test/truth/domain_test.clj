@@ -176,6 +176,7 @@
           [:claim/body "They don't like people"])
   (get-all-claims fresh-db)
   (t/get-claim fresh-db [:claim/body "Cats are great"])
+  (t/get-claim fresh-db [:claim/body "left is right"])
   (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "james"])
   (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "anon"])
   (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "james"])

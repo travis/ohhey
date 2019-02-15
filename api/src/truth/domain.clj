@@ -1,7 +1,9 @@
 (ns truth.domain
-  (:require [datomic.api :as d]))
+  (:require [datomic.api :as d]
+            [slugger.core :as slugger]))
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
+(def ->slug slugger/->slug)
 
 (defn new-user [{db-id :db/id id :id
                  username :username email :email}]
@@ -18,6 +20,7 @@
   {:db/id (or db-id (uuid))
    :claim/id (or id (uuid))
    :claim/body body
+   :claim/slug (->slug body)
    :claim/creator creator
    :claim/contributors contributors
    :claim/evidence  evidence
@@ -309,6 +312,7 @@
 (def default-claim-spec '[:db/id
                           :claim/id
                           :claim/body
+                          :claim/slug
                           {(:claim/contributors :default []) [:user/username]}
                           {:claim/creator [:user/username]}])
 
