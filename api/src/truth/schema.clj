@@ -23,7 +23,6 @@
   [{:db/ident :claim/body
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one
-    :db/unique :db.unique/identity
     :db/doc "The text of the claim"}
    {:db/ident :claim/slug
     :db/valueType :db.type/string

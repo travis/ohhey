@@ -16,7 +16,7 @@
 
    )
 
-  (t/get-vote-for-user-and-claim db [:user/username "travis"] [:claim/body "Dogs are great"])
+  (t/get-vote-for-user-and-claim db [:user/username "travis"] [:claim/slug "dogs-are-great"])
 
   (d/q all-claims-q db)
   (d/q all-evidence-claims-q db)

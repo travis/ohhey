@@ -49,28 +49,28 @@
 (deftest test-get-claim
   (testing "Dogs are great"
     (is (= dogs-are-great
-           (get-claim fresh-db [:claim/body "Dogs are great"] claim-spec))))
+           (get-claim fresh-db [:claim/slug "dogs-are-great"] claim-spec))))
   (testing "Cats are great"
     (is (= cats-are-great
-           (get-claim fresh-db [:claim/body "Cats are great"] claim-spec)))))
+           (get-claim fresh-db [:claim/slug "cats-are-great"] claim-spec)))))
 
 (deftest test-get-claim-as
   (testing "Dogs are great"
     (is (= dogs-are-great
-           (t/get-claim-as fresh-db [:claim/body "Dogs are great"] [:user/username "anon"] claim-spec)))
+           (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "anon"] claim-spec)))
     (is (= dogs-are-great
-           (t/get-claim-as fresh-db [:claim/body "Dogs are great"] [:user/username "james"] claim-spec)))
+           (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] claim-spec)))
     (is (= (assoc dogs-are-great :agree true)
-           (t/get-claim-as fresh-db [:claim/body "Dogs are great"] [:user/username "travis"] claim-spec))))
+           (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "travis"] claim-spec))))
   (testing "Cats are great"
     (is (= cats-are-great
-           (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "anon"] claim-spec)))
+           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "anon"] claim-spec)))
     (is (= cats-are-great
-           (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "travis"] claim-spec)))
+           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "travis"] claim-spec)))
     (is (= (assoc cats-are-great :disagree true)
-           (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "toby"] claim-spec)))
+           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "toby"] claim-spec)))
     (is (= (assoc cats-are-great :agree true)
-           (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "chuchu"] claim-spec)))))
+           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "chuchu"] claim-spec)))))
 
 (def evidence-spec
   '[:evidence/supports
@@ -120,17 +120,17 @@
             {:evidence/supports true,
              :evidence/claim dont-like-people
              :relevance 100}]
-           (get-claim-evidence fresh-db [:claim/body "Cats are great"] evidence-spec))))
+           (get-claim-evidence fresh-db [:claim/slug "cats-are-great"] evidence-spec))))
   (testing "Dogs are great"
     (is (= [{:evidence/supports true,
              :evidence/claim animals-are-awesome
              :relevance 133/2}]
-           (get-claim-evidence fresh-db [:claim/body "Dogs are great"] evidence-spec))))
+           (get-claim-evidence fresh-db [:claim/slug "dogs-are-great"] evidence-spec))))
   (testing "They don't like people"
     (is (= [{:evidence/supports true,
              :evidence/claim mean-cat
              :relevance 100}]
-           (get-claim-evidence fresh-db [:claim/body "They don't like people"] evidence-spec)))))
+           (get-claim-evidence fresh-db [:claim/slug "they-dont-like-people"] evidence-spec)))))
 
 (deftest test-get-claim-evidence-as
   (testing "Cats are great"
@@ -143,7 +143,7 @@
             {:evidence/supports true,
              :evidence/claim dont-like-people
              :relevance 100}]
-           (t/get-claim-evidence-as fresh-db [:claim/body "Cats are great"] [:user/username "anon"] evidence-spec)))
+           (t/get-claim-evidence-as fresh-db [:claim/slug "cats-are-great"] [:user/username "anon"] evidence-spec)))
     (is (= [{:evidence/supports true,
              :evidence/claim (assoc animals-are-awesome :agree true),
              :relevance 83}
@@ -153,37 +153,35 @@
             {:evidence/supports true,
              :evidence/claim dont-like-people
              :relevance 100}]
-           (t/get-claim-evidence-as fresh-db [:claim/body "Cats are great"] [:user/username "toby"] evidence-spec))))
+           (t/get-claim-evidence-as fresh-db [:claim/slug "cats-are-great"] [:user/username "toby"] evidence-spec))))
   (testing "Dogs are great"
     (is (= [{:evidence/supports true,
              :evidence/claim animals-are-awesome
              :relevance 133/2}]
-           (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "anon"] evidence-spec)))
+           (t/get-claim-evidence-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "anon"] evidence-spec)))
     (is (= [{:evidence/supports true,
              :evidence/claim (assoc animals-are-awesome :agree true)
              :relevance 133/2}]
-           (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "toby"] evidence-spec)))
+           (t/get-claim-evidence-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "toby"] evidence-spec)))
     (is (= [{:evidence/supports true,
              :evidence/claim animals-are-awesome
              :my-relevance-rating 33
              :relevance 133/2}]
-           (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "james"] evidence-spec)))))
+           (t/get-claim-evidence-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] evidence-spec)))))
 
 
 (comment
   (d/pull fresh-dbp
           [:claim/body {:claim/evidence [{:evidence/claim [:claim/body]}]}]
-          [:claim/body "They don't like people"])
+          [:claim/body "they-dont-like-people"])
   (get-all-claims fresh-db)
-  (t/get-claim fresh-db [:claim/body "Cats are great"])
-  (t/get-claim fresh-db [:claim/body "left is right"])
-  (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "james"])
-  (t/get-claim-as fresh-db [:claim/body "Cats are great"] [:user/username "anon"])
-  (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "james"])
-  (t/get-claim-evidence-as fresh-db [:claim/body "Dogs are great"] [:user/username "toby"])
-  (get-claim-evidence fresh-db [:claim/body "They don't like people"])
-  (get-claim-evidence fresh-db [:claim/body "Dogs are great"])
-  (get-claim-evidence fresh-db [:claim/body "Cats are great"])
-  (t/get-vote-for-user-and-claim fresh-db [:user/username "travis"] [:claim/body "Dogs are great"])
+  (t/get-claim fresh-db [:claim/slug "cats-are-great"])
+  (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "james"])
+  (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "anon"])
+  (t/get-claim-evidence-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"])
+  (t/get-claim-evidence-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "toby"])
+  (get-claim-evidence fresh-db [:claim/slug "dogs-are-great"])
+  (get-claim-evidence fresh-db [:claim/slug "cats-are-great"])
+  (t/get-vote-for-user-and-claim fresh-db [:user/username "travis"] [:claim/slug "dogs-are-great"])
 
   )
