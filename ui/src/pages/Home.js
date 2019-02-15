@@ -2,14 +2,31 @@ import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
 import { withRouter } from "react-router-dom";
 
-import { Button, Box, Layer, Heading } from 'grommet'
-import {
-  Add, Like, Dislike, Chat, ChatOption, AddCircle, SubtractCircle, New, Close,
-  WifiNone, Wifi, WifiLow, WifiMedium
-} from "grommet-icons";
+import { Button, Box, Heading } from 'grommet'
+import { Add } from "grommet-icons";
 
 import {Form, TextArea} from '../form'
 import * as queries from '../queries';
+
+const messageForErrorType = (errorType) => {
+  if (errorType === "truth.error/unique-conflict") {
+    return "Sorry, a claim with that slug already exists!"
+  }
+}
+
+const messageForError = ({message, extensions}) => {
+  if (extensions && extensions.data) {
+    const errorType = extensions.data["truth.error/type"]
+    if (errorType) {
+      return messageForErrorType(errorType)
+    } else {
+      return message
+    }
+  } else {
+    return message
+  }
+}
+
 
 export default compose(
   withRouter,
@@ -24,12 +41,23 @@ export default compose(
       })
     }
   )
-)(({createClaim, history}) => {
-  const createAndGoToClaim = (claimInputs) => createClaim(claimInputs).
-        then(({data: {addClaim: {slug}}}) => history.push(`/ibelieve/${slug}`))
+)(({createClaim, history, error}) => {
+  const [errors, setErrors] = useState([])
+  const createAndGoToClaim = (claimInputs) =>
+        createClaim(claimInputs)
+        .then(({data: {addClaim: claim}, errors}) => {
+          if (claim) {
+            history.push(`/ibelieve/${claim.slug}`)
+          } else {
+            setErrors(errors)
+          }
+        })
   return (
     <Box>
       <Heading textAlign="center">what do you believe?</Heading>
+      {errors.map((error, i) => (
+        <div key={i}>{messageForError(error)}</div>
+      ))}
       <Form onSubmit={createAndGoToClaim}>
         <TextArea field="body"/>
         <Button type="submit" icon={<Add/>} label="Add"/>

@@ -23,7 +23,18 @@ export const client = new ApolloClient({
       credentials: 'same-origin'
     })
   ]),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  defaultOptions: {
+    query: {
+      errorPolicy: 'all'
+    },
+    watchQuery: {
+      errorPolicy: 'all'
+    },
+    mutate: {
+      errorPolicy: 'all'
+    }
+  }
 });
 
 // initialize firebase
