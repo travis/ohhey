@@ -1,11 +1,12 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
-import { Link } from "react-router-dom";
+import Link from "./Link";
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Fab from '@material-ui/core/Fab';
+import Drawer from '@material-ui/core/Drawer';
 import Chat from '@material-ui/icons/Chat';
 import Like from '@material-ui/icons/ThumbUp';
 import Dislike from '@material-ui/icons/ThumbDown';
@@ -39,8 +40,8 @@ export const Claim = graphql(
   return (
     <Fragment>
       <Paper>
-        <Link to={`/ibelieve/${slug}`}><h3>{body}</h3></Link>
-        <p>by {creator.username}</p>
+        <Typography variant="h5" color="textPrimary"><Link to={`/ibelieve/${slug}`}>{body}</Link></Typography>
+        <Typography variant="caption" color="textSecondary">created by {creator.username}</Typography>
         <p>agree: {agreeCount} disagree: {disagreeCount} supporting: {supportCount} opposing: {opposeCount}</p>
         <h4>{score}</h4>
         <div>
@@ -54,13 +55,11 @@ export const Claim = graphql(
         <IconButton onClick={() => setShowComments(!commentsShown)}>
           <Chat/>
         </IconButton>
-        {commentsShown && (
-          <Paper>
-            <h3>Comments on {body}</h3>
-            <IconButton onClick={() => setShowComments(false)}><Close/></IconButton>
-            <Comments claim={claim}/>
-          </Paper>
-        )}
+        <Drawer open={commentsShown} anchor="right" onClose={() => setShowComments(false)}>
+          <IconButton onClick={() => setShowComments(false)}><Close/></IconButton>
+          <h3>Comments on {body}</h3>
+          <Comments claim={claim}/>
+        </Drawer>
         <Button variant="contained" onClick={() => setShowEvidence(!evidenceShown)}>
           <Forum/>{evidenceShown ? "Hide" : "Show"} Evidence
         </Button>
