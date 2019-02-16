@@ -7,14 +7,18 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Fab from '@material-ui/core/Fab';
 import Drawer from '@material-ui/core/Drawer';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Chat from '@material-ui/icons/Chat';
 import Like from '@material-ui/icons/ThumbUp';
 import Dislike from '@material-ui/icons/ThumbDown';
 import Close from '@material-ui/icons/Close';
 import Forum from '@material-ui/icons/Forum';
 import Create from '@material-ui/icons/Create';
-import AddCircle from '@material-ui/icons/AddCircle';
+import Add from '@material-ui/icons/Add';
 import SubtractCircle from '@material-ui/icons/RemoveCircle';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 import {Form, TextArea} from './form'
@@ -38,8 +42,7 @@ export const Claim = graphql(
   const [commentsShown, setShowComments] = useState(false)
   const {id, body, slug, creator, agreeCount, disagreeCount, supportCount, opposeCount, agree, disagree, score} = claim
   return (
-    <Fragment>
-      <Paper>
+    <Paper>
         <Typography variant="h5" color="textPrimary"><Link to={`/ibelieve/${slug}`}>{body}</Link></Typography>
         <Typography variant="caption" color="textSecondary">created by {creator.username}</Typography>
         <p>agree: {agreeCount} disagree: {disagreeCount} supporting: {supportCount} opposing: {opposeCount}</p>
@@ -63,11 +66,10 @@ export const Claim = graphql(
         <Button variant="contained" onClick={() => setShowEvidence(!evidenceShown)}>
           <Forum/>{evidenceShown ? "Hide" : "Show"} Evidence
         </Button>
-      </Paper>
-      {evidenceShown && (
-        <EvidenceList claim={claim}/>
-      )}
-    </Fragment>
+        {evidenceShown && (
+          <EvidenceList claim={claim}/>
+        )}
+    </Paper>
   )
 })
 
@@ -92,14 +94,20 @@ const Evidence = graphql(
 )(({relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {
   const color = supports ? 'blue' : 'red'
   return (
-    <div key={id} style={{color, border: `1px solid ${color}`}}>
-      <p>{relevance} % relevant</p>
-      {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
-      <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-      <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-      <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-      <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-      <Claim claim={claim} key={claim.id}/>
+    <div key={id}>
+      <ExpansionPanel>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="subtitle2"><Link to={`/ibelieve/${claim.slug}`}>{claim.body}</Link></Typography>
+          <Typography variant="caption">{relevance}% relevant</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
+          <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+          <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+          <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+          <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     </div>
   )
 })
@@ -128,7 +136,7 @@ const EvidenceAdder = graphql(
 )(({claim, supports, addEvidence}) => {
   const color = supports ? 'blue' : 'red'
   return (
-    <Form onSubmit={addEvidence} style={{color, border: `1px solid ${color}`}}>
+    <Form onSubmit={addEvidence}>
       <TextArea field="body" placeholder="Make an argument!"/>
       <Button type="submit">
         <Create/>Create Argument
@@ -136,6 +144,13 @@ const EvidenceAdder = graphql(
     </Form>
   )
 })
+
+const Evidences = ({list, support}) => (
+  <Fragment>
+    {list && list.filter((evidence) => console.log(evidence) || (evidence.supports == support)).map((evidence) => (
+      <Evidence evidence={evidence} key={evidence.id}/>
+    ))}
+  </Fragment>)
 
 const EvidenceList = graphql(
   queries.EvidenceForClaim, {
@@ -145,21 +160,26 @@ const EvidenceList = graphql(
     props: ({data: {evidenceForClaim}}) => ({evidenceList: evidenceForClaim})
   }
 )(({claim, evidenceList}) => {
-  const [evidenceAdder, setEvidenceAdder] = useState(null)
+  const [showSupportAdder, setShowSupportAdder] = useState(false)
+  const [showOpposeAdder, setShowOpposeAdder] = useState(false)
 
   return (
     <Paper>
-      {evidenceList && evidenceList.map((evidence) => (
-        <Evidence evidence={evidence} key={evidence.id}/>
-      ))}
-      <Button onClick={() => setEvidenceAdder("support")}>
-        <AddCircle/> Add Supporting Argument
+      <Typography variant="subtitle2">people think so because</Typography>
+      <Evidences list={evidenceList} support={true}/>
+      <Button onClick={() => setShowSupportAdder(true)}>
+        <Add/> add more
       </Button>
-      <Button onClick={() => setEvidenceAdder("oppose")}>
-        <SubtractCircle/> Add Counter Argument
+      {showSupportAdder && (
+        <EvidenceAdder supports={true} claim={claim}/>
+      )}
+      <Typography variant="subtitle2">people are skeptical because</Typography>
+      <Evidences list={evidenceList} support={false}/>
+      <Button onClick={() => setShowOpposeAdder(true)}>
+        <Add/> add more
       </Button>
-      {evidenceAdder && (
-        <EvidenceAdder supports={evidenceAdder == 'support'} claim={claim}/>
+      {showOpposeAdder && (
+        <EvidenceAdder supports={false} claim={claim}/>
       )}
     </Paper>
   )
