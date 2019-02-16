@@ -132,6 +132,12 @@
              :relevance 100}]
            (get-claim-evidence fresh-db [:claim/slug "they-dont-like-people"] evidence-spec)))))
 
+(deftest test-search-claims-as
+  (testing "Cats are great"
+    (is (= [{:search/score 1.0 :search/result dogs-are-great}
+            {:search/score 1.0 :search/result cats-are-great}]
+           (t/search-claims-as fresh-db [:user/username "anon"] "are great" claim-spec)))))
+
 (deftest test-get-claim-evidence-as
   (testing "Cats are great"
     (is (= [{:evidence/supports true,

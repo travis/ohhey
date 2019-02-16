@@ -50,6 +50,14 @@
                {}
                resolvers)
               )))
+(defn search-results-of-type [type results]
+  {:search/count (count results)
+   :search/results
+   (map (fn [search-result]
+          (assoc search-result
+                 :search/result
+                 (schema/tag-with-type (:search/result search-result) type)))
+        results)})
 
 (def resolvers
   (->
@@ -66,6 +74,13 @@
       :claims
       (fn [{db :db current-user :current-user} arguments parent]
         (t/get-all-claims-as db (:db/id current-user)))
+
+      :searchClaims
+      (fn [{db :db current-user :current-user} {term :term} parent]
+        (if term
+          (->> (t/search-claims-as db (:db/id current-user) term)
+               (search-results-of-type :Claim))
+          []))
 
       :evidenceForClaim
       (fn [{db :db current-user :current-user} {claim-id :claimID} parent]
@@ -129,6 +144,14 @@
      :User
      {:username (dkey :user/username)
       :email (dkey :user/email)
+      }
+     :SearchResult
+     {:score (dkey :search/score)
+      :result (dkey :search/result)
+      }
+     :SearchResults
+     {:totalCount (dkey :search/count)
+      :results (dkey :search/results)
       }
      :Claim
      {:id (dkey :claim/id)

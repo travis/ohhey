@@ -392,6 +392,31 @@
           db rules (or user-ref anon-user-ref))]
      (map (fn [result] (apply assoc-claim-stats result)) results))))
 
+(defn search-claims-as
+  ([db user-ref term]
+   (search-claims-as db user-ref term default-claim-spec))
+  ([db user-ref term claim-spec]
+   (let [results
+         (d/q
+          (apply
+           conj
+           '[:find]
+           '?search-score
+           (list 'pull '?claim claim-spec)
+           '[(sum ?support) (sum ?oppose)
+             (sum ?agree) (sum ?disagree)
+             (sum ?i-agree) (sum ?i-disagree)
+             (sum ?score)
+             :in $ % ?user ?term
+             :with ?uniqueness
+             :where
+             [(fulltext $ :claim/body ?term) [[?claim _ _ ?search-score]]]
+             (claim-stats-as ?claim ?user ?uniqueness ?agree ?disagree ?support ?oppose ?i-agree ?i-disagree ?score)])
+          db rules (or user-ref anon-user-ref) term)]
+     (map (fn [[search-score & claim-result]]
+            {:search/score search-score
+             :search/result (apply assoc-claim-stats claim-result)}) results))))
+
 (defn get-all-claims
   ([db]
    (get-all-claims db default-claim-spec))

@@ -42,10 +42,23 @@ type Evidence {
   parentClaim: Claim
 }
 
+union SearchResultTarget = Claim | User
+
+type SearchResult {
+  score: Float
+  result: SearchResultTarget
+}
+
+type SearchResults {
+  totalCount: Int
+  results: [SearchResult]
+}
+
 type Query {
   currentUser: User
   claim(slug: String): Claim
   claims: [Claim]
+  searchClaims(term: String): SearchResults
   evidenceForClaim(claimID: ID): [Evidence]
 }
 
