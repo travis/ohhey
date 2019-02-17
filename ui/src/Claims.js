@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Component, Fragment, useState, createRef } from 'react';
 import { graphql, compose } from "react-apollo";
 import Link from "./Link";
 import Paper from '@material-ui/core/Paper';
@@ -10,6 +10,10 @@ import Drawer from '@material-ui/core/Drawer';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Popover from '@material-ui/core/Popover';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Chat from '@material-ui/icons/Chat';
 import Like from '@material-ui/icons/ThumbUp';
 import Dislike from '@material-ui/icons/ThumbDown';
@@ -26,6 +30,52 @@ import {Form, TextArea} from './form'
 import * as queries from './queries';
 import Comments from './Comments'
 
+
+function ClaimScore({claim}) {
+  const {agreeCount, disagreeCount, supportCount, opposeCount, score} = claim
+  const [scoreDetailsTarget, setShowScoreDetailsTarget] = useState(false)
+  const scoreDetailsShown = Boolean(scoreDetailsTarget);
+  return (
+    <Typography align="center">
+      <Button
+        aria-owns={scoreDetailsShown ? 'score-popover' : undefined}
+        aria-haspopup="true"
+        onClick={(e) => setShowScoreDetailsTarget(e.target)}>
+        {score} points
+      </Button>
+      <Popover
+        id="score-popover"
+        open={scoreDetailsShown}
+        anchorEl={scoreDetailsTarget}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center'
+        }}
+        onClose={() => setShowScoreDetailsTarget(null)}>
+        <List>
+          <ListItem>
+            <ListItemText primary={`agree: ${agreeCount}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`disagree: ${disagreeCount}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`supporting: ${supportCount}`} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary={`opposing: ${opposeCount}`} />
+          </ListItem>
+        </List>
+      </Popover>
+    </Typography>
+  )
+}
+
+
 export const Claim = graphql(
   queries.VoteOnClaim, {
     props: ({ ownProps: {claim}, mutate }) => ({
@@ -40,35 +90,42 @@ export const Claim = graphql(
 )(({claim, vote}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
+  const [scoreDetailsShown, setShowScoreDetails] = useState(false)
   const {id, body, slug, creator, agreeCount, disagreeCount, supportCount, opposeCount, agree, disagree, score} = claim
+
   return (
     <Paper>
-        <Typography variant="h5" color="textPrimary"><Link to={`/ibelieve/${slug}`}>{body}</Link></Typography>
-        <Typography variant="caption" color="textSecondary">created by {creator.username}</Typography>
-        <p>agree: {agreeCount} disagree: {disagreeCount} supporting: {supportCount} opposing: {opposeCount}</p>
-        <h4>{score}</h4>
-        <div>
-          <Button color={agree ? 'secondary' : 'default'} onClick={() => vote(true)}>
-            Agree
-          </Button>
-          <Button color={disagree ? 'secondary' : 'default'} onClick={() => vote(false)}>
-            Disagree
-          </Button>
-        </div>
-        <IconButton onClick={() => setShowComments(!commentsShown)}>
-          <Chat/>
-        </IconButton>
-        <Drawer open={commentsShown} anchor="right" onClose={() => setShowComments(false)}>
-          <IconButton onClick={() => setShowComments(false)}><Close/></IconButton>
-          <h3>Comments on {body}</h3>
-          <Comments claim={claim}/>
-        </Drawer>
-        <Button variant="contained" onClick={() => setShowEvidence(!evidenceShown)}>
-          <Forum/>{evidenceShown ? "Hide" : "Show"} Evidence
+      <Typography variant="h4" color="textPrimary" align="center">
+        <Link to={`/ibelieve/${slug}`}>{body}</Link>
+      </Typography>
+      <Typography variant="caption" color="textSecondary" align="center">
+        created by {creator.username}
+      </Typography>
+      <ClaimScore claim={claim}/>
+      <Typography align="center">
+        <Button color={agree ? 'secondary' : 'default'} onClick={() => vote(true)}>
+          Agree
         </Button>
-        {evidenceShown && (
-          <EvidenceList claim={claim}/>
-        )}
+        <Button color={disagree ? 'secondary' : 'default'} onClick={() => vote(false)}>
+          Disagree
+        </Button>
+      </Typography>
+      <Typography align="center">
+        <Button color="primary" onClick={() => setShowEvidence(!evidenceShown)}>
+          {evidenceShown ? "oh I see" : "but why?"}
+        </Button>
+      </Typography>
+      <IconButton onClick={() => setShowComments(!commentsShown)} style={{float: "right", position: "relative", top: "-2em"}}>
+        <Chat/>
+      </IconButton>
+      <Drawer open={commentsShown} anchor="right" onClose={() => setShowComments(false)}>
+        <IconButton onClick={() => setShowComments(false)}><Close/></IconButton>
+        <h3>Comments on {body}</h3>
+        <Comments claim={claim}/>
+      </Drawer>
+      {evidenceShown && (
+        <EvidenceList claim={claim}/>
+      )}
     </Paper>
   )
 })
