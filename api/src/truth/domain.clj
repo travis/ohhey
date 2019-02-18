@@ -120,14 +120,9 @@
      (or-join [?claim ?uniqueness ?score]
       (and
        [?claim :claim/votes ?vote]
+       [?vote :claim-vote/agreement ?agreement]
        [(identity ?vote) ?uniqueness]
-       (or-join [?vote ?score]
-        (and
-         [?vote :claim-vote/agreement 100]
-         [(ground 1) ?score])
-        (and
-         [?vote :claim-vote/agreement -100]
-         [(ground -1) ?score])))
+       [(/ ?agreement 100) ?score])
       (and
        [(identity ?claim) ?uniqueness]
        [(ground 0) ?score]))]
