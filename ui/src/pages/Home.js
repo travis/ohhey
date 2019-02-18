@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, createRef } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import { graphql, compose } from "react-apollo";
 import { withRouter } from "react-router-dom";
 
@@ -6,7 +6,6 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
-import Add from '@material-ui/icons/Add';
 
 import {Form, TextInput} from '../form'
 import * as queries from '../queries';

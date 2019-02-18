@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React from 'react';
 import { graphql, compose } from "react-apollo";
 import Paper from '@material-ui/core/Paper';
 import { withRouter } from "react-router-dom";

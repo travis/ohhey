@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import {  graphql, compose } from "react-apollo";
 
 import {firebaseClient} from './clients'
@@ -13,7 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 
 const commentInList = (comments, comment) =>
-      (comments.filter((existingComment) => existingComment.id == comment.id).length > 0)
+      (comments.filter((existingComment) => existingComment.id === comment.id).length > 0)
 
 export default compose(
   graphql(queries.CommentsQuery, {

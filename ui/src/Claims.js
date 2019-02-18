@@ -1,11 +1,10 @@
-import React, { Component, Fragment, useState, createRef } from 'react';
+import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
 import Link from "./Link";
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Fab from '@material-ui/core/Fab';
 import Drawer from '@material-ui/core/Drawer';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -15,13 +14,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Chat from '@material-ui/icons/Chat';
-import Like from '@material-ui/icons/ThumbUp';
-import Dislike from '@material-ui/icons/ThumbDown';
 import Close from '@material-ui/icons/Close';
-import Forum from '@material-ui/icons/Forum';
 import Create from '@material-ui/icons/Create';
 import Add from '@material-ui/icons/Add';
-import SubtractCircle from '@material-ui/icons/RemoveCircle';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
@@ -90,8 +85,7 @@ export const Claim = graphql(
 )(({claim, vote}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
-  const [scoreDetailsShown, setShowScoreDetails] = useState(false)
-  const {id, body, slug, creator, agreeCount, disagreeCount, supportCount, opposeCount, agree, disagree, score} = claim
+  const {body, slug, creator, agree, disagree} = claim
 
   return (
     <Paper>
@@ -149,7 +143,6 @@ const Evidence = graphql(
     })
   }
 )(({relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {
-  const color = supports ? 'blue' : 'red'
   return (
     <div key={id}>
       <ExpansionPanel>
@@ -191,7 +184,6 @@ const EvidenceAdder = graphql(
     })
   }
 )(({claim, supports, addEvidence}) => {
-  const color = supports ? 'blue' : 'red'
   return (
     <Form onSubmit={addEvidence}>
       <TextArea field="body" placeholder="Make an argument!"/>
@@ -204,7 +196,7 @@ const EvidenceAdder = graphql(
 
 const Evidences = ({list, support}) => (
   <Fragment>
-    {list && list.filter((evidence) => console.log(evidence) || (evidence.supports == support)).map((evidence) => (
+    {list && list.filter((evidence) => (evidence.supports === support)).map((evidence) => (
       <Evidence evidence={evidence} key={evidence.id}/>
     ))}
   </Fragment>)

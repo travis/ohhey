@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 
 import {Form, asField} from 'informed';
 import Input from '@material-ui/core/Input';
