@@ -36,8 +36,8 @@
       :creator travis
       :votes (map
               new-claim-vote
-              [{:voter travis :agree true}
-               {:voter toby :agree true}])
+              [{:voter travis :agree true :agreement 100}
+               {:voter toby :agree true :agreement 100}])
       :evidence (map
                  new-evidence
                  [{:id "ara-supports-dag"
@@ -49,8 +49,8 @@
                             :creator travis
                             :votes (map
                                     new-claim-vote
-                                    [{:voter chuchu :agree true}
-                                     {:voter toby :agree true}])})
+                                    [{:voter chuchu :agree true :agreement 100}
+                                     {:voter toby :agree true :agreement 100}])})
                    :supports true
                    :votes (map
                            new-relevance-vote
@@ -62,9 +62,9 @@
       :contributors [travis]
       :votes (map
               new-claim-vote
-              [{:voter toby :agree false}
-               {:voter james :agree true}
-               {:voter chuchu :agree true}])
+              [{:voter toby :agree false :agreement -100}
+               {:voter james :agree true :agreement 100}
+               {:voter chuchu :agree true :agreement 100}])
       :evidence (map
                  new-evidence
                  [{:creator james

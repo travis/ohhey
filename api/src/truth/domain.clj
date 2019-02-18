@@ -28,11 +28,12 @@
    })
 
 (defn new-claim-vote [{db-id :db/id id :id
-                       claim :claim voter :voter agree :agree}]
+                       claim :claim voter :voter agree :agree agreement :agreement}]
   {:db/id (or db-id (uuid))
    :claim-vote/id (or id (uuid))
    :claim-vote/voter voter
-   :claim-vote/agree agree})
+   :claim-vote/agree agree
+   :claim-vote/agreement agreement})
 
 (defn new-evidence [{db-id :db/id id :id
                      creator :creator claim :claim supports :supports
@@ -122,10 +123,10 @@
        [(identity ?vote) ?uniqueness]
        (or-join [?vote ?score]
         (and
-         [?vote :claim-vote/agree true]
+         [?vote :claim-vote/agreement 100]
          [(ground 1) ?score])
         (and
-         [?vote :claim-vote/agree false]
+         [?vote :claim-vote/agreement -100]
          [(ground -1) ?score])))
       (and
        [(identity ?claim) ?uniqueness]
@@ -163,11 +164,11 @@
        (or-join
         [?vote ?agree ?disagree]
         (and
-         [?vote :claim-vote/agree true]
+         [?vote :claim-vote/agreement 100]
          [(ground 1) ?agree]
          [(ground 0) ?disagree])
         (and
-         [?vote :claim-vote/agree false]
+         [?vote :claim-vote/agreement -100]
          [(ground 0) ?agree]
          [(ground 1) ?disagree])))
       (and
@@ -183,22 +184,22 @@
        (or-join
         [?user ?vote ?i-agree ?i-disagree]
         (and
-         [?vote :claim-vote/agree true]
+         [?vote :claim-vote/agreement 100]
          [?vote :claim-vote/voter ?user]
          [(ground 1) ?i-agree]
          [(ground 0) ?i-disagree])
         (and
-         [?vote :claim-vote/agree true]
+         [?vote :claim-vote/agreement 100]
          (not [?vote :claim-vote/voter ?user])
          [(ground 0) ?i-agree]
          [(ground 0) ?i-disagree])
         (and
-         [?vote :claim-vote/agree false]
+         [?vote :claim-vote/agreement -100]
          [?vote :claim-vote/voter ?user]
          [(ground 0) ?i-agree]
          [(ground 1) ?i-disagree])
         (and
-         [?vote :claim-vote/agree false]
+         [?vote :claim-vote/agreement -100]
          (not [?vote :claim-vote/voter ?user])
          [(ground 0) ?i-agree]
          [(ground 0) ?i-disagree])))

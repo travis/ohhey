@@ -68,6 +68,10 @@
     :db/valueType :db.type/boolean
     :db/cardinality :db.cardinality/one
     :db/doc "Whether the :claim-vote/user agrees with the claim or not"}
+   {:db/ident :claim-vote/agreement
+    :db/valueType :db.type/long
+    :db/cardinality :db.cardinality/one
+    :db/doc "The degree to which :claim-vote/user agrees with the claim"}
    ])
 
 (def evidence
