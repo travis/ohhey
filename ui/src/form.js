@@ -6,12 +6,16 @@ import * as informed from 'informed';
 
 export const TextArea = ({inputProps, field, ...props}) =>
   (<Input multiline={true}
-          inputComponent={({inputRef, ...props}) => <informed.TextArea {...props}/>}
           inputProps={{field}}
+          inputComponent={({inputRef, ...props}) => (
+            <informed.TextArea forwardedRef={inputRef} {...props}/>
+          )}
           {...props} />)
 export const TextInput = ({inputProps, field, ...props}) =>
-  (<Input inputComponent={({inputRef, ...props}) => <informed.Text {...props}/>}
-          inputProps={{field}}
+  (<Input inputProps={{field}}
+          inputComponent={({inputRef, ...props}) => (
+            <informed.Text forwardedRef={inputRef} {...props}/>
+          )}
           {...props} />)
 
 

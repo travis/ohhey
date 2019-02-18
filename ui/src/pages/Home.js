@@ -1,13 +1,14 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect, createRef } from 'react';
 import { graphql, compose } from "react-apollo";
 import { withRouter } from "react-router-dom";
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
 import Add from '@material-ui/icons/Add';
 
-import {Form, TextArea} from '../form'
+import {Form, TextInput} from '../form'
 import * as queries from '../queries';
 
 const messageForErrorType = (errorType) => {
@@ -45,6 +46,10 @@ export default compose(
   )
 )(({createClaim, history, error}) => {
   const [errors, setErrors] = useState([])
+  const input = createRef()
+  useEffect(() => {
+    input.current && input.current.focus()
+  })
   const createAndGoToClaim = (claimInputs) =>
         createClaim(claimInputs)
         .then(({data: {addClaim: claim}, errors}) => {
@@ -60,9 +65,11 @@ export default compose(
       {errors.map((error, i) => (
         <div key={i}>{messageForError(error)}</div>
       ))}
-      <Form onSubmit={createAndGoToClaim}>
-        <TextArea field="body"/>
-        <IconButton type="submit"><Add/>Create a Claim</IconButton>
+      <Form onSubmit={createAndGoToClaim} style={{textAlign: "center"}}>
+        <TextInput field="body" fullWidth={true} inputRef={input}
+                   style={{ fontSize: "50px", padding: "0em 0.5em" }}/>
+        <Divider />
+        <Button type="submit">Tell the World!</Button>
       </Form>
     </Paper>
   )
