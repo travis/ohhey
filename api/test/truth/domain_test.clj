@@ -37,8 +37,8 @@
    :claim/contributors [],
    :claim/creator #:user{:username "travis"},
    :support-count 1 :oppose-count 0
-   :agree-count 2 :disagree-count 0 :agree false :disagree false
-   :agreement 200 :my-agreement nil
+   :agree false :disagree false
+   :agreement 200 :agreement-count 2 :my-agreement nil
    :score 4})
 
 (def cats-are-great
@@ -46,8 +46,8 @@
    :claim/contributors [#:user{:username "travis"}],
    :claim/creator #:user{:username "james"},
    :support-count 2 :oppose-count 1
-   :agree-count 2 :disagree-count 1 :agree false :disagree false
-   :agreement 100 :my-agreement nil
+   :agree false :disagree false
+   :agreement 100 :agreement-count 3 :my-agreement nil
    :score 3})
 
 (deftest test-get-claim
@@ -89,8 +89,8 @@
    :claim/creator #:user{:username "travis"}
    :support-count 0,
    :oppose-count 0,
-   :agree-count 2 :disagree-count 0 :agree false :disagree false
-   :agreement 200 :my-agreement nil
+   :agree false :disagree false
+   :agreement 200 :agreement-count 2 :my-agreement nil
    :score 2})
 
 (def dont-like-people
@@ -99,8 +99,8 @@
    :claim/creator #:user{:username "travis"}
    :support-count 1,
    :oppose-count 0,
-   :agree-count 0 :disagree-count 0 :agree false :disagree false
-   :agreement 0 :my-agreement nil
+   :agree false :disagree false
+   :agreement 0 :agreement-count 0 :my-agreement nil
    :score 2})
 
 (def mean-cat
@@ -108,8 +108,8 @@
    :claim/contributors [],
    :claim/creator #:user{:username "travis"}
    :support-count 0, :oppose-count 0
-   :agree-count 0, :disagree-count 0 :agree false :disagree false
-   :agreement 0 :my-agreement nil
+   :agree false :disagree false
+   :agreement 0 :agreement-count 0 :my-agreement nil
    :score 0})
 
 (deftest test-get-claim-evidence
