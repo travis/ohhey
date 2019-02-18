@@ -25,6 +25,8 @@ type Claim implements Node {
   disagreeCount: Int
   agree: Boolean
   disagree: Boolean
+  agreement: Int
+  myAgreement: Int
   score: Int
 }
 

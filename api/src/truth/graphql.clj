@@ -162,6 +162,8 @@
       :opposeCount (dkey :oppose-count)
       :agreeCount (dkey :agree-count)
       :disagreeCount (dkey :disagree-count)
+      :agreement (dkey :agreement)
+      :myAgreement (dkey :my-agreement)
       :creator (dkey :claim/creator)
       :contributors
       (fn [{db :db} arguments {id :db/id contributors :claim/contributors}]

@@ -295,13 +295,15 @@
 
 (defn assoc-claim-stats
   ([claim support-count oppose-count agree-count disagree-count score]
-   (assoc-claim-stats claim support-count oppose-count agree-count disagree-count 0 0 score)
-   )
+   (assoc-claim-stats claim support-count oppose-count agree-count disagree-count 0 0 score))
   ([claim support-count oppose-count agree-count disagree-count i-agree-count i-disagree-count score]
    (assoc claim
           :support-count support-count :oppose-count oppose-count
           :agree-count agree-count :disagree-count disagree-count
           :agree (< 0 i-agree-count) :disagree (< 0 i-disagree-count)
+          :agreement (+ (* 100 agree-count) (* -100 disagree-count))
+          :my-agreement (when (or (< 0 i-agree-count) (< 0 i-disagree-count))
+                          (+ (* 100 i-agree-count) (* -100 i-disagree-count)))
           :score score)))
 
 (def default-claim-spec '[:db/id
