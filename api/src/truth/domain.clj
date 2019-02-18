@@ -28,11 +28,10 @@
    })
 
 (defn new-claim-vote [{db-id :db/id id :id
-                       claim :claim voter :voter agree :agree agreement :agreement}]
+                       claim :claim voter :voter agreement :agreement}]
   {:db/id (or db-id (uuid))
    :claim-vote/id (or id (uuid))
    :claim-vote/voter voter
-   :claim-vote/agree agree
    :claim-vote/agreement agreement})
 
 (defn new-evidence [{db-id :db/id id :id

@@ -64,10 +64,6 @@
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
     :db/doc "The user who voted"}
-   {:db/ident :claim-vote/agree
-    :db/valueType :db.type/boolean
-    :db/cardinality :db.cardinality/one
-    :db/doc "Whether the :claim-vote/user agrees with the claim or not"}
    {:db/ident :claim-vote/agreement
     :db/valueType :db.type/long
     :db/cardinality :db.cardinality/one
