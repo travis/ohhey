@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 
-import {Form, TextInput} from '../form'
+import {Form, TextInput, TextArea} from '../form'
 import * as queries from '../queries';
 
 const messageForErrorType = (errorType) => {
@@ -65,8 +65,9 @@ export default compose(
         <div key={i}>{messageForError(error)}</div>
       ))}
       <Form onSubmit={createAndGoToClaim} style={{textAlign: "center"}}>
-        <TextInput field="body" fullWidth={true} inputRef={input}
-                   style={{ fontSize: "50px", padding: "0em 0.5em" }}/>
+        <TextArea field="body" fullWidth={true} inputRef={input}
+                  rows={3}
+                  style={{ fontSize: "50px", padding: "0em 0.5em" }}/>
         <Divider />
         <Button type="submit">Tell the World!</Button>
       </Form>
