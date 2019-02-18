@@ -17,10 +17,9 @@ fragment fullClaimFields on Claim {
   creator { username }
   supportCount
   opposeCount
-  agreeCount
-  disagreeCount
-  agree
-  disagree
+  agreement
+  agreementCount
+  myAgreement
   score
 }
 `

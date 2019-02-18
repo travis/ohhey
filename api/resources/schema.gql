@@ -21,11 +21,8 @@ type Claim implements Node {
   evidence: EvidenceConnection
   supportCount: Int
   opposeCount: Int
-  agreeCount: Int
-  disagreeCount: Int
-  agree: Boolean
-  disagree: Boolean
   agreement: Int
+  agreementCount: Int
   myAgreement: Int
   score: Int
 }

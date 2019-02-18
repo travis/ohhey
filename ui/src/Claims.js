@@ -27,7 +27,7 @@ import Comments from './Comments'
 
 
 function ClaimScore({claim}) {
-  const {agreeCount, disagreeCount, supportCount, opposeCount, score} = claim
+  const {agreement, agreementCount, supportCount, opposeCount, score} = claim
   const [scoreDetailsTarget, setShowScoreDetailsTarget] = useState(false)
   const scoreDetailsShown = Boolean(scoreDetailsTarget);
   return (
@@ -53,10 +53,10 @@ function ClaimScore({claim}) {
         onClose={() => setShowScoreDetailsTarget(null)}>
         <List>
           <ListItem>
-            <ListItemText primary={`agree: ${agreeCount}`} />
+            <ListItemText primary={`agreement: ${agreement}`} />
           </ListItem>
           <ListItem>
-            <ListItemText primary={`disagree: ${disagreeCount}`} />
+            <ListItemText primary={`agreement count: ${agreementCount}`} />
           </ListItem>
           <ListItem>
             <ListItemText primary={`supporting: ${supportCount}`} />
@@ -85,7 +85,7 @@ export const Claim = graphql(
 )(({claim, vote}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
-  const {body, slug, creator, agree, disagree} = claim
+  const {body, slug, creator, myAgreement} = claim
 
   return (
     <Paper>
@@ -97,10 +97,10 @@ export const Claim = graphql(
       </Typography>
       <ClaimScore claim={claim}/>
       <Typography align="center">
-        <Button color={agree ? 'secondary' : 'default'} onClick={() => vote(true)}>
+        <Button color={(myAgreement === 100) ? 'secondary' : 'default'} onClick={() => vote(true)}>
           Agree
         </Button>
-        <Button color={disagree ? 'secondary' : 'default'} onClick={() => vote(false)}>
+        <Button color={(myAgreement === -100) ? 'secondary' : 'default'} onClick={() => vote(false)}>
           Disagree
         </Button>
       </Typography>
