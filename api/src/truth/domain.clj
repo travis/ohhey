@@ -279,7 +279,6 @@
   ([claim support-count oppose-count agreement agreement-count my-agreement score]
    (assoc claim
           :support-count support-count :oppose-count oppose-count
-          :agree (= my-agreement 100) :disagree (= my-agreement -100)
           :agreement agreement
           :agreement-count agreement-count
           :my-agreement (when (not (= my-agreement -101)) my-agreement)

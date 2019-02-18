@@ -160,8 +160,6 @@
       :slug (dkey :claim/slug)
       :supportCount (dkey :support-count)
       :opposeCount (dkey :oppose-count)
-      :agreeCount (dkey :agree-count)
-      :disagreeCount (dkey :disagree-count)
       :agreement (dkey :agreement)
       :myAgreement (dkey :my-agreement)
       :agreementCount (dkey :agreement-count)

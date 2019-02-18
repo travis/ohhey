@@ -37,7 +37,6 @@
    :claim/contributors [],
    :claim/creator #:user{:username "travis"},
    :support-count 1 :oppose-count 0
-   :agree false :disagree false
    :agreement 200 :agreement-count 2 :my-agreement nil
    :score 4})
 
@@ -46,7 +45,6 @@
    :claim/contributors [#:user{:username "travis"}],
    :claim/creator #:user{:username "james"},
    :support-count 2 :oppose-count 1
-   :agree false :disagree false
    :agreement 100 :agreement-count 3 :my-agreement nil
    :score 3})
 
@@ -64,16 +62,16 @@
            (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "anon"] claim-spec)))
     (is (= dogs-are-great
            (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] claim-spec)))
-    (is (= (assoc dogs-are-great :agree true :my-agreement 100)
+    (is (= (assoc dogs-are-great :my-agreement 100)
            (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "travis"] claim-spec))))
   (testing "Cats are great"
     (is (= cats-are-great
            (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "anon"] claim-spec)))
     (is (= cats-are-great
            (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "travis"] claim-spec)))
-    (is (= (assoc cats-are-great :disagree true :my-agreement -100)
+    (is (= (assoc cats-are-great :my-agreement -100)
            (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "toby"] claim-spec)))
-    (is (= (assoc cats-are-great :agree true :my-agreement 100)
+    (is (= (assoc cats-are-great :my-agreement 100)
            (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "chuchu"] claim-spec)))))
 
 (def evidence-spec
@@ -89,7 +87,6 @@
    :claim/creator #:user{:username "travis"}
    :support-count 0,
    :oppose-count 0,
-   :agree false :disagree false
    :agreement 200 :agreement-count 2 :my-agreement nil
    :score 2})
 
@@ -99,7 +96,6 @@
    :claim/creator #:user{:username "travis"}
    :support-count 1,
    :oppose-count 0,
-   :agree false :disagree false
    :agreement 0 :agreement-count 0 :my-agreement nil
    :score 2})
 
@@ -108,7 +104,6 @@
    :claim/contributors [],
    :claim/creator #:user{:username "travis"}
    :support-count 0, :oppose-count 0
-   :agree false :disagree false
    :agreement 0 :agreement-count 0 :my-agreement nil
    :score 0})
 
@@ -154,7 +149,7 @@
              :relevance 100}]
            (t/get-claim-evidence-as fresh-db [:claim/slug "cats-are-great"] [:user/username "anon"] evidence-spec)))
     (is (= [{:evidence/supports true,
-             :evidence/claim (assoc animals-are-awesome :agree true :my-agreement 100),
+             :evidence/claim (assoc animals-are-awesome :my-agreement 100),
              :relevance 83}
             {:evidence/supports false,
              :evidence/claim dont-like-people
@@ -169,7 +164,7 @@
              :relevance 133/2}]
            (t/get-claim-evidence-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "anon"] evidence-spec)))
     (is (= [{:evidence/supports true,
-             :evidence/claim (assoc animals-are-awesome :agree true :my-agreement 100)
+             :evidence/claim (assoc animals-are-awesome :my-agreement 100)
              :relevance 133/2}]
            (t/get-claim-evidence-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "toby"] evidence-spec)))
     (is (= [{:evidence/supports true,
