@@ -103,8 +103,8 @@ mutation($claimID: ID!, $supports: Boolean!, $claim: ClaimInput!) {
                     {:claimID "dogs-are-great", :supports true, :claim {:body "SO FRIENDLY!!"}})))))
 
 (def vote-query "
-mutation VoteOnClaim($claimID: ID!, $agree: Boolean!) {
-  voteOnClaim(claimID: $claimID, agree: $agree) {
+mutation VoteOnClaim($claimID: ID!, $agreement: Int!) {
+  voteOnClaim(claimID: $claimID, agreement: $agreement) {
     myAgreement
   }
 }
@@ -114,15 +114,15 @@ mutation VoteOnClaim($claimID: ID!, $agree: Boolean!) {
     (is (= {:data
             {:voteOnClaim
              {:myAgreement 100}}}
-           (execute vote-query {:claimID "dogs-are-great", :agree true})))
+           (execute vote-query {:claimID "dogs-are-great", :agreement 100})))
     (is (= {:data
             {:voteOnClaim
              {:myAgreement -100}}}
-           (execute vote-query {:claimID "dogs-are-great", :agree false})))
+           (execute vote-query {:claimID "dogs-are-great", :agreement -100})))
     (is (= {:data
             {:voteOnClaim
              {:myAgreement 100}}}
-           (execute vote-query {:claimID "animals-are-awesome", :agree true})))))
+           (execute vote-query {:claimID "animals-are-awesome", :agreement 100})))))
 
 (def evidence-vote-query "
   mutation VoteOnEvidence($evidenceID: ID!, $rating: Int!) {
