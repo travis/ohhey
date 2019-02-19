@@ -37,6 +37,7 @@ const App = () => (
               <Route path="/claims" component={Claims}/>
               <Route path="/search" component={SearchPage}/>
               <Route path="/ibelieve/:slug" component={ClaimPage}/>
+              <Route path="/idontbelieve/:slug" component={ClaimPage}/>
               <Route path="/somesay/:slug" component={ClaimPage}/>
             </Switch>
           </div>

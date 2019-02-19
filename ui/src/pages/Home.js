@@ -7,6 +7,7 @@ import {Paper, Typography, Button, Divider} from '../components/ui'
 import QuickClaimSearch from '../components/QuickClaimSearch'
 import {AgreeButton, DisagreeButton} from '../components/Claims'
 import * as queries from '../queries';
+import * as goto from '../goto';
 
 const messageForErrorType = (errorType) => {
   if (errorType === "truth.error/unique-conflict") {
@@ -51,7 +52,7 @@ export default compose(
         createClaim(claimInputs)
         .then(({data: {addClaim: claim}, errors}) => {
           if (claim) {
-            history.push(`/ibelieve/${claim.slug}`)
+            goto.iBelieve(history, claim)
           } else {
             setErrors(errors)
           }
@@ -70,8 +71,8 @@ export default compose(
           <QuickClaimSearch
             claimActions={claim => (
               <Fragment>
-                <AgreeButton claim={claim}/>
-                <DisagreeButton claim={claim}/>
+                <AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim)}/>
+                <DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim)}/>
               </Fragment>
             )}
             or={

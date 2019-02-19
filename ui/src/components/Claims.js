@@ -8,13 +8,13 @@ import {
   PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip, MenuButton, MenuItem
 } from './ui'
 import { Chat, Close, Create, Add, Remove, ExpandMoreIcon } from './icons'
-
 import {Form, TextInput} from './form'
-
-import * as queries from '../queries';
 import Comments from './Comments'
 import QuickClaimSearch from './QuickClaimSearch'
 import {StopPropagation} from './util'
+
+import * as goto from '../goto';
+import * as queries from '../queries';
 
 
 function ClaimScore({claim}) {
@@ -40,9 +40,10 @@ function ClaimScore({claim}) {
   )
 }
 
-const RoutePrefixSwitch = ({ibelieve, somesay, fallback}) => (
+const RoutePrefixSwitch = ({ibelieve, idontbelieve, somesay, fallback}) => (
   <Switch>
     <Route path="/ibelieve/:slug"><Fragment>{ibelieve}</Fragment></Route>
+    <Route path="/idontbelieve/:slug"><Fragment>{idontbelieve}</Fragment></Route>
     <Route path="/somesay/:slug"><Fragment>{somesay}</Fragment></Route>
     <Route path="/"><Fragment>{fallback}</Fragment></Route>
   </Switch>
@@ -52,6 +53,7 @@ const RoutePrefixSwitch = ({ibelieve, somesay, fallback}) => (
 export const ClaimBodyLink = ({claim: {slug, body}}) => (
   <RoutePrefixSwitch
     ibelieve={<Link to={`/ibelieve/${slug}`}>{body}</Link>}
+    idontbelieve={<Link to={`/idontbelieve/${slug}`}>{body}</Link>}
     somesay={<Link to={`/somesay/${slug}`}>{body}</Link>}
     fallback={<Link to={`/somesay/${slug}`}>{body}</Link>}
   />
@@ -89,23 +91,29 @@ export const NotSureButton = agreementButton(0, "I'm not sure")
 const SentimentPicker = withRouter(({ history, match: {params: {slug}}}) => (
   <MenuButton menuItems={[
     <MenuItem key="ibelieve"
-              onClick={() => history.push(`/ibelieve/${slug}`)}>
+              onClick={() => goto.iBelieve(history, {slug})}>
       I believe
     </MenuItem>,
+    <MenuItem key="idontbelieve"
+              onClick={() => goto.iDontBelieve(history, {slug})}>
+      I don't believe
+    </MenuItem>,
     <MenuItem key="somesay"
-              onClick={() => history.push(`/somesay/${slug}`)}>
+              onClick={() => goto.someSay(history, {slug})}>
       some people say
     </MenuItem>
   ]
     }>
     <RoutePrefixSwitch
       ibelieve="I believe"
+      idontbelieve="I don't believe"
       somesay="some people say"
     />
   </MenuButton>
 ))
 
 export const Claim = compose(
+  withRouter,
   withStyles(theme => ({
     claimTooltip: {
       backgroundColor: theme.palette.common.white,
@@ -114,7 +122,7 @@ export const Claim = compose(
       fontSize: 11
     }
   }))
-)(({claim, classes}) => {
+)(({claim, history, classes}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
   const {body, creator} = claim
@@ -124,6 +132,7 @@ export const Claim = compose(
       <Typography variant="h5" align="center">
         <RoutePrefixSwitch
           ibelieve={<SentimentPicker>I believe</SentimentPicker>}
+          idontbelieve={<SentimentPicker>I don't believe</SentimentPicker>}
           somesay={<SentimentPicker>some people say</SentimentPicker>}
         />
       </Typography>
@@ -141,9 +150,9 @@ export const Claim = compose(
         </Typography>
       </Tooltip>
       <Typography align="center">
-        <AgreeButton claim={claim}/>
-        <NotSureButton claim={claim}/>
-        <DisagreeButton claim={claim}/>
+        <AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim)}/>
+        <NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim)}/>
+        <DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim)}/>
       </Typography>
       <Typography align="center">
         {!evidenceShown && (
@@ -191,7 +200,9 @@ const Evidence = graphql(
     <div key={id}>
       <ExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2"><Link to={`/ibelieve/${claim.slug}`}>{claim.body}</Link></Typography>
+          <Typography variant="subtitle2">
+            <ClaimBodyLink claim={claim}/>
+          </Typography>
           <Typography variant="caption">
             <StopPropagation>
             <PopoverButton
@@ -286,6 +297,7 @@ const EvidenceList = graphql(
       <Typography variant="h5">
         <RoutePrefixSwitch
           ibelieve="because"
+          idontbelieve="but other people say"
           somesay="because"
           fallback="because"
         />
@@ -297,9 +309,11 @@ const EvidenceList = graphql(
         <EvidenceAdder supports={true} claim={claim} placeholder="why?"/>
       )}
       <Evidences list={evidenceList} support={true}/>
+
       <Typography variant="h5">
         <RoutePrefixSwitch
           ibelieve="but other people say"
+          idontbelieve="because"
           somesay="however,"
           fallback="but other people say"
         />
