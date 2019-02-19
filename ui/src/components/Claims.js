@@ -3,7 +3,7 @@ import { graphql, compose } from "react-apollo";
 
 import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  Popover, PopoverButton, List, ListItem, ListItemText, Link, IconButton, Grid
+  PopoverButton, List, ListItem, ListItemText, Link, IconButton
 } from './ui'
 
 import { Chat, Close, Create, Add, ExpandMoreIcon } from './icons'
@@ -17,8 +17,6 @@ import {StopPropagation} from './util'
 
 function ClaimScore({claim}) {
   const {agreement, agreementCount, supportCount, opposeCount, score} = claim
-  const [scoreDetailsTarget, setShowScoreDetailsTarget] = useState(null)
-  const scoreDetailsShown = Boolean(scoreDetailsTarget);
   return (
     <Typography align="center">
       <PopoverButton
@@ -95,9 +93,11 @@ export const Claim = ({claim}) => {
         <DisagreeButton claim={claim}/>
       </Typography>
       <Typography align="center">
-        <Button color="primary" onClick={() => setShowEvidence(!evidenceShown)}>
-          {evidenceShown ? "oh I see" : "but why?"}
-        </Button>
+        {!evidenceShown && (
+          <Button color="primary" onClick={() => setShowEvidence(!evidenceShown)}>
+            {evidenceShown ? "oh I see" : "but why?"}
+          </Button>
+        )}
       </Typography>
       <IconButton onClick={() => setShowComments(!commentsShown)} style={{float: "right", position: "relative", top: "-2em"}}>
         <Chat/>
