@@ -139,31 +139,27 @@ const Evidence = graphql(
       <ExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle2"><Link to={`/ibelieve/${claim.slug}`}>{claim.body}</Link></Typography>
-          <Typography variant="caption">{relevance}% relevant</Typography>
+          <Typography variant="caption">
+            <StopPropagation>
+            <PopoverButton
+              popoverContent={
+                <Fragment>
+                  <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                  <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                  <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                  <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                  {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
+                </Fragment>
+              }>
+              {relevance}% relevant
+            </PopoverButton>
+            </StopPropagation>
+          </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Grid container spacing={24}>
-            <Grid item xs={12}>
-              <StopPropagation>
-                <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-              </StopPropagation>
-              <StopPropagation>
-                <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-              </StopPropagation>
-              <StopPropagation>
-                <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-              </StopPropagation>
-              <StopPropagation>
-                <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-              </StopPropagation>
-              {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
-            </Grid>
-            <Grid item xs={12}>
-              {expanded && (
-                <EvidenceList claim={claim} style={{width: '100%'}}/>
-              )}
-            </Grid>
-          </Grid>
+          {expanded && (
+            <EvidenceList claim={claim} style={{width: '100%'}}/>
+          )}
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>
