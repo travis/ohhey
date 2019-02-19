@@ -3,7 +3,7 @@ import React, {Fragment} from 'react';
 //import './App.css';
 
 import { ApolloProvider } from "react-apollo";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import {client} from './clients'
 import Claims from './components/Claims'
@@ -32,10 +32,13 @@ const App = () => (
       <AuthenticationProvider>
         <BrowserRouter>
           <div className="App">
-            <Route exact path="/" component={HomePage}/>
-            <Route path="/claims" component={Claims}/>
-            <Route path="/search" component={SearchPage}/>
-            <Route path="/ibelieve/:slug" component={ClaimPage}/>
+            <Switch>
+              <Route exact path="/" component={HomePage}/>
+              <Route path="/claims" component={Claims}/>
+              <Route path="/search" component={SearchPage}/>
+              <Route path="/ibelieve/:slug" component={ClaimPage}/>
+              <Route path="/somesay/:slug" component={ClaimPage}/>
+            </Switch>
           </div>
         </BrowserRouter>
       </AuthenticationProvider>

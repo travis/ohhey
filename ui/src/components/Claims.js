@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
 import { withStyles } from '@material-ui/core/styles';
+import { Route, Switch } from "react-router-dom";
 
 import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
@@ -69,6 +70,13 @@ export const AgreeButton = agreementButton(100, "I agree")
 export const DisagreeButton = agreementButton(-100, "I disagree")
 export const NotSureButton = agreementButton(0, "I'm not sure")
 
+const RoutePrefixSwitch = ({ibelieve, somesay}) => (
+  <Switch>
+    <Route path="/ibelieve"><Fragment>{ibelieve}</Fragment></Route>
+    <Route path="/somesay"><Fragment>{somesay}</Fragment></Route>
+  </Switch>
+)
+
 export const Claim = compose(
   withStyles(theme => ({
     claimTooltip: {
@@ -86,7 +94,10 @@ export const Claim = compose(
   return (
     <Paper>
       <Typography variant="h5" align="center">
-        some people say
+        <RoutePrefixSwitch
+          ibelieve="I believe"
+          somesay="some people say"
+        />
       </Typography>
       <Tooltip classes={{tooltip: classes.claimTooltip}} interactive
         title={(
@@ -245,7 +256,10 @@ const EvidenceList = graphql(
   return (
     <div {...props}>
       <Typography variant="h5">
-        because
+        <RoutePrefixSwitch
+          ibelieve="because"
+          somesay="because"
+        />
         <IconButton onClick={() => setShowSupportAdder(!showSupportAdder)}>
           {showSupportAdder ? <Remove/> : <Add/> }
         </IconButton>
@@ -255,7 +269,10 @@ const EvidenceList = graphql(
       )}
       <Evidences list={evidenceList} support={true}/>
       <Typography variant="h5">
-        however,
+        <RoutePrefixSwitch
+          ibelieve="but other people say"
+          somesay="however,"
+        />
         <IconButton onClick={() => setShowOpposeAdder(!showOpposeAdder)}>
           {showOpposeAdder ? <Remove/> : <Add/> }
         </IconButton>
