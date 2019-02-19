@@ -17,7 +17,7 @@ import {StopPropagation} from './util'
 
 function ClaimScore({claim}) {
   const {agreement, agreementCount, supportCount, opposeCount, score} = claim
-  const [scoreDetailsTarget, setShowScoreDetailsTarget] = useState(false)
+  const [scoreDetailsTarget, setShowScoreDetailsTarget] = useState(null)
   const scoreDetailsShown = Boolean(scoreDetailsTarget);
   return (
     <Typography align="center">
