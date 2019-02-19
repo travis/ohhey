@@ -42,10 +42,10 @@ function ClaimScore({claim}) {
 
 const RoutePrefixSwitch = ({ibelieve, idontbelieve, somesay, fallback}) => (
   <Switch>
-    <Route path="/ibelieve/:slug"><Fragment>{ibelieve}</Fragment></Route>
-    <Route path="/idontbelieve/:slug"><Fragment>{idontbelieve}</Fragment></Route>
-    <Route path="/somesay/:slug"><Fragment>{somesay}</Fragment></Route>
-    <Route path="/"><Fragment>{fallback}</Fragment></Route>
+    {ibelieve &&  <Route path="/ibelieve/:slug"><Fragment>{ibelieve}</Fragment></Route>}
+    {idontbelieve && <Route path="/idontbelieve/:slug"><Fragment>{idontbelieve}</Fragment></Route>}
+    {somesay && <Route path="/somesay/:slug"><Fragment>{somesay}</Fragment></Route>}
+    {fallback && <Route path="/"><Fragment>{fallback}</Fragment></Route>}
   </Switch>
 )
 
@@ -317,7 +317,7 @@ const OpposeList = ({claim, evidence}) => (
                 sentimentMap={{
                   ibelieve: "but other people say",
                   idontbelieve: "because",
-                  somesay: "however",
+                  somesay: "but others say",
                   fallback :"but other people say"
                 }}/>
 )
@@ -335,9 +335,7 @@ const EvidenceLists = graphql(
   return (
     <div {...props}>
       <RoutePrefixSwitch
-        ibelieve={<Fragment><Support/><Oppose/></Fragment>}
         idontbelieve={<Fragment><Oppose/><Support/></Fragment>}
-        somesay={<Fragment><Support/><Oppose/></Fragment>}
         fallback={<Fragment><Support/><Oppose/></Fragment>}
       />
     </div>
