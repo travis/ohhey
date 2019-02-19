@@ -9,6 +9,7 @@ type User {
 }
 
 input ClaimInput {
+  id: ID
   body: String
 }
 

@@ -99,12 +99,15 @@
         )
       :addEvidence
       (fn [{conn :conn db :db current-user :current-user}
-           {claim-id :claimID claim :claim supports :supports} parent]
+           {claim-id :claimID {id :id :as claim} :claim supports :supports} parent]
         (let [creator [:user/email (:user/email current-user)]
+              claim (if id
+                      [:claim/id id]
+                      (t/new-claim
+                       (assoc claim :creator creator)))
               evidence (t/new-evidence {:supports supports
                                         :creator creator
-                                        :claim (t/new-claim
-                                                (assoc claim :creator creator))})]
+                                        :claim claim})]
           @(d/transact
             conn
             [{:claim/id claim-id

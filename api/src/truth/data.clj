@@ -79,6 +79,7 @@
                    :supports false
                    :claim (new-claim
                            {:db/id "dont-like-people"
+                            :id "dont-like-people"
                             :body "They don't like people"
                             :creator travis
                             :evidence (map

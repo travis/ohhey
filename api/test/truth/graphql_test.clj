@@ -86,12 +86,7 @@
     (is (= {:data {:evidenceForClaim [{:supports true :claim {:body "Animals are awesome" :supportCount 0}}]}}
            (execute "query EvidenceForClaim($claimID: ID) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID "dogs-are-great"})))))
 
-(deftest test-addEvidence
-  (testing "addEvidence"
-    (is (= {:data
-            {:addEvidence
-             {:supports true, :claim {:body "SO FRIENDLY!!", :supportCount 0, :creator {:username "travis"}}}}}
-           (execute "
+(def add-evidence-mutation "
 mutation($claimID: ID!, $supports: Boolean!, $claim: ClaimInput!) {
   addEvidence(claimID: $claimID, supports: $supports, claim: $claim) {
     supports, claim {
@@ -99,8 +94,21 @@ mutation($claimID: ID!, $supports: Boolean!, $claim: ClaimInput!) {
       creator { username }
     }
   }
-}"
-                    {:claimID "dogs-are-great", :supports true, :claim {:body "SO FRIENDLY!!"}})))))
+}")
+
+(deftest test-addEvidence
+  (testing "adding a new claim"
+    (is (= {:data
+            {:addEvidence
+             {:supports true, :claim {:body "SO FRIENDLY!!", :supportCount 0, :creator {:username "travis"}}}}}
+           (execute add-evidence-mutation
+                    {:claimID "dogs-are-great", :supports true, :claim {:body "SO FRIENDLY!!"}}))))
+  (testing "adding an existing claim"
+    (is (= {:data
+            {:addEvidence
+             {:supports false, :claim {:body "They don't like people", :supportCount 1, :creator {:username "travis"}}}}}
+           (execute add-evidence-mutation
+                    {:claimID "dogs-are-great", :supports false, :claim {:id "dont-like-people"}})))))
 
 (def vote-query "
 mutation VoteOnClaim($claimID: ID!, $agreement: Int!) {
