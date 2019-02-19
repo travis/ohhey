@@ -180,8 +180,8 @@ const Evidence = graphql(
   )
 })
 
-const EvidenceAdder = graphql(
-  queries.AddEvidence, {
+const EvidenceAdder = compose(
+  graphql(queries.AddEvidence, {
     props: ({ ownProps: {claim, supports}, mutate }) => ({
       addEvidence: (claimInputs) => mutate({
         variables: {
@@ -200,17 +200,26 @@ const EvidenceAdder = graphql(
         }
       })
     })
-  }
-)(({claim, supports, addEvidence, placeholder}) => {
+  }),
+  withStyles(theme => ({
+    bodyInput: {
+    }
+  }))
+)(({claim, supports, addEvidence, placeholder, classes}) => {
   return (
     <Form onSubmit={addEvidence}>
-      <TextInput field="body" placeholder={placeholder}/>
-      <QuickClaimSearch or={
-        <Fragment>
-          <Divider />
-          <Button type="submit">Tell the World!</Button>
-        </Fragment>
-      }/>
+      <TextInput field="body" placeholder={placeholder}
+                 fullWidth={true} className={classes.bodyInput} autoComplete="off"/>
+      <QuickClaimSearch
+        claimActions={claim => (
+          <Button>add as evidence</Button>
+        )}
+        or={
+          <Fragment>
+            <Divider />
+            <Button type="submit">Tell the World!</Button>
+          </Fragment>
+        }/>
     </Form>
   )
 })
@@ -235,7 +244,8 @@ const EvidenceList = graphql(
 
   return (
     <div {...props}>
-      <Typography variant="subtitle2">because
+      <Typography variant="h5">
+        because
         <IconButton onClick={() => setShowSupportAdder(!showSupportAdder)}>
           {showSupportAdder ? <Remove/> : <Add/> }
         </IconButton>
@@ -244,10 +254,12 @@ const EvidenceList = graphql(
         <EvidenceAdder supports={true} claim={claim} placeholder="why?"/>
       )}
       <Evidences list={evidenceList} support={true}/>
-      <Typography variant="subtitle2">however,</Typography>
-      <IconButton onClick={() => setShowOpposeAdder(!showOpposeAdder)}>
-        {showOpposeAdder ? <Remove/> : <Add/> }
-      </IconButton>
+      <Typography variant="h5">
+        however,
+        <IconButton onClick={() => setShowOpposeAdder(!showOpposeAdder)}>
+          {showOpposeAdder ? <Remove/> : <Add/> }
+        </IconButton>
+      </Typography>
       {showOpposeAdder && (
         <EvidenceAdder supports={false} claim={claim} placeholder="why not?"/>
       )}

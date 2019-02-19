@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 import {Form, TextInput} from '../components/form'
 import {Paper, Typography, Button, Divider} from '../components/ui'
 import QuickClaimSearch from '../components/QuickClaimSearch'
+import {AgreeButton, DisagreeButton} from '../components/Claims'
 import * as queries from '../queries';
 
 const messageForErrorType = (errorType) => {
@@ -64,13 +65,21 @@ export default compose(
       <Form onSubmit={createAndGoToClaim} style={{textAlign: "center"}}>
         <Fragment>
           <TextInput field="body" fullWidth={true} inputRef={input}
+                     autoComplete="off"
                      style={{ fontSize: "50px", padding: "0em 0.5em" }}/>
-          <QuickClaimSearch or={
-            <Fragment>
-              <Divider />
-              <Button type="submit">Tell the World!</Button>
-            </Fragment>
-          }/>
+          <QuickClaimSearch
+            claimActions={claim => (
+              <Fragment>
+                <AgreeButton claim={claim}/>
+                <DisagreeButton claim={claim}/>
+              </Fragment>
+            )}
+            or={
+              <Fragment>
+                <Divider />
+                <Button type="submit">Tell the World!</Button>
+              </Fragment>
+            }/>
         </Fragment>
       </Form>
     </Paper>

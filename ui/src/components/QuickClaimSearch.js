@@ -21,24 +21,19 @@ const claimStyles = theme => ({
 
 const getSearchTerm = ({values: {body}}) => body
 
-const Claim = withStyles(claimStyles)(({claim, classes}) => (
+const Claim = withStyles(claimStyles)(({claim, results, classes, actions}) => (
   <ExpansionPanel>
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
       <Typography className={classes.heading}>
         <ClaimBodyLink claim={claim}/>
       </Typography>
       <StopPropagation>
-        <AgreeButton claim={claim}/>
-      </StopPropagation>
-      <StopPropagation>
-        <DisagreeButton claim={claim}/>
+        {actions && actions(claim, results)}
       </StopPropagation>
     </ExpansionPanelSummary>
     <ExpansionPanelDetails>
-      <Typography>
-        score:
-        <Typography variant="subtitle1">{claim.score}</Typography>
-      </Typography>
+      score:
+      <Typography variant="subtitle1">{claim.score}</Typography>
     </ExpansionPanelDetails>
   </ExpansionPanel>
 ))
@@ -61,11 +56,11 @@ export default compose(
       }
     }
   )
-)(({claimsSearch, history, formState, or}) => (
+)(({claimsSearch, history, formState, or, claimActions}) => (
   <Fragment>
     {(claimsSearch && (claimsSearch.results.length > 0)) ?
      (claimsSearch.results.map(({result: claim}) => (
-       <Claim claim={claim} key={claim.id}/>
+       <Claim claim={claim} results={claimsSearch.results} actions={claimActions} key={claim.id}/>
      ))) :
      or
     }
