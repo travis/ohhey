@@ -40,8 +40,21 @@ function ClaimScore({claim}) {
   )
 }
 
+const RoutePrefixSwitch = ({ibelieve, somesay, fallback}) => (
+  <Switch>
+    <Route path="/ibelieve/:slug"><Fragment>{ibelieve}</Fragment></Route>
+    <Route path="/somesay/:slug"><Fragment>{somesay}</Fragment></Route>
+    <Route path="/"><Fragment>{fallback}</Fragment></Route>
+  </Switch>
+)
+
+
 export const ClaimBodyLink = ({claim: {slug, body}}) => (
-  <Link to={`/ibelieve/${slug}`}>{body}</Link>
+  <RoutePrefixSwitch
+    ibelieve={<Link to={`/ibelieve/${slug}`}>{body}</Link>}
+    somesay={<Link to={`/somesay/${slug}`}>{body}</Link>}
+    fallback={<Link to={`/somesay/${slug}`}>{body}</Link>}
+  />
 )
 
 const withVote = (Component) => graphql(
@@ -57,26 +70,21 @@ const withVote = (Component) => graphql(
   }
 )(Component)
 
-const agreementButton = (voteValue, text) =>
-  withVote(({vote, claim: {myAgreement}, ...props}) => (
+const agreementButton = (voteValue, text) => withVote(
+  ({vote, claim: {myAgreement}, onSuccess, ...props}) => (
     <Button color={(myAgreement === voteValue) ? 'secondary' : 'default'}
-            onClick={() => vote(voteValue)}
+            onClick={() => vote(voteValue).then(
+              ({data: {voteOnClaim: claim}}) => onSuccess && onSuccess(claim)
+            )}
             {...props}>
       {text}
     </Button>
-  ))
+  )
+)
 
 export const AgreeButton = agreementButton(100, "I agree")
 export const DisagreeButton = agreementButton(-100, "I disagree")
 export const NotSureButton = agreementButton(0, "I'm not sure")
-
-const RoutePrefixSwitch = ({ibelieve, somesay, fallback}) => (
-  <Switch>
-    <Route path="/ibelieve/:slug"><Fragment>{ibelieve}</Fragment></Route>
-    <Route path="/somesay/:slug"><Fragment>{somesay}</Fragment></Route>
-    <Route path="/"><Fragment>{fallback}</Fragment></Route>
-  </Switch>
-)
 
 const SentimentPicker = withRouter(({ history, match: {params: {slug}}}) => (
   <MenuButton menuItems={[
