@@ -1,16 +1,10 @@
 import React, { Fragment } from 'react';
 import {  graphql, compose } from "react-apollo";
 
-import {firebaseClient} from './clients'
-import * as queries from './queries';
-
+import {firebaseClient} from '../clients'
+import * as queries from '../queries';
 import {Form, TextArea} from './form'
-
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-
+import {Button, List, ListItem, ListItemText} from './ui'
 
 const commentInList = (comments, comment) =>
       (comments.filter((existingComment) => existingComment.id === comment.id).length > 0)

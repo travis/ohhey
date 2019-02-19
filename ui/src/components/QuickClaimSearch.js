@@ -1,19 +1,14 @@
 import React, {Fragment} from 'react';
 import { graphql, compose } from "react-apollo";
-import { withRouter } from "react-router-dom";
-import {withFormState} from 'informed'
-import Paper from '@material-ui/core/Paper';
+import { withFormState } from 'informed'
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography
+} from './ui'
+import { ExpandMoreIcon } from './icons'
+import {ClaimBodyLink, AgreeButton, DisagreeButton} from './Claims'
 
-import {Form, TextInput} from '../form'
-import Link from '../Link'
-import {ClaimBodyLink, AgreeButton, DisagreeButton, NotSureButton} from '../Claims'
+import {StopPropagation} from './util'
 
 import * as queries from '../queries';
 
@@ -25,12 +20,6 @@ const claimStyles = theme => ({
 })
 
 const getSearchTerm = ({values: {body}}) => body
-
-const StopPropagation = ({children}) => (
-  <span onClick={(e) => e.stopPropagation()}>
-    {children}
-  </span>
-)
 
 const Claim = withStyles(claimStyles)(({claim, classes}) => (
   <ExpansionPanel>

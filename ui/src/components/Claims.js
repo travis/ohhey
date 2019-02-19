@@ -1,30 +1,18 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
-import Link from "./Link";
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Drawer from '@material-ui/core/Drawer';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Popover from '@material-ui/core/Popover';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Chat from '@material-ui/icons/Chat';
-import Close from '@material-ui/icons/Close';
-import Create from '@material-ui/icons/Create';
-import Add from '@material-ui/icons/Add';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import {
+  Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
+  Popover, List, ListItem, ListItemText, Link, IconButton
+} from './ui'
+
+import { Chat, Close, Create, Add, ExpandMoreIcon } from './icons'
 
 import {Form, TextArea} from './form'
 
-import * as queries from './queries';
+import * as queries from '../queries';
 import Comments from './Comments'
+import {StopPropagation} from './util'
 
 
 function ClaimScore({claim}) {
@@ -104,7 +92,7 @@ export const NotSureButton = agreementButton(0, "I'm not sure")
 export const Claim = ({claim}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
-  const {body, slug, creator, myAgreement} = claim
+  const {body, creator} = claim
 
   return (
     <Paper>
@@ -166,17 +154,23 @@ const Evidence = graphql(
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle2"><Link to={`/ibelieve/${claim.slug}`}>{claim.body}</Link></Typography>
           <Typography variant="caption">{relevance}% relevant</Typography>
-          <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-          <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-          <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-          <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+          <StopPropagation>
+            <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+          </StopPropagation>
+          <StopPropagation>
+            <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+          </StopPropagation>
+          <StopPropagation>
+            <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+          </StopPropagation>
+          <StopPropagation>
+            <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+          </StopPropagation>
           {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           {expanded && (
-            <div>
-              <EvidenceList claim={claim}/>
-            </div>
+            <EvidenceList claim={claim} style={{width: '100%'}}/>
           )}
         </ExpansionPanelDetails>
       </ExpansionPanel>
@@ -230,29 +224,29 @@ const EvidenceList = graphql(
     }),
     props: ({data: {evidenceForClaim}}) => ({evidenceList: evidenceForClaim})
   }
-)(({claim, evidenceList}) => {
+)(({claim, evidenceList, ...props}) => {
   const [showSupportAdder, setShowSupportAdder] = useState(false)
   const [showOpposeAdder, setShowOpposeAdder] = useState(false)
 
   return (
-    <Paper>
+    <div {...props}>
       <Typography variant="subtitle2">because</Typography>
-      <Evidences list={evidenceList} support={true}/>
-      <Button onClick={() => setShowSupportAdder(true)}>
-        <Add/> add more
-      </Button>
+      <IconButton onClick={() => setShowSupportAdder(true)}>
+        <Add/>
+      </IconButton>
       {showSupportAdder && (
         <EvidenceAdder supports={true} claim={claim}/>
       )}
+      <Evidences list={evidenceList} support={true}/>
       <Typography variant="subtitle2">despite</Typography>
-      <Evidences list={evidenceList} support={false}/>
-      <Button onClick={() => setShowOpposeAdder(true)}>
-        <Add/> add more
-      </Button>
+      <IconButton onClick={() => setShowOpposeAdder(true)}>
+        <Add/>
+      </IconButton>
       {showOpposeAdder && (
         <EvidenceAdder supports={false} claim={claim}/>
       )}
-    </Paper>
+      <Evidences list={evidenceList} support={false}/>
+    </div>
   )
 })
 

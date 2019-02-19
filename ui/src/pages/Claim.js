@@ -1,9 +1,9 @@
 import React from 'react';
 import { graphql, compose } from "react-apollo";
-import Paper from '@material-ui/core/Paper';
 import { withRouter } from "react-router-dom";
 
-import {Claim} from '../Claims'
+import {Paper} from '../components/ui';
+import {Claim} from '../components/Claims'
 
 import * as queries from '../queries';
 

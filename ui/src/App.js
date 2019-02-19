@@ -6,7 +6,7 @@ import { ApolloProvider } from "react-apollo";
 import { BrowserRouter, Route } from "react-router-dom";
 
 import {client} from './clients'
-import Claims from './Claims'
+import Claims from './components/Claims'
 import ClaimPage from './pages/Claim'
 import HomePage from './pages/Home'
 import SearchPage from './pages/Search'

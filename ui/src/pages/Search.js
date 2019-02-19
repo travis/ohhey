@@ -1,11 +1,10 @@
 import React, {Fragment} from 'react';
 import { graphql, compose } from "react-apollo";
-import Paper from '@material-ui/core/Paper';
 import { withRouter } from "react-router-dom";
-import {Form, TextInput} from '../form'
-import Button from '@material-ui/core/Button';
 
-import {Claim} from '../Claims'
+import {Form, TextInput} from '../components/form'
+import {Paper, Button} from '../components/ui';
+import {Claim} from '../components/Claims'
 
 import * as queries from '../queries';
 
