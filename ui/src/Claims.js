@@ -70,8 +70,11 @@ function ClaimScore({claim}) {
   )
 }
 
+export const ClaimBodyLink = ({claim: {slug, body}}) => (
+  <Link to={`/ibelieve/${slug}`}>{body}</Link>
+)
 
-export const Claim = graphql(
+const withVote = (Component) => graphql(
   queries.VoteOnClaim, {
     props: ({ ownProps: {claim}, mutate }) => ({
       vote: (agree) => mutate({
@@ -82,7 +85,21 @@ export const Claim = graphql(
       })
     })
   }
-)(({claim, vote}) => {
+)(Component)
+
+const agreementButton = (voteValue) =>
+  withVote(({vote, claim: {myAgreement}, ...props}) => (
+    <Button color={(myAgreement === voteValue) ? 'secondary' : 'default'}
+            onClick={() => vote(voteValue == 100)}
+            {...props}>
+      {(voteValue == 100) ? "I agree " : "I disagree"}
+    </Button>
+  ))
+
+export const AgreeButton = agreementButton(100)
+export const DisagreeButton = agreementButton(-100)
+
+export const Claim = ({claim}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
   const {body, slug, creator, myAgreement} = claim
@@ -90,19 +107,15 @@ export const Claim = graphql(
   return (
     <Paper>
       <Typography variant="h4" color="textPrimary" align="center">
-        <Link to={`/ibelieve/${slug}`}>{body}</Link>
+        <ClaimBodyLink claim={claim}/>
       </Typography>
       <Typography variant="caption" color="textSecondary" align="center">
         created by {creator.username}
       </Typography>
       <ClaimScore claim={claim}/>
       <Typography align="center">
-        <Button color={(myAgreement === 100) ? 'secondary' : 'default'} onClick={() => vote(true)}>
-          Agree
-        </Button>
-        <Button color={(myAgreement === -100) ? 'secondary' : 'default'} onClick={() => vote(false)}>
-          Disagree
-        </Button>
+        <AgreeButton claim={claim}/>
+        <DisagreeButton claim={claim}/>
       </Typography>
       <Typography align="center">
         <Button color="primary" onClick={() => setShowEvidence(!evidenceShown)}>
@@ -122,7 +135,7 @@ export const Claim = graphql(
       )}
     </Paper>
   )
-})
+}
 
 const RelevanceButton = ({relevance, myRelevanceRating, relevanceVote}) =>
       <Button color={(myRelevanceRating === relevance) ? 'secondary' : 'default'}

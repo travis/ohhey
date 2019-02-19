@@ -151,3 +151,21 @@ query SearchClaims($term: String!) {
   }
 }
 `
+
+export const QuickSearchClaims = gql`
+${fullClaimFieldsFragment}
+query QuickSearchClaims($term: String!) {
+  searchClaims(term: $term) {
+    totalCount
+    results {
+      score
+      result {
+        __typename
+        ... on Claim {
+          ...fullClaimFields
+        }
+      }
+    }
+  }
+}
+`

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from 'react';
+import React, { Fragment, useState, useEffect, createRef } from 'react';
 import { graphql, compose } from "react-apollo";
 import { withRouter } from "react-router-dom";
 
@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 
 import {Form, TextInput, TextArea} from '../form'
+import QuickClaimSearch from '../components/QuickClaimSearch'
 import * as queries from '../queries';
 
 const messageForErrorType = (errorType) => {
@@ -65,11 +66,17 @@ export default compose(
         <div key={i}>{messageForError(error)}</div>
       ))}
       <Form onSubmit={createAndGoToClaim} style={{textAlign: "center"}}>
-        <TextArea field="body" fullWidth={true} inputRef={input}
-                  rows={3}
-                  style={{ fontSize: "50px", padding: "0em 0.5em" }}/>
-        <Divider />
-        <Button type="submit">Tell the World!</Button>
+        <Fragment>
+          <TextArea field="body" fullWidth={true} inputRef={input}
+                    rows={3}
+                    style={{ fontSize: "50px", padding: "0em 0.5em" }}/>
+          <QuickClaimSearch or={
+            <Fragment>
+              <Divider />
+              <Button type="submit">Tell the World!</Button>
+            </Fragment>
+          }/>
+        </Fragment>
       </Form>
     </Paper>
   )
