@@ -14,6 +14,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@material-ui/core/Link';
@@ -53,5 +54,5 @@ export const PopoverButton = ({ariaID="popover", children, popoverContent}) => {
 export {
   Grid, Paper, Typography, Button, IconButton, Drawer,
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  Popover, Divider, List, ListItem, ListItemText
+  Popover, Divider, List, ListItem, ListItemText, Tooltip
 }

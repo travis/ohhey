@@ -55,8 +55,6 @@ export default compose(
         {claimsSearch}
       ),
       options: ({formState}) => {
-        console.log("FS", formState)
-        console.log("FT", getSearchTerm(formState))
         return ({
           variables: {term: getSearchTerm(formState)}
         })
@@ -67,7 +65,7 @@ export default compose(
   <Fragment>
     {(claimsSearch && (claimsSearch.results.length > 0)) ?
      (claimsSearch.results.map(({result: claim}) => (
-       <Claim claim={claim}/>
+       <Claim claim={claim} key={claim.id}/>
      ))) :
      or
     }

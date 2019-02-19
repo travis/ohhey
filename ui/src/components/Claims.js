@@ -1,45 +1,41 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
+import { withStyles } from '@material-ui/core/styles';
 
 import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider
+  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip
 } from './ui'
-
 import { Chat, Close, Create, Add, Remove, ExpandMoreIcon } from './icons'
 
 import {Form, TextInput} from './form'
 
 import * as queries from '../queries';
 import Comments from './Comments'
+import QuickClaimSearch from './QuickClaimSearch'
 import {StopPropagation} from './util'
 
 
 function ClaimScore({claim}) {
   const {agreement, agreementCount, supportCount, opposeCount, score} = claim
   return (
-    <Typography align="center">
-      <PopoverButton
-        ariaID="score-popover"
-        popoverContent={
-          <List>
-            <ListItem>
-              <ListItemText primary={`agreement: ${agreement}`} />
-            </ListItem>
-            <ListItem>
-              <ListItemText primary={`agreement count: ${agreementCount}`} />
-            </ListItem>
-            <ListItem>
-              <ListItemText primary={`supporting: ${supportCount}`} />
-            </ListItem>
-            <ListItem>
-              <ListItemText primary={`opposing: ${opposeCount}`} />
-            </ListItem>
-          </List>
-        }>
-        {score} points
-      </PopoverButton>
-    </Typography>
+    <List>
+      <ListItem>
+        <ListItemText primary={`agreement: ${agreement}`} />
+      </ListItem>
+      <ListItem>
+        <ListItemText primary={`agreement count: ${agreementCount}`} />
+      </ListItem>
+      <ListItem>
+        <ListItemText primary={`supporting: ${supportCount}`} />
+      </ListItem>
+      <ListItem>
+        <ListItemText primary={`opposing: ${opposeCount}`} />
+      </ListItem>
+      <ListItem>
+        <ListItemText primary={`${score} points`} />
+      </ListItem>
+    </List>
   )
 }
 
@@ -73,7 +69,16 @@ export const AgreeButton = agreementButton(100, "I agree")
 export const DisagreeButton = agreementButton(-100, "I disagree")
 export const NotSureButton = agreementButton(0, "I'm not sure")
 
-export const Claim = ({claim}) => {
+export const Claim = compose(
+  withStyles(theme => ({
+    claimTooltip: {
+      backgroundColor: theme.palette.common.white,
+      color: 'rgba(0, 0, 0, 0.87)',
+      boxShadow: theme.shadows[1],
+      fontSize: 11
+    }
+  }))
+)(({claim, classes}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
   const {body, creator} = claim
@@ -83,13 +88,19 @@ export const Claim = ({claim}) => {
       <Typography variant="h5" align="center">
         some people say
       </Typography>
-      <Typography variant="h4" color="textPrimary" align="center">
-        <ClaimBodyLink claim={claim}/>
-      </Typography>
-      <Typography variant="caption" color="textSecondary" align="center">
-        created by {creator.username}
-      </Typography>
-      <ClaimScore claim={claim}/>
+      <Tooltip classes={{tooltip: classes.claimTooltip}} interactive
+        title={(
+          <Fragment>
+            <Typography variant="caption" color="textSecondary" align="center">
+              created by {creator.username}
+            </Typography>
+            <ClaimScore claim={claim}/>
+          </Fragment>
+        )}>
+        <Typography variant="h4" color="textPrimary" align="center">
+          <ClaimBodyLink claim={claim}/>
+        </Typography>
+      </Tooltip>
       <Typography align="center">
         <AgreeButton claim={claim}/>
         <NotSureButton claim={claim}/>
@@ -115,7 +126,7 @@ export const Claim = ({claim}) => {
       )}
     </Paper>
   )
-}
+})
 
 const RelevanceButton = ({relevance, myRelevanceRating, relevanceVote}) =>
       <Button color={(myRelevanceRating === relevance) ? 'secondary' : 'default'}
@@ -194,10 +205,12 @@ const EvidenceAdder = graphql(
   return (
     <Form onSubmit={addEvidence}>
       <TextInput field="body" placeholder={placeholder}/>
-      <Divider />
-      <Button type="submit">
-        tell the world!
-      </Button>
+      <QuickClaimSearch or={
+        <Fragment>
+          <Divider />
+          <Button type="submit">Tell the World!</Button>
+        </Fragment>
+      }/>
     </Form>
   )
 })
