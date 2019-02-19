@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
 import { withStyles } from '@material-ui/core/styles';
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 
 import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip
+  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip, MenuButton, MenuItem
 } from './ui'
 import { Chat, Close, Create, Add, Remove, ExpandMoreIcon } from './icons'
 
@@ -70,12 +70,32 @@ export const AgreeButton = agreementButton(100, "I agree")
 export const DisagreeButton = agreementButton(-100, "I disagree")
 export const NotSureButton = agreementButton(0, "I'm not sure")
 
-const RoutePrefixSwitch = ({ibelieve, somesay}) => (
+const RoutePrefixSwitch = ({ibelieve, somesay, fallback}) => (
   <Switch>
-    <Route path="/ibelieve"><Fragment>{ibelieve}</Fragment></Route>
-    <Route path="/somesay"><Fragment>{somesay}</Fragment></Route>
+    <Route path="/ibelieve/:slug"><Fragment>{ibelieve}</Fragment></Route>
+    <Route path="/somesay/:slug"><Fragment>{somesay}</Fragment></Route>
+    <Route path="/"><Fragment>{fallback}</Fragment></Route>
   </Switch>
 )
+
+const SentimentPicker = withRouter(({ history, match: {params: {slug}}}) => (
+  <MenuButton menuItems={[
+    <MenuItem key="ibelieve"
+              onClick={() => history.push(`/ibelieve/${slug}`)}>
+      I believe
+    </MenuItem>,
+    <MenuItem key="somesay"
+              onClick={() => history.push(`/somesay/${slug}`)}>
+      some people say
+    </MenuItem>
+  ]
+    }>
+    <RoutePrefixSwitch
+      ibelieve="I believe"
+      somesay="some people say"
+    />
+  </MenuButton>
+))
 
 export const Claim = compose(
   withStyles(theme => ({
@@ -95,8 +115,8 @@ export const Claim = compose(
     <Paper>
       <Typography variant="h5" align="center">
         <RoutePrefixSwitch
-          ibelieve="I believe"
-          somesay="some people say"
+          ibelieve={<SentimentPicker>I believe</SentimentPicker>}
+          somesay={<SentimentPicker>some people say</SentimentPicker>}
         />
       </Typography>
       <Tooltip classes={{tooltip: classes.claimTooltip}} interactive
@@ -259,6 +279,7 @@ const EvidenceList = graphql(
         <RoutePrefixSwitch
           ibelieve="because"
           somesay="because"
+          fallback="because"
         />
         <IconButton onClick={() => setShowSupportAdder(!showSupportAdder)}>
           {showSupportAdder ? <Remove/> : <Add/> }
@@ -272,6 +293,7 @@ const EvidenceList = graphql(
         <RoutePrefixSwitch
           ibelieve="but other people say"
           somesay="however,"
+          fallback="but other people say"
         />
         <IconButton onClick={() => setShowOpposeAdder(!showOpposeAdder)}>
           {showOpposeAdder ? <Remove/> : <Add/> }

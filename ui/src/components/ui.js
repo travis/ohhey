@@ -9,6 +9,8 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Popover from '@material-ui/core/Popover';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -51,8 +53,32 @@ export const PopoverButton = ({ariaID="popover", children, popoverContent}) => {
   )
 }
 
+export const MenuButton = ({ariaID="menu", children, menuItems}) => {
+  const [buttonEl, setShowMenu] = useState(null)
+  const menuShown = Boolean(buttonEl);
+  return (
+    <Fragment>
+      <Button
+        aria-owns={menuShown ? ariaID : undefined}
+        aria-haspopup="true"
+        onClick={(e) => setShowMenu(e.target)}>
+        {children}
+      </Button>
+      <Menu
+        id={ariaID}
+        open={menuShown}
+        anchorEl={buttonEl}
+        onClick={() => setShowMenu(null)}
+        onClose={() => setShowMenu(null)}>
+        {menuItems}
+      </Menu>
+    </Fragment>
+  )
+}
+
 export {
   Grid, Paper, Typography, Button, IconButton, Drawer,
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  Popover, Divider, List, ListItem, ListItemText, Tooltip
+  Popover, Divider, List, ListItem, ListItemText, Tooltip,
+  Menu, MenuItem
 }
