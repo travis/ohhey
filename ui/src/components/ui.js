@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment, useState } from 'react'
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -19,6 +19,36 @@ import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@material-ui/core/Link';
 
 export const Link = (props) => <MuiLink component={RouterLink} {...props}/>
+
+export const PopoverButton = ({ariaID="popover", children, popoverContent}) => {
+  const [buttonEl, setShowPopover] = useState(null)
+  const popoverShown = Boolean(buttonEl);
+  return (
+    <Fragment>
+    <Button
+      aria-owns={popoverShown ? ariaID : undefined}
+      aria-haspopup="true"
+      onClick={(e) => setShowPopover(e.target)}>
+      {children}
+    </Button>
+      <Popover
+        id={ariaID}
+        open={popoverShown}
+        anchorEl={buttonEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center'
+        }}
+        onClose={() => setShowPopover(null)}>
+        {popoverContent}
+      </Popover>
+    </Fragment>
+  )
+}
 
 export {
   Grid, Paper, Typography, Button, IconButton, Drawer,

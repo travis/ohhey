@@ -3,7 +3,7 @@ import { graphql, compose } from "react-apollo";
 
 import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  Popover, List, ListItem, ListItemText, Link, IconButton, Grid
+  Popover, PopoverButton, List, ListItem, ListItemText, Link, IconButton, Grid
 } from './ui'
 
 import { Chat, Close, Create, Add, ExpandMoreIcon } from './icons'
@@ -21,40 +21,26 @@ function ClaimScore({claim}) {
   const scoreDetailsShown = Boolean(scoreDetailsTarget);
   return (
     <Typography align="center">
-      <Button
-        aria-owns={scoreDetailsShown ? 'score-popover' : undefined}
-        aria-haspopup="true"
-        onClick={(e) => setShowScoreDetailsTarget(e.target)}>
+      <PopoverButton
+        ariaID="score-popover"
+        popoverContent={
+          <List>
+            <ListItem>
+              <ListItemText primary={`agreement: ${agreement}`} />
+            </ListItem>
+            <ListItem>
+              <ListItemText primary={`agreement count: ${agreementCount}`} />
+            </ListItem>
+            <ListItem>
+              <ListItemText primary={`supporting: ${supportCount}`} />
+            </ListItem>
+            <ListItem>
+              <ListItemText primary={`opposing: ${opposeCount}`} />
+            </ListItem>
+          </List>
+        }>
         {score} points
-      </Button>
-      <Popover
-        id="score-popover"
-        open={scoreDetailsShown}
-        anchorEl={scoreDetailsTarget}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center'
-        }}
-        onClose={() => setShowScoreDetailsTarget(null)}>
-        <List>
-          <ListItem>
-            <ListItemText primary={`agreement: ${agreement}`} />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary={`agreement count: ${agreementCount}`} />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary={`supporting: ${supportCount}`} />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary={`opposing: ${opposeCount}`} />
-          </ListItem>
-        </List>
-      </Popover>
+      </PopoverButton>
     </Typography>
   )
 }
