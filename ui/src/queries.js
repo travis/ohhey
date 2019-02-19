@@ -133,3 +133,21 @@ export const VoteOnEvidence = gql`
     }
   }
 `
+
+export const SearchClaims = gql`
+${fullClaimFieldsFragment}
+query SearchClaims($term: String!) {
+  searchClaims(term: $term) {
+    totalCount
+    results {
+      score
+      result {
+        __typename
+        ... on Claim {
+          ...fullClaimFields
+        }
+      }
+    }
+  }
+}
+`

@@ -9,6 +9,7 @@ import {client} from './clients'
 import Claims from './Claims'
 import ClaimPage from './pages/Claim'
 import HomePage from './pages/Home'
+import SearchPage from './pages/Search'
 import {AuthenticationProvider, withAuth} from './authentication'
 import CssBaseline from '@material-ui/core/CssBaseline';
 
@@ -33,6 +34,7 @@ const App = () => (
           <div className="App">
             <Route exact path="/" component={HomePage}/>
             <Route path="/claims" component={Claims}/>
+            <Route path="/search" component={SearchPage}/>
             <Route path="/ibelieve/:slug" component={ClaimPage}/>
           </div>
         </BrowserRouter>
