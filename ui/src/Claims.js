@@ -10,6 +10,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Popover from '@material-ui/core/Popover';
+import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -158,19 +159,25 @@ const Evidence = graphql(
     })
   }
 )(({relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {
+  const [expanded, setExpanded] = useState(false)
   return (
     <div key={id}>
-      <ExpansionPanel>
+      <ExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle2"><Link to={`/ibelieve/${claim.slug}`}>{claim.body}</Link></Typography>
           <Typography variant="caption">{relevance}% relevant</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
           <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
           <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
           <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
           <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+          {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          {expanded && (
+            <div>
+              <EvidenceList claim={claim}/>
+            </div>
+          )}
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>
@@ -229,7 +236,7 @@ const EvidenceList = graphql(
 
   return (
     <Paper>
-      <Typography variant="subtitle2">people think so because</Typography>
+      <Typography variant="subtitle2">because</Typography>
       <Evidences list={evidenceList} support={true}/>
       <Button onClick={() => setShowSupportAdder(true)}>
         <Add/> add more
@@ -237,7 +244,7 @@ const EvidenceList = graphql(
       {showSupportAdder && (
         <EvidenceAdder supports={true} claim={claim}/>
       )}
-      <Typography variant="subtitle2">people are skeptical because</Typography>
+      <Typography variant="subtitle2">despite</Typography>
       <Evidences list={evidenceList} support={false}/>
       <Button onClick={() => setShowOpposeAdder(true)}>
         <Add/> add more
