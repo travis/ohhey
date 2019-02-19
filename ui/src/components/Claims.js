@@ -170,7 +170,7 @@ export const Claim = compose(
         <Comments claim={claim}/>
       </Drawer>
       {evidenceShown && (
-        <EvidenceList claim={claim}/>
+        <EvidenceLists claim={claim}/>
       )}
     </Paper>
   )
@@ -222,7 +222,7 @@ const Evidence = graphql(
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           {expanded && (
-            <EvidenceList claim={claim} style={{width: '100%'}}/>
+            <EvidenceLists claim={claim} style={{width: '100%'}}/>
           )}
         </ExpansionPanelDetails>
       </ExpansionPanel>
@@ -281,7 +281,48 @@ const Evidences = ({list, support}) => (
     ))}
   </Fragment>)
 
-const EvidenceList = graphql(
+const EvidenceList = ({claim, evidence, support, placeholder, sentimentMap}) => {
+  const [showAdder, setShowAdder] = useState(false)
+  return (
+    <Fragment>
+      <Typography variant="h5">
+        <RoutePrefixSwitch {...sentimentMap} />
+        <IconButton onClick={() => setShowAdder(!showAdder)}>
+          {showAdder ? <Remove/> : <Add/> }
+        </IconButton>
+      </Typography>
+      {showAdder && (
+        <EvidenceAdder supports={support} claim={claim} placeholder={placeholder}/>
+      )}
+      <Evidences list={evidence} support={support}/>
+    </Fragment>
+  )
+}
+
+const SupportList = ({claim, evidence}) => (
+  <EvidenceList claim={claim} support={true} placeholder="why?"
+                evidence={evidence}
+                sentimentMap={{
+                  ibelieve: "because",
+                  idontbelieve: "but other people say",
+                  somesay: "because",
+                  fallback :"because"
+                }}/>
+
+)
+
+const OpposeList = ({claim, evidence}) => (
+  <EvidenceList claim={claim} support={false} placeholder="why not?"
+                evidence={evidence}
+                sentimentMap={{
+                  ibelieve: "but other people say",
+                  idontbelieve: "because",
+                  somesay: "however",
+                  fallback :"but other people say"
+                }}/>
+)
+
+const EvidenceLists = graphql(
   queries.EvidenceForClaim, {
     options: ({claim}) => ({
       variables: {claimID: claim.id}
@@ -289,42 +330,16 @@ const EvidenceList = graphql(
     props: ({data: {evidenceForClaim}}) => ({evidenceList: evidenceForClaim})
   }
 )(({claim, evidenceList, ...props}) => {
-  const [showSupportAdder, setShowSupportAdder] = useState(false)
-  const [showOpposeAdder, setShowOpposeAdder] = useState(false)
-
+  const Support = () => <SupportList claim={claim} evidence={evidenceList}/>
+  const Oppose = () => <OpposeList claim={claim} evidence={evidenceList}/>
   return (
     <div {...props}>
-      <Typography variant="h5">
-        <RoutePrefixSwitch
-          ibelieve="because"
-          idontbelieve="but other people say"
-          somesay="because"
-          fallback="because"
-        />
-        <IconButton onClick={() => setShowSupportAdder(!showSupportAdder)}>
-          {showSupportAdder ? <Remove/> : <Add/> }
-        </IconButton>
-      </Typography>
-      {showSupportAdder && (
-        <EvidenceAdder supports={true} claim={claim} placeholder="why?"/>
-      )}
-      <Evidences list={evidenceList} support={true}/>
-
-      <Typography variant="h5">
-        <RoutePrefixSwitch
-          ibelieve="but other people say"
-          idontbelieve="because"
-          somesay="however,"
-          fallback="but other people say"
-        />
-        <IconButton onClick={() => setShowOpposeAdder(!showOpposeAdder)}>
-          {showOpposeAdder ? <Remove/> : <Add/> }
-        </IconButton>
-      </Typography>
-      {showOpposeAdder && (
-        <EvidenceAdder supports={false} claim={claim} placeholder="why not?"/>
-      )}
-      <Evidences list={evidenceList} support={false}/>
+      <RoutePrefixSwitch
+        ibelieve={<Fragment><Support/><Oppose/></Fragment>}
+        idontbelieve={<Fragment><Oppose/><Support/></Fragment>}
+        somesay={<Fragment><Support/><Oppose/></Fragment>}
+        fallback={<Fragment><Support/><Oppose/></Fragment>}
+      />
     </div>
   )
 })
