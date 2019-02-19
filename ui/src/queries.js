@@ -118,8 +118,8 @@ export const AddClaim = gql`
 
 export const VoteOnClaim = gql`
   ${fullClaimFieldsFragment}
-  mutation VoteOnClaim($claimID: ID!, $agree: Boolean!) {
-    voteOnClaim(claimID: $claimID, agree: $agree) {
+  mutation VoteOnClaim($claimID: ID!, $agreement: Int!) {
+    voteOnClaim(claimID: $claimID, agreement: $agreement) {
       ...fullClaimFields
     }
   }

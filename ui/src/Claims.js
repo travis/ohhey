@@ -77,27 +77,28 @@ export const ClaimBodyLink = ({claim: {slug, body}}) => (
 const withVote = (Component) => graphql(
   queries.VoteOnClaim, {
     props: ({ ownProps: {claim}, mutate }) => ({
-      vote: (agree) => mutate({
+      vote: (agreement) => mutate({
         variables: {
           claimID: claim.id,
-          agree
+          agreement
         }
       })
     })
   }
 )(Component)
 
-const agreementButton = (voteValue) =>
+const agreementButton = (voteValue, text) =>
   withVote(({vote, claim: {myAgreement}, ...props}) => (
     <Button color={(myAgreement === voteValue) ? 'secondary' : 'default'}
-            onClick={() => vote(voteValue == 100)}
+            onClick={() => vote(voteValue)}
             {...props}>
-      {(voteValue == 100) ? "I agree " : "I disagree"}
+      {text}
     </Button>
   ))
 
-export const AgreeButton = agreementButton(100)
-export const DisagreeButton = agreementButton(-100)
+export const AgreeButton = agreementButton(100, "I agree")
+export const DisagreeButton = agreementButton(-100, "I disagree")
+export const NotSureButton = agreementButton(0, "I'm not sure")
 
 export const Claim = ({claim}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
@@ -115,6 +116,7 @@ export const Claim = ({claim}) => {
       <ClaimScore claim={claim}/>
       <Typography align="center">
         <AgreeButton claim={claim}/>
+        <NotSureButton claim={claim}/>
         <DisagreeButton claim={claim}/>
       </Typography>
       <Typography align="center">

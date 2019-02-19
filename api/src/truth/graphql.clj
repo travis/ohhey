@@ -117,16 +117,15 @@
         )
       :voteOnClaim
       (fn [{conn :conn db :db current-user :current-user}
-           {claim-id :claimID agree :agree} parent]
+           {claim-id :claimID agreement :agreement} parent]
         @(d/transact
           conn
-          (let [vote (if agree 100 -100)]
-           [(if-let [vote-id (t/get-vote-for-user-and-claim db (:db/id current-user) [:claim/id claim-id])]
-              {:db/id vote-id :claim-vote/agreement vote}
-              {:claim/id claim-id
-               :claim/votes (t/new-claim-vote
-                             {:voter (:db/id current-user)
-                              :agreement vote})})]))
+          [(if-let [vote-id (t/get-vote-for-user-and-claim db (:db/id current-user) [:claim/id claim-id])]
+             {:db/id vote-id :claim-vote/agreement agreement}
+             {:claim/id claim-id
+              :claim/votes (t/new-claim-vote
+                            {:voter (:db/id current-user)
+                             :agreement agreement})})])
         (t/get-claim-as (d/db conn) [:claim/id claim-id] (:db/id current-user)))
       :voteOnEvidence
       (fn [{conn :conn db :db current-user :current-user}

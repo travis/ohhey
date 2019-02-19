@@ -64,7 +64,7 @@ type Query {
 type Mutation {
   addClaim(claim: ClaimInput): Claim
   addEvidence(claimID: ID!, supports: Boolean!, claim: ClaimInput!): Evidence
-  voteOnClaim(claimID: ID!, agree: Boolean!): Claim
+  voteOnClaim(claimID: ID!, agreement: Int!): Claim
   voteOnEvidence(evidenceID: ID!, rating: Int!): Evidence
 }
 

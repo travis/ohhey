@@ -13,7 +13,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import {Form, TextInput} from '../form'
 import Link from '../Link'
-import {ClaimBodyLink, AgreeButton, DisagreeButton} from '../Claims'
+import {ClaimBodyLink, AgreeButton, DisagreeButton, NotSureButton} from '../Claims'
 
 import * as queries from '../queries';
 
