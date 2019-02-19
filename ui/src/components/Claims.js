@@ -3,12 +3,12 @@ import { graphql, compose } from "react-apollo";
 
 import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  PopoverButton, List, ListItem, ListItemText, Link, IconButton
+  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider
 } from './ui'
 
-import { Chat, Close, Create, Add, ExpandMoreIcon } from './icons'
+import { Chat, Close, Create, Add, Remove, ExpandMoreIcon } from './icons'
 
-import {Form, TextArea} from './form'
+import {Form, TextInput} from './form'
 
 import * as queries from '../queries';
 import Comments from './Comments'
@@ -80,6 +80,9 @@ export const Claim = ({claim}) => {
 
   return (
     <Paper>
+      <Typography variant="h5" align="center">
+        some people say
+      </Typography>
       <Typography variant="h4" color="textPrimary" align="center">
         <ClaimBodyLink claim={claim}/>
       </Typography>
@@ -187,12 +190,13 @@ const EvidenceAdder = graphql(
       })
     })
   }
-)(({claim, supports, addEvidence}) => {
+)(({claim, supports, addEvidence, placeholder}) => {
   return (
     <Form onSubmit={addEvidence}>
-      <TextArea field="body" placeholder="Make an argument!"/>
+      <TextInput field="body" placeholder={placeholder}/>
+      <Divider />
       <Button type="submit">
-        <Create/>Create Argument
+        tell the world!
       </Button>
     </Form>
   )
@@ -218,20 +222,21 @@ const EvidenceList = graphql(
 
   return (
     <div {...props}>
-      <Typography variant="subtitle2">because</Typography>
-      <IconButton onClick={() => setShowSupportAdder(true)}>
-        <Add/>
-      </IconButton>
+      <Typography variant="subtitle2">because
+        <IconButton onClick={() => setShowSupportAdder(!showSupportAdder)}>
+          {showSupportAdder ? <Remove/> : <Add/> }
+        </IconButton>
+      </Typography>
       {showSupportAdder && (
-        <EvidenceAdder supports={true} claim={claim}/>
+        <EvidenceAdder supports={true} claim={claim} placeholder="why?"/>
       )}
       <Evidences list={evidenceList} support={true}/>
-      <Typography variant="subtitle2">despite</Typography>
-      <IconButton onClick={() => setShowOpposeAdder(true)}>
-        <Add/>
+      <Typography variant="subtitle2">however,</Typography>
+      <IconButton onClick={() => setShowOpposeAdder(!showOpposeAdder)}>
+        {showOpposeAdder ? <Remove/> : <Add/> }
       </IconButton>
       {showOpposeAdder && (
-        <EvidenceAdder supports={false} claim={claim}/>
+        <EvidenceAdder supports={false} claim={claim} placeholder="why not?"/>
       )}
       <Evidences list={evidenceList} support={false}/>
     </div>
