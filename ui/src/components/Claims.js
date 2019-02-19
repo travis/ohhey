@@ -3,7 +3,7 @@ import { graphql, compose } from "react-apollo";
 
 import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  Popover, List, ListItem, ListItemText, Link, IconButton
+  Popover, List, ListItem, ListItemText, Link, IconButton, Grid
 } from './ui'
 
 import { Chat, Close, Create, Add, ExpandMoreIcon } from './icons'
@@ -154,24 +154,30 @@ const Evidence = graphql(
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle2"><Link to={`/ibelieve/${claim.slug}`}>{claim.body}</Link></Typography>
           <Typography variant="caption">{relevance}% relevant</Typography>
-          <StopPropagation>
-            <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-          </StopPropagation>
-          <StopPropagation>
-            <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-          </StopPropagation>
-          <StopPropagation>
-            <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-          </StopPropagation>
-          <StopPropagation>
-            <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-          </StopPropagation>
-          {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          {expanded && (
-            <EvidenceList claim={claim} style={{width: '100%'}}/>
-          )}
+          <Grid container spacing={24}>
+            <Grid item xs={12}>
+              <StopPropagation>
+                <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+              </StopPropagation>
+              <StopPropagation>
+                <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+              </StopPropagation>
+              <StopPropagation>
+                <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+              </StopPropagation>
+              <StopPropagation>
+                <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+              </StopPropagation>
+              {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
+            </Grid>
+            <Grid item xs={12}>
+              {expanded && (
+                <EvidenceList claim={claim} style={{width: '100%'}}/>
+              )}
+            </Grid>
+          </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>

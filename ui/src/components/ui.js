@@ -13,13 +13,15 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Grid from '@material-ui/core/Grid';
+
 import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@material-ui/core/Link';
 
 export const Link = (props) => <MuiLink component={RouterLink} {...props}/>
 
 export {
-  Paper, Typography, Button, IconButton, Drawer,
+  Grid, Paper, Typography, Button, IconButton, Drawer,
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   Popover, Divider, List, ListItem, ListItemText
 }
