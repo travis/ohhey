@@ -6,7 +6,7 @@ import {
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography
 } from './ui'
 import { ExpandMoreIcon } from './icons'
-import {ClaimBodyLink, AgreeButton, DisagreeButton} from './Claims'
+import { ClaimBodyLink } from './Claims'
 
 import {StopPropagation} from './util'
 
