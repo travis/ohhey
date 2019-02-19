@@ -211,8 +211,8 @@ const EvidenceAdder = compose(
       <TextInput field="body" placeholder={placeholder}
                  fullWidth={true} className={classes.bodyInput} autoComplete="off"/>
       <QuickClaimSearch
-        claimActions={claim => (
-          <Button>add as evidence</Button>
+        claimActions={evidenceClaim => (
+          <Button onClick={() => addEvidence({id: evidenceClaim.id})}>add as evidence</Button>
         )}
         or={
           <Fragment>
