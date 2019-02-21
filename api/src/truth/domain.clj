@@ -169,16 +169,17 @@
                [(identity ?claim) ?uniqueness]
                [(ground 0) ?score]
                [(ground 0) ?score-component-count]))]
-    [(claim-score [?claim ?depth] ?uniqueness ?score ?score-component-count)
+    [(claim-score [?claim ?depth] ?uniqueness ?agree-disagree-score ?score ?support-oppose-component-count)
      [(/ 1 ?depth) ?depth-multiplier]
-     [(* ?sub-score ?depth-multiplier) ?score]
-     (or [?claim ?depth ?uniqueness ?sub-score ?score-component-count]
+     [(* ?support-oppose-score ?depth-multiplier) ?score]
+     (or [?claim ?depth ?uniqueness ?agree-disagree-score ?support-oppose-score ?support-oppose-component-count]
          (and
           [?depth]
-          (agree-disagree-score ?claim ?uniqueness ?sub-score ?score-component-count))
-         (support-oppose-score ?claim ?depth ?uniqueness ?sub-score ?score-component-count))
-     ;;[(+ ?agree-disagree-score ?support-oppose-score) ?sub-score]
-     ;;[(+ ?agree-disagree-score-component-count ?support-oppose-score-component-count) ?score-component-count]
+          (agree-disagree-score ?claim ?uniqueness ?agree-disagree-score ?support-oppose-component-count)
+          [(ground 0) ?support-oppose-score])
+         (and
+          (support-oppose-score ?claim ?depth ?uniqueness ?support-oppose-score ?support-oppose-component-count)
+          [(ground 0) ?agree-disagree-score]))
      ]
 
     [(agree-disagree ?claim ?uniqueness ?agreement ?agreement-count)
@@ -223,17 +224,18 @@
        [(identity ?claim) ?uniqueness]
        [(ground 0) ?support]
        [(ground 0) ?oppose]))]
-    [(claim-stats [?claim] ?uniqueness ?agreement ?agreement-count ?support ?oppose ?score ?score-component-count)
-     (or-join [?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose ?score ?score-component-count]
+    [(claim-stats [?claim] ?uniqueness ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
+     (or-join [?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count]
               (and
                [(ground 0) ?agreement]
                [(ground 0) ?agreement-count]
                [(ground 0) ?support]
                [(ground 0) ?oppose]
-               (claim-score ?claim 1 ?uniqueness ?score ?score-component-count))
+               (claim-score ?claim 1 ?uniqueness ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count))
               (and
-               [(ground 0) ?score]
-               [(ground 0) ?score-component-count]
+               [(ground 0) ?agree-disagree-score]
+               [(ground 0) ?support-oppose-score]
+               [(ground 0) ?support-oppose-score-component-count]
                (or-join [?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose]
                         (and
                          (agree-disagree ?claim ?uniqueness ?agreement ?agreement-count)
@@ -244,16 +246,17 @@
                          [(ground 0) ?agreement]
                          [(ground 0) ?agreement-count]))))]
     [(claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
-                     ?support ?oppose ?my-agreement ?score ?score-component-count)
+                     ?support ?oppose ?my-agreement ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
      (or
       (and
        [?user]
-       (claim-stats ?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose ?score ?score-component-count)
+       (claim-stats ?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
        [(ground -101) ?my-agreement])
       (and
        (agree-disagree-as ?claim ?user ?uniqueness ?my-agreement)
-       [(ground 0) ?score]
-       [(ground 0) ?score-component-count]
+       [(ground 0) ?agree-disagree-score]
+       [(ground 0) ?support-oppose-score]
+       [(ground 0) ?support-oppose-score-component-count]
        [(ground 0) ?agreement]
        [(ground 0) ?agreement-count]
        [(ground 0) ?support]
@@ -287,15 +290,16 @@
     [(evidence-stats-as [?evidence ?user] ?uniqueness ?agreement ?agreement-count
                         ?support ?oppose ?my-agreement
                         ?rating ?rating-count ?my-rating
-                        ?score ?score-component-count)
+                        ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
      (or-join [?evidence ?user ?uniqueness ?agreement ?agreement-count
                ?support ?oppose ?my-agreement
-               ?rating ?rating-count ?my-rating ?score ?score-component-count]
+               ?rating ?rating-count ?my-rating
+               ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count]
               (and
                [?evidence :evidence/claim ?claim]
                (claim-stats-as ?claim ?user ?uniqueness
                                ?agreement ?agreement-count ?support ?oppose
-                               ?my-agreement ?score ?score-component-count)
+                               ?my-agreement ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
                [(ground 0) ?rating]
                [(ground 0) ?rating-count]
                [(ground -1) ?my-rating]
@@ -307,8 +311,9 @@
                [(ground 0) ?support]
                [(ground 0) ?oppose]
                [(ground -101) ?my-agreement]
-               [(ground 0) ?score]
-               [(ground 0) ?score-component-count]
+               [(ground 0) ?agree-disagree-score ]
+               [(ground 0) ?support-oppose-score]
+               [(ground 0) ?support-oppose-score-component-count]
                )
               )
 
@@ -317,17 +322,20 @@
     ])
 
 (defn assoc-claim-stats
-  ([claim support-count oppose-count agreement agreement-count score score-component-count]
-   (assoc-claim-stats claim support-count oppose-count agreement agreement-count -101 score))
-  ([claim support-count oppose-count agreement agreement-count my-agreement score score-component-count]
+  ([claim support-count oppose-count agreement agreement-count agree-disagree-score score score-component-count]
+   (assoc-claim-stats claim support-count oppose-count agreement agreement-count -101 agree-disagree-score score score-component-count))
+  ([claim support-count oppose-count agreement agreement-count my-agreement agree-disagree-score score score-component-count]
    (assoc claim
           :support-count support-count :oppose-count oppose-count
           :agreement agreement
           :agreement-count agreement-count
           :my-agreement (when (not (= my-agreement -101)) my-agreement)
-          :score (if (= 0 score-component-count)
-                   0
-                   (/ score score-component-count)))))
+          :score (+
+                  agree-disagree-score
+                  (if (= 0 score-component-count)
+                    0
+                    (/ score
+                       (* 100 score-component-count)))))))
 
 (def default-claim-spec '[:db/id
                           :claim/id
@@ -352,13 +360,14 @@
             '(sum ?support) '(sum ?oppose)
             '(sum ?agreement) '(sum ?agreement-count)
             '(max ?my-agreement)
-            '(sum ?score) '(sum ?score-component-count)
+            '(sum ?agree-disagree-score) '(sum ?support-oppose-score) '(sum ?support-oppose-score-component-count)
             ]
            '[:in $ % ?claim ?user
              :with ?uniqueness
              :where
              (claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
-                             ?support ?oppose ?my-agreement ?score ?score-component-count)])
+                             ?support ?oppose ?my-agreement
+                             ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)])
           db rules claim-ref (or user-ref anon-user-ref))]
      (apply assoc-claim-stats result))))
 
@@ -375,14 +384,16 @@
             '(sum ?support) '(sum ?oppose)
             '(sum ?agreement) '(sum ?agreement-count)
             '(max ?my-agreement)
-            '(sum ?score) '(sum ?score-component-count)
+            '(sum ?agree-disagree-score)
+            '(sum ?support-oppose-score) '(sum ?support-oppose-score-component-count)
             ]
            '[:in $ % ?evidence ?user
              :with ?uniqueness
              :where
              [?claim :claim/evidence ?evidence]
              (claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
-                             ?support ?oppose ?my-agreement ?score ?score-component-count)])
+                             ?support ?oppose ?my-agreement
+                             ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)])
           db rules evidence-ref (or user-ref anon-user-ref))]
      (apply assoc-claim-stats result))))
 
@@ -405,13 +416,15 @@
            '[(sum ?support) (sum ?oppose)
              (sum ?agreement) (sum ?agreement-count)
              (max ?my-agreement)
-             (sum ?score) (sum ?score-component-count)
+             (sum ?agree-disagree-score)
+             (sum ?support-oppose-score) (sum ?support-oppose-score-component-count)
              :in $ % ?user
              :with ?uniqueness
              :where
              [?claim :claim/id _]
              (claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
-                             ?support ?oppose ?my-agreement ?score ?score-component-count)])
+                             ?support ?oppose ?my-agreement
+                             ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)])
           db rules (or user-ref anon-user-ref))]
      (map (fn [result] (apply assoc-claim-stats result)) results))))
 
@@ -429,13 +442,15 @@
            '[(sum ?support) (sum ?oppose)
              (sum ?agreement) (sum ?agreement-count)
              (max ?my-agreement)
-             (sum ?score) (sum ?score-component-count)
+             (sum ?agree-disagree-score )
+             (sum ?support-oppose-score) (sum ?support-oppose-score-component-count)
              :in $ % ?user ?term
              :with ?uniqueness
              :where
              [(fulltext $ :claim/body ?term) [[?claim _ _ ?search-score]]]
              (claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
-                             ?support ?oppose ?my-agreement ?score ?score-component-count)])
+                             ?support ?oppose ?my-agreement
+                             ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)])
           db rules (or user-ref anon-user-ref) term)]
      (map (fn [[search-score & claim-result]]
             {:search/score search-score
@@ -475,7 +490,8 @@
              (sum ?support) (sum ?oppose)
              (sum ?agreement) (sum ?agreement-count)
              (max ?my-agreement)
-             (sum ?score) (sum ?score-component-count)
+             (sum ?agree-disagree-score)
+             (sum ?support-oppose-score) (sum ?support-oppose-score-component-count)
              :in $ % ?claim ?user
              :with ?uniqueness
              :where
@@ -485,17 +501,19 @@
               ?agreement ?agreement-count ?support ?oppose
               ?my-agreement
               ?rating ?rating-count ?my-rating
-              ?score ?score-component-count)])
+              ?agree-disagree-score
+              ?support-oppose-score ?support-oppose-score-component-count)])
           db rules claim-ref (or user-ref anon-user-ref))]
      (for [[evidence relevance-rating-sum relevance-rating-count my-relevance-rating
             support-count oppose-count agreement agreement-count my-agreement
-            score score-component-count]
+            agree-disagree-score score score-component-count]
            results]
        (assoc (assoc-evidence-stats evidence relevance-rating-sum relevance-rating-count my-relevance-rating)
               :evidence/claim (assoc-claim-stats
                                (:evidence/claim evidence)
                                support-count oppose-count
                                agreement agreement-count my-agreement
+                               agree-disagree-score
                                score score-component-count)
               ))
      )))
@@ -519,7 +537,8 @@
               (sum ?support) (sum ?oppose)
               (sum ?agreement) (sum ?agreement-count)
               (max ?my-agreement)
-              (sum ?score) (sum ?score-component-count)
+              (sum ?agree-disagree-score)
+              (sum ?support-oppose-score) (sum ?support-oppose-score-component-count)
               :in $ % ?evidence ?user
               :with ?uniqueness
               :where
@@ -528,7 +547,8 @@
                ?agreement ?agreement-count ?support ?oppose
                ?my-agreement
                ?rating ?rating-count ?my-rating
-               ?score ?score-component-count)])
+               ?agree-disagree-score
+               ?support-oppose-score ?support-oppose-score-component-count)])
            db rules evidence-ref (or user-ref anon-user-ref))]
       (for [[evidence relevance-rating-sum relevance-rating-count my-relevance-rating
              support-count oppose-count agreement agreement-count my-agreement
