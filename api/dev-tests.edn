@@ -3,6 +3,7 @@
           :test-paths ["test"]
           :source-paths ["src"]
           :ns-patterns ["-test$"]}]
+ :watch? true
  ;; :reporter kaocha.report.progress/progress
  ;; :plugins [:profiling :notifier]
  }

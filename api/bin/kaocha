@@ -1,2 +1,2 @@
 #!/bin/bash
-lein kaocha "$@"
+lein kaocha --config-file dev-tests.edn "$@"

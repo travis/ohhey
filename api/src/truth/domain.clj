@@ -179,8 +179,7 @@
           [(ground 0) ?support-oppose-score])
          (and
           (support-oppose-score ?claim ?depth ?uniqueness ?support-oppose-score ?support-oppose-component-count)
-          [(ground 0) ?agree-disagree-score]))
-     ]
+          [(ground 0) ?agree-disagree-score]))]
 
     [(agree-disagree ?claim ?uniqueness ?agreement ?agreement-count)
      (or-join [?claim ?uniqueness ?agreement ?agreement-count]
