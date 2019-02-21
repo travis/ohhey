@@ -149,7 +149,7 @@ export const Claim = compose(
           <ClaimBodyLink claim={claim}/>
         </Typography>
       </Tooltip>
-      <Typography variant="subtitle1" align="center">{claim.score}</Typography>
+      <Typography variant="caption" align="center">{claim.score}</Typography>
       <Typography align="center">
         <AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim)}/>
         <NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim)}/>
