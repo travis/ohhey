@@ -84,7 +84,8 @@
                             :creator travis
                             :evidence (map
                                        new-evidence
-                                       [{:creator travis
+                                       [{:id "cwm-supports-dlp"
+                                         :creator travis
                                          :supports true
                                          :claim (new-claim
                                                  {:body "A cat was mean to me"

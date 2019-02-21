@@ -38,7 +38,7 @@
    :claim/creator #:user{:username "travis"},
    :support-count 1 :oppose-count 0
    :agreement 200 :agreement-count 2 :my-agreement nil
-   :score 4})
+   :score 13400/3})
 
 (def cats-are-great
   {:claim/body "Cats are great",
@@ -46,7 +46,7 @@
    :claim/creator #:user{:username "james"},
    :support-count 2 :oppose-count 1
    :agreement 100 :agreement-count 3 :my-agreement nil
-   :score 3})
+   :score 33300/7})
 
 (deftest test-get-claim
   (testing "Dogs are great"
@@ -88,7 +88,7 @@
    :support-count 0,
    :oppose-count 0,
    :agreement 200 :agreement-count 2 :my-agreement nil
-   :score 2})
+   :score 100})
 
 (def dont-like-people
   {:claim/body "They don't like people",
@@ -97,7 +97,7 @@
    :support-count 1,
    :oppose-count 0,
    :agreement 0 :agreement-count 0 :my-agreement nil
-   :score 2})
+   :score 0})
 
 (def mean-cat
   {:claim/body "A cat was mean to me",
@@ -173,6 +173,109 @@
              :relevance 133/2}]
            (t/get-claim-evidence-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] evidence-spec)))))
 
+(deftest agree-disagree-score
+  (let [agree-disagree-score
+        (fn [slug]
+          (d/q '[:find (sum ?score) (sum ?score-component-count)
+                 :in $ % ?claim
+                 :with ?uniqueness
+                 :where
+                 (agree-disagree-score ?claim ?uniqueness ?score ?score-component-count)]
+               fresh-db t/rules [:claim/slug slug]))]
+    (is (= [[200 2]]
+           (agree-disagree-score "dogs-are-great")))
+    (is (= [[100 3]]
+           (agree-disagree-score "cats-are-great")))
+    (is (= [[200 2]]
+           (agree-disagree-score "animals-are-awesome")))
+    (is (= [[0 0]]
+           (agree-disagree-score "a-cat-was-mean-to-me")))
+    (is (= [[0 0]]
+           (agree-disagree-score "they-dont-like-people")))))
+
+(deftest evidence-score
+  (let [evidence-score
+        (fn [id]
+          (d/q '[:find
+                 (sum ?score) (sum ?score-component-count)
+                 :in $ % ?evidence
+                 :with ?uniqueness
+                 :where
+                 (evidence-score ?evidence ?uniqueness ?score ?score-component-count)]
+               fresh-db t/rules [:evidence/id id]))]
+    (is (= [[26600 4]]
+           (evidence-score "ara-supports-dag")))
+    (is (= [[0 0]]
+           (evidence-score "cwm-supports-dlp")))
+    (is (= [[0 0]]
+           (evidence-score "dlp-opposes-cag")))))
+
+(deftest test-support-oppose-score
+  (testing "support-oppose-score"
+    (let [support-oppose-score
+          (fn [slug]
+            (d/q '[:find (sum ?score) (sum ?score-component-count)
+                   :in $ % ?claim
+                   :with ?uniqueness
+                   :where
+                   (support-oppose-score ?claim 1 ?uniqueness ?score ?score-component-count)
+                   ]
+                 fresh-db t/rules [:claim/slug slug]))]
+      (is (= [[26600 4]]
+             (support-oppose-score "dogs-are-great")))
+      (is (= [[33200 4]]
+             (support-oppose-score "cats-are-great")))
+      (is (= [[0 0]]
+             (support-oppose-score "animals-are-awesome")))
+      (is (= [[0 0]]
+             (support-oppose-score "a-cat-was-mean-to-me")))
+      (is (= [[0 0]]
+             (support-oppose-score "they-dont-like-people")))
+      )))
+
+(deftest test-claim-score
+  (let [claim-score
+        (fn [slug]
+          (d/q '[:find (sum ?score) (sum ?score-component-count)
+                 :in $ % ?claim
+                 :with ?uniqueness
+                 :where
+                 (claim-score ?claim 1 ?uniqueness ?score ?score-component-count)
+                 ]
+               fresh-db t/rules [:claim/slug slug]))]
+    (is (= [[26800 6]]
+           (claim-score "dogs-are-great")))
+    (is (= [[33300 7]]
+           (claim-score "cats-are-great")))
+    (is (= [[200 2]]
+           (claim-score "animals-are-awesome")))
+    (is (= [[0 0]]
+           (claim-score "a-cat-was-mean-to-me")))
+    (is (= [[0 0]]
+           (claim-score "they-dont-like-people")))
+    ))
+
+(deftest test-claim-stats
+  (let [claim-stats
+        (fn [slug]
+          (d/q '[:find (sum ?agreement) (sum ?agreement-count) (sum ?support) (sum ?oppose) (sum ?score) (sum ?score-component-count)
+                 :in $ % ?claim
+                 :with ?uniqueness
+                 :where
+                 (claim-stats ?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose ?score ?score-component-count)
+                 ]
+               fresh-db t/rules [:claim/slug slug]))]
+    (is (= [[200 2 1 0 26800 6]]
+           (claim-stats "dogs-are-great")))
+    (is (= [[100 3 2 1 33300 7]]
+           (claim-stats "cats-are-great")))
+    (is (= [[200 2 0 0 200 2]]
+           (claim-stats "animals-are-awesome")))
+    (is (= [[0 0 0 0 0 0]]
+           (claim-stats "a-cat-was-mean-to-me")))
+    (is (= [[0 0 1 0 0 0]]
+           (claim-stats "they-dont-like-people")))
+    ))
 
 (comment
   (d/pull fresh-dbp
