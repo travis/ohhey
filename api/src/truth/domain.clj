@@ -363,8 +363,8 @@
      (apply assoc-claim-stats result))))
 
 (defn get-parent-claim-as
-  ([db claim-ref user-ref]
-   (get-parent-claim-as db claim-ref user-ref default-claim-spec))
+  ([db evidence-ref user-ref]
+   (get-parent-claim-as db evidence-ref user-ref default-claim-spec))
   ([db evidence-ref user-ref claim-spec]
    (let [result
          (d/q

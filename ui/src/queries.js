@@ -130,6 +130,9 @@ export const VoteOnEvidence = gql`
   mutation VoteOnEvidence($evidenceID: ID!, $rating: Int!) {
     voteOnEvidence(evidenceID: $evidenceID, rating: $rating) {
       ...fullEvidenceFields
+      parentClaim {
+        ...fullClaimFields
+      }
     }
   }
 `

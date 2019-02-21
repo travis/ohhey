@@ -141,7 +141,11 @@
               :evidence/votes (t/new-relevance-vote
                                {:voter (:db/id current-user)
                                 :rating rating})})])
-        (t/get-evidence-as (d/db conn) [:evidence/id evidence-id] (:db/id current-user)))
+        (let [db (d/db conn)
+              evidence [:evidence/id evidence-id]
+              user (:db/id current-user)]
+          (assoc (t/get-evidence-as db evidence user)
+                 :parentClaim (t/get-parent-claim-as db evidence user))))
       }
 
      :User
