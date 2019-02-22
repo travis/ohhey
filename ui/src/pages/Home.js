@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect, createRef } from 'react';
 import { graphql, compose } from "react-apollo";
 import { withRouter } from "react-router-dom";
+import { withStyles } from '@material-ui/core/styles';
 
 import {Form, TextInput} from '../components/form'
 import {Paper, Typography, Button, Divider} from '../components/ui'
@@ -41,8 +42,16 @@ export default compose(
         })
       })
     }
-  )
-)(({createClaim, history, error}) => {
+  ),
+  withStyles(theme => ({
+    form: {
+      textAlign: "center"
+    },
+    bodyInput: {
+      fontSize: "50px", padding: "0em 0.5em"
+    }
+  }))
+)(({classes, createClaim, history, error}) => {
   const [errors, setErrors] = useState([])
   const input = createRef()
   useEffect(() => {
@@ -63,11 +72,11 @@ export default compose(
       {errors.map((error, i) => (
         <div key={i}>{messageForError(error)}</div>
       ))}
-      <Form onSubmit={createAndGoToClaim} style={{textAlign: "center"}}>
+      <Form className={classes.form} onSubmit={createAndGoToClaim}>
         <Fragment>
           <TextInput field="body" fullWidth={true} inputRef={input}
                      autoComplete="off"
-                     style={{ fontSize: "50px", padding: "0em 0.5em" }}/>
+                     className={classes.bodyInput}/>
           <QuickClaimSearch
             claimActions={claim => (
               <Fragment>

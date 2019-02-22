@@ -120,6 +120,9 @@ export const Claim = compose(
       color: 'rgba(0, 0, 0, 0.87)',
       boxShadow: theme.shadows[1],
       fontSize: 11
+    },
+    iconButton: {
+      float: "right", position: "relative", top: "-2em"
     }
   }))
 )(({claim, history, classes}) => {
@@ -162,7 +165,7 @@ export const Claim = compose(
           </Button>
         )}
       </Typography>
-      <IconButton onClick={() => setShowComments(!commentsShown)} style={{float: "right", position: "relative", top: "-2em"}}>
+      <IconButton className={classes.iconButton} onClick={() => setShowComments(!commentsShown)}>
         <Chat/>
       </IconButton>
       <Drawer open={commentsShown} anchor="right" onClose={() => setShowComments(false)}>
@@ -184,18 +187,25 @@ const RelevanceButton = ({relevance, myRelevanceRating, relevanceVote}) =>
       </Button>
 
 
-const Evidence = graphql(
-  queries.VoteOnEvidence, {
-    props: ({ ownProps: {evidence}, mutate }) => ({
-      relevanceVote: (rating) => mutate({
-        variables: {
-          evidenceID: evidence.id,
-          rating
-        }
+const Evidence = compose(
+  graphql(
+    queries.VoteOnEvidence, {
+      props: ({ ownProps: {evidence}, mutate }) => ({
+        relevanceVote: (rating) => mutate({
+          variables: {
+            evidenceID: evidence.id,
+            rating
+          }
+        })
       })
-    })
-  }
-)(({relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {
+    }
+  ),
+  withStyles(theme => ({
+    evidenceLists: {
+      width: '100%'
+    }
+  }))
+)(({classes, relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {
   const [expanded, setExpanded] = useState(false)
   return (
     <div key={id}>
@@ -223,7 +233,7 @@ const Evidence = graphql(
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           {expanded && (
-            <EvidenceLists claim={claim} style={{width: '100%'}}/>
+            <EvidenceLists claim={claim} className={classes.evidenceLists}/>
           )}
         </ExpansionPanelDetails>
       </ExpansionPanel>
