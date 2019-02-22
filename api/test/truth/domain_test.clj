@@ -173,6 +173,26 @@
              :relevance 133/2}]
            (t/get-claim-evidence-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] evidence-spec)))))
 
+(deftest agree-disagree
+  (let [agree-disagree
+        (fn [slug]
+          (d/q '[:find (sum ?agreement) (sum ?agreement-count)
+                 :in $ % ?claim
+                 :with ?uniqueness
+                 :where
+                 (agree-disagree ?claim ?uniqueness ?agreement ?agreement-count)]
+               fresh-db t/rules [:claim/slug slug]))]
+    (is (= [[200 2]]
+           (agree-disagree "dogs-are-great")))
+    (is (= [[100 3]]
+           (agree-disagree "cats-are-great")))
+    (is (= [[200 2]]
+           (agree-disagree "animals-are-awesome")))
+    (is (= [[0 0]]
+           (agree-disagree "a-cat-was-mean-to-me")))
+    (is (= [[0 0]]
+           (agree-disagree "they-dont-like-people")))))
+
 (deftest agree-disagree-score
   (let [agree-disagree-score
         (fn [slug]
