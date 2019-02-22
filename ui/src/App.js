@@ -8,6 +8,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import {client} from './clients'
 import Claims from './components/Claims'
 import ClaimPage from './pages/Claim'
+import UserClaimPage from './pages/UserClaim'
 import HomePage from './pages/Home'
 import SearchPage from './pages/Search'
 import {AuthenticationProvider, withAuth} from './authentication'
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/ibelieve/:slug" component={ClaimPage}/>
               <Route path="/idontbelieve/:slug" component={ClaimPage}/>
               <Route path="/somesay/:slug" component={ClaimPage}/>
+              <Route path="/someonenamed/:username/believes/:slug" component={UserClaimPage}/>
             </Switch>
           </div>
         </BrowserRouter>
