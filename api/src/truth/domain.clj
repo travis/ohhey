@@ -246,21 +246,23 @@
      (zero-score ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
      (zero-agreement ?agreement ?agreement-count)
      (zero-support-oppose ?support ?oppose)]
+    [(basic-claim-stats ?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose)
+     (or-join [?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose]
+              (and
+               (agree-disagree ?claim ?uniqueness ?agreement ?agreement-count)
+               (zero-support-oppose ?support ?oppose))
+              (and
+               (support-oppose ?claim ?uniqueness ?support ?oppose)
+               (zero-agreement ?agreement ?agreement-count)))]
     [(claim-stats [?claim] ?uniqueness ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
      (or-join [?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count]
               (and
+               (claim-score ?claim 1 ?uniqueness ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
                (zero-agreement ?agreement ?agreement-count)
-               (zero-support-oppose ?support ?oppose)
-               (claim-score ?claim 1 ?uniqueness ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count))
+               (zero-support-oppose ?support ?oppose))
               (and
-               (zero-score ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
-               (or-join [?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose]
-                        (and
-                         (agree-disagree ?claim ?uniqueness ?agreement ?agreement-count)
-                         (zero-support-oppose ?support ?oppose))
-                        (and
-                         (support-oppose ?claim ?uniqueness ?support ?oppose)
-                         (zero-agreement ?agreement ?agreement-count)))))]
+               (basic-claim-stats ?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose)
+               (zero-score ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)))]
     [(claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
                      ?support ?oppose ?my-agreement ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
      (or
@@ -289,13 +291,11 @@
                                ?agreement ?agreement-count ?support ?oppose
                                ?my-agreement ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
                (zero-rating ?rating ?rating-count)
-               (nil-my-rating ?my-rating)
-               )
+               (nil-my-rating ?my-rating))
               (and
                (evidence-rating-as ?evidence ?user ?uniqueness ?rating ?rating-count ?my-rating)
                (zero-stats ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
-               (nil-my-agreement ?my-agreement)
-               ))]])
+               (nil-my-agreement ?my-agreement)))]])
 
 (defn assoc-claim-stats
   ([claim support-count oppose-count agreement agreement-count agree-disagree-score score score-component-count]
