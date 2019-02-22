@@ -38,7 +38,7 @@
    :claim/creator #:user{:username "travis"},
    :support-count 1 :oppose-count 0
    :agreement 200 :agreement-count 2 :my-agreement nil
-   :score 733/3})
+   :score 533/2})
 
 (def cats-are-great
   {:claim/body "Cats are great",
@@ -46,7 +46,7 @@
    :claim/creator #:user{:username "james"},
    :support-count 2 :oppose-count 1
    :agreement 100 :agreement-count 3 :my-agreement nil
-   :score 1032/7})
+   :score 183})
 
 (deftest test-get-claim
   (testing "Dogs are great"
@@ -176,21 +176,21 @@
 (deftest agree-disagree-score
   (let [agree-disagree-score
         (fn [slug]
-          (d/q '[:find (sum ?score) (sum ?score-component-count)
+          (d/q '[:find (sum ?score)
                  :in $ % ?claim
                  :with ?uniqueness
                  :where
-                 (agree-disagree-score ?claim ?uniqueness ?score ?score-component-count)]
+                 (agree-disagree-score ?claim ?uniqueness ?score)]
                fresh-db t/rules [:claim/slug slug]))]
-    (is (= [[200 2]]
+    (is (= [[200]]
            (agree-disagree-score "dogs-are-great")))
-    (is (= [[100 3]]
+    (is (= [[100]]
            (agree-disagree-score "cats-are-great")))
-    (is (= [[200 2]]
+    (is (= [[200]]
            (agree-disagree-score "animals-are-awesome")))
-    (is (= [[0 0]]
+    (is (= [[0]]
            (agree-disagree-score "a-cat-was-mean-to-me")))
-    (is (= [[0 0]]
+    (is (= [[0]]
            (agree-disagree-score "they-dont-like-people")))))
 
 (deftest evidence-score
@@ -243,11 +243,11 @@
                  (claim-score ?claim 1 ?uniqueness ?agree-disagree-score ?score ?score-component-count)
                  ]
                fresh-db t/rules [:claim/slug slug]))]
-    (is (= [[200 26600 6]]
+    (is (= [[200 26600 4]]
            (claim-score "dogs-are-great")))
-    (is (= [[100 33200 7]]
+    (is (= [[100 33200 4]]
            (claim-score "cats-are-great")))
-    (is (= [[200 0 2]]
+    (is (= [[200 0 0]]
            (claim-score "animals-are-awesome")))
     (is (= [[0 0 0]]
            (claim-score "a-cat-was-mean-to-me")))
@@ -265,11 +265,11 @@
                  (claim-stats ?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?score ?score-component-count)
                  ]
                fresh-db t/rules [:claim/slug slug]))]
-    (is (= [[200 2 1 0 200 26600 6]]
+    (is (= [[200 2 1 0 200 26600 4]]
            (claim-stats "dogs-are-great")))
-    (is (= [[100 3 2 1 100 33200 7]]
+    (is (= [[100 3 2 1 100 33200 4]]
            (claim-stats "cats-are-great")))
-    (is (= [[200 2 0 0 200 0 2]]
+    (is (= [[200 2 0 0 200 0 0]]
            (claim-stats "animals-are-awesome")))
     (is (= [[0 0 0 0 0 0 0]]
            (claim-stats "a-cat-was-mean-to-me")))

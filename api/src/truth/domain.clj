@@ -133,18 +133,46 @@
     [(nil-my-agreement ?my-agreement)
      [(ground -101) ?my-agreement]]
 
-    [(agree-disagree-score [?claim] ?uniqueness ?score ?score-component-count)
-     (or-join [?claim ?uniqueness ?score ?score-component-count]
+    ;; relevance-rating
+    [(my-rating [?relevance-vote ?user] ?my-rating)
+     (or-join [?relevance-vote ?user ?my-rating]
+              (and
+               [?relevance-vote :relevance-vote/voter ?user]
+               [?relevance-vote :relevance-vote/rating ?my-rating])
+              (and
+               (not [?relevance-vote :relevance-vote/voter ?user])
+               (nil-my-rating ?my-rating)))]
+    [(evidence-rating [?evidence] ?uniqueness ?rating ?rating-count)
+     (or-join [?evidence ?uniqueness ?rating ?rating-count]
+              (and
+               [?evidence :evidence/votes ?relevance-vote]
+               [(identity ?relevance-vote) ?uniqueness]
+               [?relevance-vote :relevance-vote/rating ?rating]
+               [(ground 1) ?rating-count])
+              (and
+               [(identity ?evidence) ?uniqueness]
+               (zero-rating ?rating ?rating-count)))]
+    [(my-evidence-rating [?evidence ?user] ?uniqueness ?my-rating)
+     (or-join [?evidence ?user ?uniqueness ?my-rating]
+              (and
+               [?evidence :evidence/votes ?relevance-vote]
+               [(identity ?relevance-vote) ?uniqueness]
+               (my-rating ?relevance-vote ?user ?my-rating))
+              (and
+               [(identity ?evidence) ?uniqueness]
+               (nil-my-rating ?my-rating)))]
+
+    ;; scoring
+    [(agree-disagree-score [?claim] ?uniqueness ?score)
+     (or-join [?claim ?uniqueness ?score]
       (and
        [?claim :claim/votes ?vote]
        [(identity ?vote) ?uniqueness]
        [?vote :claim-vote/agreement ?agreement]
-       [(* ?agreement 1) ?score]
-       [(ground 1) ?score-component-count])
+       [(* ?agreement 1) ?score])
       (and
        [(identity ?claim) ?uniqueness]
        [(ground 0) ?score]
-       [(ground 0) ?score-component-count]
        ))]
     [(evidence-score [?evidence] ?uniqueness ?score ?score-component-count)
      [?evidence :evidence/claim ?claim]
@@ -157,15 +185,7 @@
               (and
                (zero-agreement ?agreement ?agreement-count)
                [(identity ?claim) ?agreement-uniqueness]))
-     (or-join [?evidence ?rating ?rating-count ?rating-uniqueness]
-              (and
-               [?evidence :evidence/votes ?relevance-vote]
-               [?relevance-vote :relevance-vote/rating ?rating]
-               [(ground 1) ?rating-count]
-               [(identity ?relevance-vote) ?rating-uniqueness])
-              (and
-               [(identity ?evidence) ?rating-uniqueness]
-               (zero-rating ?rating ?rating-count)))
+     (evidence-rating ?evidence ?rating-uniqueness ?rating ?rating-count)
      (or-join [?evidence ?support-coeff]
       (and
        [?evidence :evidence/supports true]
@@ -191,8 +211,9 @@
      (or [?claim ?depth ?uniqueness ?agree-disagree-score ?support-oppose-score ?support-oppose-component-count]
          (and
           [?depth]
-          (agree-disagree-score ?claim ?uniqueness ?agree-disagree-score ?support-oppose-component-count)
-          [(ground 0) ?support-oppose-score])
+          (agree-disagree-score ?claim ?uniqueness ?agree-disagree-score)
+          [(ground 0) ?support-oppose-score]
+          [(ground 0) ?support-oppose-component-count])
          (and
           (support-oppose-score ?claim ?depth ?uniqueness ?support-oppose-score ?support-oppose-component-count)
           [(ground 0) ?agree-disagree-score]))]
@@ -244,9 +265,7 @@
                (zero-support-oppose ?support ?oppose)
                (claim-score ?claim 1 ?uniqueness ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count))
               (and
-               [(ground 0) ?agree-disagree-score]
-               [(ground 0) ?support-oppose-score]
-               [(ground 0) ?support-oppose-score-component-count]
+               (zero-score ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
                (or-join [?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose]
                         (and
                          (agree-disagree ?claim ?uniqueness ?agreement ?agreement-count)
@@ -267,28 +286,9 @@
        (zero-agreement ?agreement ?agreement-count)
        (zero-support-oppose ?support ?oppose)
        ))]
-    [(my-rating [?relevance-vote ?user] ?my-rating)
-     (or-join [?relevance-vote ?user ?my-rating]
-              (and
-               [?relevance-vote :relevance-vote/voter ?user]
-               [?relevance-vote :relevance-vote/rating ?my-rating])
-              (and
-               (not [?relevance-vote :relevance-vote/voter ?user])
-               (nil-my-rating ?my-rating)))
-     ]
-    [(evidence-rating [?evidence ?user] ?uniqueness ?rating ?rating-count ?my-rating)
-     (or-join [?evidence ?user ?uniqueness ?rating ?rating-count ?my-rating]
-              (and
-               [?evidence :evidence/votes ?relevance-vote]
-               [(identity ?relevance-vote) ?uniqueness]
-               [?relevance-vote :relevance-vote/rating ?rating]
-               [(ground 1) ?rating-count]
-               (my-rating ?relevance-vote ?user ?my-rating)
-               )
-              (and
-               [(identity ?evidence) ?uniqueness]
-               (nil-my-rating ?my-rating)
-               (zero-rating ?rating ?rating-count)))]
+    [(evidence-rating-as [?evidence ?user] ?uniqueness ?rating ?rating-count ?my-rating)
+     (evidence-rating ?evidence ?uniqueness ?rating ?rating-count)
+     (my-evidence-rating ?evidence ?user ?uniqueness ?my-rating)]
     [(evidence-stats-as [?evidence ?user] ?uniqueness ?agreement ?agreement-count
                         ?support ?oppose ?my-agreement
                         ?rating ?rating-count ?my-rating
@@ -306,7 +306,7 @@
                (nil-my-rating ?my-rating)
                )
               (and
-               (evidence-rating ?evidence ?user ?uniqueness ?rating ?rating-count ?my-rating)
+               (evidence-rating-as ?evidence ?user ?uniqueness ?rating ?rating-count ?my-rating)
                (zero-agreement ?agreement ?agreement-count)
                (zero-support-oppose ?support ?oppose)
                (nil-my-agreement ?my-agreement)
