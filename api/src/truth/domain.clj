@@ -115,7 +115,25 @@
            db claim supports)))
 
 (def rules
-  '[[(agree-disagree-score [?claim] ?uniqueness ?score ?score-component-count)
+  '[[(zero-agreement ?agreement ?agreement-count)
+     [(ground 0) ?agreement]
+     [(ground 0) ?agreement-count]]
+    [(zero-support-oppose ?support ?oppose)
+     [(ground 0) ?support]
+     [(ground 0) ?oppose]]
+    [(zero-rating ?rating ?rating-count)
+     [(ground 0) ?rating]
+     [(ground 0) ?rating-count]]
+    [(nil-my-rating ?my-rating)
+     [(ground -1) ?my-rating]]
+    [(zero-score ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
+     [(ground 0) ?agree-disagree-score]
+     [(ground 0) ?support-oppose-score]
+     [(ground 0) ?support-oppose-score-component-count]]
+    [(nil-my-agreement ?my-agreement)
+     [(ground -101) ?my-agreement]]
+
+    [(agree-disagree-score [?claim] ?uniqueness ?score ?score-component-count)
      (or-join [?claim ?uniqueness ?score ?score-component-count]
       (and
        [?claim :claim/votes ?vote]
@@ -137,8 +155,7 @@
                [(ground 1) ?agreement-count]
                [(identity ?vote) ?agreement-uniqueness])
               (and
-               [(ground 0) ?agreement]
-               [(ground 0) ?agreement-count]
+               (zero-agreement ?agreement ?agreement-count)
                [(identity ?claim) ?agreement-uniqueness]))
      (or-join [?evidence ?rating ?rating-count ?rating-uniqueness]
               (and
@@ -148,8 +165,7 @@
                [(identity ?relevance-vote) ?rating-uniqueness])
               (and
                [(identity ?evidence) ?rating-uniqueness]
-               [(ground 0) ?rating-count]
-               [(ground 0) ?rating]))
+               (zero-rating ?rating ?rating-count)))
      (or-join [?evidence ?support-coeff]
       (and
        [?evidence :evidence/supports true]
@@ -190,8 +206,7 @@
        [(ground 1) ?agreement-count])
       (and
        [(identity ?claim) ?uniqueness]
-       [(ground 0) ?agreement]
-       [(ground 0) ?agreement-count]))]
+       (zero-agreement ?agreement ?agreement-count)))]
     [(agree-disagree-as ?claim ?user ?uniqueness ?my-agreement)
      (or-join
       [?claim ?user ?uniqueness ?my-agreement]
@@ -202,7 +217,7 @@
        [?vote :claim-vote/agreement ?my-agreement])
       (and
        [(identity ?claim) ?uniqueness]
-       [(ground -101) ?my-agreement]))]
+       (nil-my-agreement ?my-agreement)))]
     [(support-oppose ?claim ?uniqueness ?support ?oppose)
      (or-join
       [?claim ?uniqueness ?support ?oppose]
@@ -221,15 +236,12 @@
          [(ground 1) ?oppose])))
       (and
        [(identity ?claim) ?uniqueness]
-       [(ground 0) ?support]
-       [(ground 0) ?oppose]))]
+       (zero-support-oppose ?support ?oppose)))]
     [(claim-stats [?claim] ?uniqueness ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
      (or-join [?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count]
               (and
-               [(ground 0) ?agreement]
-               [(ground 0) ?agreement-count]
-               [(ground 0) ?support]
-               [(ground 0) ?oppose]
+               (zero-agreement ?agreement ?agreement-count)
+               (zero-support-oppose ?support ?oppose)
                (claim-score ?claim 1 ?uniqueness ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count))
               (and
                [(ground 0) ?agree-disagree-score]
@@ -238,28 +250,22 @@
                (or-join [?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose]
                         (and
                          (agree-disagree ?claim ?uniqueness ?agreement ?agreement-count)
-                         [(ground 0) ?support]
-                         [(ground 0) ?oppose])
+                         (zero-support-oppose ?support ?oppose))
                         (and
                          (support-oppose ?claim ?uniqueness ?support ?oppose)
-                         [(ground 0) ?agreement]
-                         [(ground 0) ?agreement-count]))))]
+                         (zero-agreement ?agreement ?agreement-count)))))]
     [(claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
                      ?support ?oppose ?my-agreement ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
      (or
       (and
        [?user]
        (claim-stats ?claim ?uniqueness ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
-       [(ground -101) ?my-agreement])
+       (nil-my-agreement ?my-agreement))
       (and
        (agree-disagree-as ?claim ?user ?uniqueness ?my-agreement)
-       [(ground 0) ?agree-disagree-score]
-       [(ground 0) ?support-oppose-score]
-       [(ground 0) ?support-oppose-score-component-count]
-       [(ground 0) ?agreement]
-       [(ground 0) ?agreement-count]
-       [(ground 0) ?support]
-       [(ground 0) ?oppose]
+       (zero-score ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
+       (zero-agreement ?agreement ?agreement-count)
+       (zero-support-oppose ?support ?oppose)
        ))]
     [(my-rating [?relevance-vote ?user] ?my-rating)
      (or-join [?relevance-vote ?user ?my-rating]
@@ -268,7 +274,7 @@
                [?relevance-vote :relevance-vote/rating ?my-rating])
               (and
                (not [?relevance-vote :relevance-vote/voter ?user])
-               [(ground -1) ?my-rating]))
+               (nil-my-rating ?my-rating)))
      ]
     [(evidence-rating [?evidence ?user] ?uniqueness ?rating ?rating-count ?my-rating)
      (or-join [?evidence ?user ?uniqueness ?rating ?rating-count ?my-rating]
@@ -280,12 +286,9 @@
                (my-rating ?relevance-vote ?user ?my-rating)
                )
               (and
-               (not-join [?evidence]
-                         [?evidence :evidence/votes ?relevance-vote])
                [(identity ?evidence) ?uniqueness]
-               [(ground -1) ?my-rating]
-               [(ground 0) ?rating-count]
-               [(ground 0) ?rating]))]
+               (nil-my-rating ?my-rating)
+               (zero-rating ?rating ?rating-count)))]
     [(evidence-stats-as [?evidence ?user] ?uniqueness ?agreement ?agreement-count
                         ?support ?oppose ?my-agreement
                         ?rating ?rating-count ?my-rating
@@ -299,20 +302,15 @@
                (claim-stats-as ?claim ?user ?uniqueness
                                ?agreement ?agreement-count ?support ?oppose
                                ?my-agreement ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
-               [(ground 0) ?rating]
-               [(ground 0) ?rating-count]
-               [(ground -1) ?my-rating]
+               (zero-rating ?rating ?rating-count)
+               (nil-my-rating ?my-rating)
                )
               (and
                (evidence-rating ?evidence ?user ?uniqueness ?rating ?rating-count ?my-rating)
-               [(ground 0) ?agreement]
-               [(ground 0) ?agreement-count]
-               [(ground 0) ?support]
-               [(ground 0) ?oppose]
-               [(ground -101) ?my-agreement]
-               [(ground 0) ?agree-disagree-score ]
-               [(ground 0) ?support-oppose-score]
-               [(ground 0) ?support-oppose-score-component-count]
+               (zero-agreement ?agreement ?agreement-count)
+               (zero-support-oppose ?support ?oppose)
+               (nil-my-agreement ?my-agreement)
+               (zero-score ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
                )
               )
 
