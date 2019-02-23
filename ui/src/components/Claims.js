@@ -180,7 +180,7 @@ export const Claim = compose(
   )
 })
 
-const RelevanceButton = ({relevance, myRelevanceRating, relevanceVote}) =>
+export const RelevanceButton = ({relevance, myRelevanceRating, relevanceVote}) =>
       <Button color={(myRelevanceRating === relevance) ? 'secondary' : 'default'}
               onClick={() => relevanceVote(relevance)}>
         {relevance}%

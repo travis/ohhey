@@ -295,7 +295,38 @@
               (and
                (evidence-rating-as ?evidence ?user ?uniqueness ?rating ?rating-count ?my-rating)
                (zero-stats ?agreement ?agreement-count ?support ?oppose ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)
-               (nil-my-agreement ?my-agreement)))]])
+               (nil-my-agreement ?my-agreement)))]
+    [(agreement-for [?claim ?user] ?uniqueness ?agreement)
+     (or-join [?claim ?user ?uniqueness ?agreement]
+              (and
+               [?claim :claim/votes ?vote]
+               [?vote :claim-vote/voter ?user]
+               [?vote :claim-vote/agreement ?agreement]
+               [(identity ?vote) ?uniqueness])
+              (and
+               (zero-agreement ?agreement ?agreement-count)
+               [(identity ?claim) ?uniqueness]))]
+    [(evidence-for [?claim ?user] ?evidence ?uniqueness ?rating ?agreement)
+     [?claim :claim/evidence ?evidence]
+     [(identity ?evidence) ?uniqueness]
+     (or-join [?evidence ?user ?rating ?agreement]
+              (and
+               [?evidence :evidence/creator ?user]
+               (nil-my-rating ?rating)
+               (nil-my-agreement ?agreement))
+              (and
+               [?evidence :evidence/votes ?vote]
+               [?vote :relevance-vote/voter ?user]
+               [?vote :relevance-vote/rating ?rating]
+               (nil-my-agreement ?agreement))
+              (and
+               [?evidence :evidence/claim ?evidence-claim]
+               [?evidence-claim :claim/votes ?vote]
+               [?vote :claim-vote/voter ?user]
+               [?vote :claim-vote/agreement ?agreement]
+               (nil-my-rating ?rating)))]
+    [(claim-for [?claim ?user] ?uniqueness ?agreement)
+     (agreement-for ?claim ?user ?uniqueness ?agreement)]])
 
 (defn assoc-claim-stats
   ([claim support-count oppose-count agreement agreement-count agree-disagree-score score score-component-count]
@@ -317,11 +348,28 @@
                           :claim/id
                           :claim/body
                           :claim/slug
-                          {(:claim/contributors :default []) [:user/username]}
                           {:claim/creator [:user/username]}])
 
 (def anon-user-ref [:user/username "anon"])
 
+
+(defn get-claim-for
+  ([db claim-ref user-ref]
+   (get-claim-for db claim-ref user-ref default-claim-spec))
+  ([db claim-ref user-ref claim-spec]
+   (let [[[claim agreement]]
+         (d/q
+          (apply
+           conj
+           '[:find]
+           (list 'pull '?claim claim-spec)
+           '(sum ?agreement)
+           '[:in $ % ?claim ?user
+             :with ?uniqueness
+             :where
+             (claim-for ?claim ?user ?uniqueness ?agreement)])
+          db rules claim-ref (or user-ref anon-user-ref))]
+     (assoc claim :agreement agreement))))
 
 (defn get-claim-as
   ([db claim-ref user-ref]
@@ -538,3 +586,29 @@
                                 score score-component-count)
                ))
       ))))
+
+(defn get-claim-evidence-for
+  ([db claim-ref user-ref] (get-claim-evidence-for db claim-ref user-ref default-evidence-spec))
+  ([db claim-ref user-ref evidence-spec]
+   (let [results
+         (d/q
+          (apply
+           conj
+           '[:find]
+           (list 'pull '?evidence evidence-spec)
+           '[?rating
+             ?agreement
+             :in $ % ?claim ?user
+             :with ?uniqueness
+             :where
+             (evidence-for
+              ?claim ?user
+              ?evidence ?uniqueness
+              ?rating ?agreement)])
+          db rules claim-ref (or user-ref anon-user-ref))]
+     (for [[evidence rating agreement]
+           results]
+       (assoc (assoc evidence :relevance rating)
+              :evidence/claim (assoc
+                               (:evidence/claim evidence)
+                               :agreement agreement))))))

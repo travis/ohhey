@@ -74,6 +74,15 @@
     (is (= (assoc cats-are-great :my-agreement 100)
            (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "chuchu"] claim-spec)))))
 
+(deftest test-get-claim-for
+  (testing "Dogs are great"
+    (is (= 0
+           (:agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "anon"] claim-spec))))
+    (is (= 0
+           (:agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] claim-spec))))
+    (is (= 100
+           (:agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "travis"] claim-spec))))))
+
 (def evidence-spec
   '[:evidence/supports
     {:evidence/claim
@@ -173,6 +182,39 @@
              :relevance 133/2}]
            (t/get-claim-evidence-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] evidence-spec)))))
 
+(def evidence-for-spec
+  '[:evidence/supports
+    {:evidence/claim
+     [:claim/body]}])
+
+(deftest test-get-claim-evidence-for
+  (testing "Cats are great"
+    (is (= [{:evidence/supports true,
+             :evidence/claim {:agreement -101
+                              :claim/body "Animals are awesome"}
+             :relevance 66}
+            {:evidence/supports false,
+             :evidence/claim {:agreement -101
+                              :claim/body "They don't like people"}
+             :relevance -1}]
+           (t/get-claim-evidence-for fresh-db [:claim/slug "cats-are-great"] [:user/username "travis"] evidence-for-spec)))
+    (is (= [{:evidence/supports true,
+             :evidence/claim {:agreement 100
+                              :claim/body "Animals are awesome"},
+             :relevance -1}]
+           (t/get-claim-evidence-for fresh-db [:claim/slug "cats-are-great"] [:user/username "toby"] evidence-for-spec))))
+  (testing "Dogs are great"
+    (is (= [{:evidence/supports true,
+             :evidence/claim {:agreement 100
+                              :claim/body "Animals are awesome"}
+             :relevance -1}]
+           (t/get-claim-evidence-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "toby"] evidence-for-spec)))
+    (is (= [{:evidence/supports true,
+             :evidence/claim {:agreement -101
+                              :claim/body "Animals are awesome"}
+             :relevance 33}]
+           (t/get-claim-evidence-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] evidence-for-spec)))))
+
 (deftest agree-disagree
   (let [agree-disagree
         (fn [slug]
@@ -192,6 +234,90 @@
            (agree-disagree "a-cat-was-mean-to-me")))
     (is (= [[0 0]]
            (agree-disagree "they-dont-like-people")))))
+
+(deftest claim-for
+  (let [claim-for
+        (fn [slug username]
+          (d/q '[:find (sum ?agreement)
+                 :in $ % ?claim ?user
+                 :with ?uniqueness
+                 :where
+                 (claim-for ?claim ?user ?uniqueness ?agreement)]
+               fresh-db t/rules [:claim/slug slug] [:user/username username]))]
+    (is (= [[100]]
+           (claim-for "dogs-are-great" "travis")))
+    (is (= [[0]]
+           (claim-for "cats-are-great" "travis")))
+    (is (= [[100]]
+           (claim-for "cats-are-great" "chuchu")))
+    (is (= [[-100]]
+           (claim-for "cats-are-great" "toby")))
+    (is (= [[0]]
+           (claim-for "animals-are-awesome" "travis")))
+    (is (= [[0]]
+           (claim-for "a-cat-was-mean-to-me" "travis")))
+    (is (= [[0]]
+           (claim-for "they-dont-like-people" "travis")))))
+
+(deftest agreement-for
+  (let [agreement-for
+        (fn [slug username]
+          (d/q '[:find (sum ?agreement)
+                 :in $ % ?claim ?user
+                 :with ?uniqueness
+                 :where
+                 (agreement-for ?claim ?user ?uniqueness ?agreement)]
+               fresh-db t/rules [:claim/slug slug] [:user/username username]))]
+    (is (= [[100]]
+           (agreement-for "dogs-are-great" "travis")))
+    (is (= [[0]]
+           (agreement-for "cats-are-great" "travis")))
+    (is (= [[100]]
+           (agreement-for "cats-are-great" "chuchu")))
+    (is (= [[-100]]
+           (agreement-for "cats-are-great" "toby")))
+    (is (= [[0]]
+           (agreement-for "animals-are-awesome" "travis")))
+    (is (= [[0]]
+           (agreement-for "a-cat-was-mean-to-me" "travis")))
+    (is (= [[0]]
+           (agreement-for "they-dont-like-people" "travis")))))
+
+(deftest evidence-for
+  (let [evidence-for
+        (fn [slug username]
+          (d/q '[:find (pull ?evidence [{:evidence/claim
+                                         [:claim/body]}])
+                 ?rating ?agreement
+
+                 :in $ % ?claim ?user
+                 :with ?uniqueness
+                 :where
+                 (evidence-for ?claim ?user ?evidence ?uniqueness ?rating ?agreement)]
+               fresh-db t/rules [:claim/slug slug] [:user/username username]))]
+    (testing "dogs are great"
+      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} 100 -101]
+              [{:evidence/claim {:claim/body "Animals are awesome"}} -1 -101]]
+             (evidence-for "dogs-are-great" "travis")))
+      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} 33 -101]]
+             (evidence-for "dogs-are-great" "james")))
+      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} -1 100]]
+             (evidence-for "dogs-are-great" "chuchu")))
+      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} -1 100]]
+             (evidence-for "dogs-are-great" "toby"))))
+    (testing "cats are great"
+      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} 66 -101]
+              [{:evidence/claim {:claim/body "They don't like people"}} -1 -101]]
+             (evidence-for "cats-are-great" "travis")))
+      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} -1 100]]
+             (evidence-for "cats-are-great" "chuchu")))
+      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} 100 -101]
+              [{:evidence/claim {:claim/body "Animals are awesome"}} -1 -101]]
+             (evidence-for "cats-are-great" "james")))
+      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} -1 100]]
+             (evidence-for "cats-are-great" "toby")))
+      (is (= [[{:evidence/claim {:claim/body "They don't like people"}} -1 -101]]
+             (evidence-for "cats-are-great" "tani"))))))
 
 (deftest agree-disagree-score
   (let [agree-disagree-score

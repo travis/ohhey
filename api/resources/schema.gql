@@ -56,10 +56,12 @@ type SearchResults {
 
 type Query {
   currentUser: User
-  claim(slug: String): Claim
   claims: [Claim]
   searchClaims(term: String): SearchResults
+  claim(slug: String): Claim
   evidenceForClaim(claimID: ID): [Evidence]
+  userClaim(username: String!, slug: String!): Claim
+  userEvidenceForClaim(username: String!, claimID: ID!): [Evidence]
 }
 
 type Mutation {

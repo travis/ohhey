@@ -41,6 +41,8 @@ const App = () => (
               <Route path="/idontbelieve/:slug" component={ClaimPage}/>
               <Route path="/somesay/:slug" component={ClaimPage}/>
               <Route path="/someonenamed/:username/believes/:slug" component={UserClaimPage}/>
+              <Route path="/someonenamed/:username/doesntbelieve/:slug" component={UserClaimPage}/>
+              <Route path="/someonenamed/:username/isntsureif/:slug" component={UserClaimPage}/>
             </Switch>
           </div>
         </BrowserRouter>

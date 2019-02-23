@@ -67,10 +67,6 @@
       (fn [{db :db current-user :current-user} arguments parent]
         current-user)
 
-      :claim
-      (fn [{db :db current-user :current-user} {slug :slug} parent]
-        (t/get-claim-as db [:claim/slug slug] (:db/id current-user)))
-
       :claims
       (fn [{db :db current-user :current-user} arguments parent]
         (t/get-all-claims-as db (:db/id current-user)))
@@ -82,9 +78,21 @@
                (search-results-of-type :Claim))
           []))
 
+      :claim
+      (fn [{db :db current-user :current-user} {slug :slug} parent]
+        (t/get-claim-as db [:claim/slug slug] (:db/id current-user)))
+
       :evidenceForClaim
       (fn [{db :db current-user :current-user} {claim-id :claimID} parent]
         (t/get-claim-evidence-as db [:claim/id claim-id] (:db/id current-user)))
+
+      :userClaim
+      (fn [{db :db current-user :current-user} {slug :slug username :username} parent]
+        (t/get-claim-for db [:claim/slug slug] [:user/username username]))
+
+      :userEvidenceForClaim
+      (fn [{db :db current-user :current-user} {claim-id :claimID username :username} parent]
+        (t/get-claim-evidence-for db [:claim/id claim-id] [:user/username username]))
       }
      :Mutation
      {:addClaim
@@ -174,8 +182,8 @@
       (fn [{db :db} arguments {id :db/id contributors :claim/contributors}]
         (or contributors (get-contributors db id)))
       :evidence
-      (fn [{db :db current-user :current-user} a {id :db/id}]
-        {:edges (t/get-claim-evidence-as db id (:db/id current-user))})
+      (fn [{db :db current-user :current-user} a {id :db/id evidence :evidence}]
+        (or evidence {:edges (t/get-claim-evidence-as db id (:db/id current-user))}))
       }
      :Evidence
      {:id (dkey :evidence/id)

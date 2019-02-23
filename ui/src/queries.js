@@ -57,8 +57,26 @@ query Claim($slug: String) {
 
 export const EvidenceForClaim = gql`
 ${fullEvidenceFieldsFragment}
-query EvidencForClaim($claimID: ID) {
+query EvidenceForClaim($claimID: ID) {
   evidenceForClaim(claimID: $claimID) {
+    ...fullEvidenceFields
+  }
+}
+`
+
+export const UserClaim = gql`
+${fullClaimFieldsFragment}
+query UserClaim($username: String!, $slug: String!) {
+  userClaim(username: $username, slug: $slug) {
+    ...fullClaimFields
+  }
+}
+`
+
+export const UserEvidenceForClaim = gql`
+${fullEvidenceFieldsFragment}
+query UserEvidenceForClaim($username: String!, $claimID: ID!) {
+  userEvidenceForClaim(username: $username, claimID: $claimID) {
     ...fullEvidenceFields
   }
 }
