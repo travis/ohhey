@@ -12,6 +12,7 @@ import {Form, TextInput} from './form'
 import Comments from './Comments'
 import QuickClaimSearch from './QuickClaimSearch'
 import {StopPropagation} from './util'
+import {believesURL, doesntbelieveURL, isntsureifURL} from './UserClaim'
 
 import * as goto from '../goto';
 import * as queries from '../queries';
@@ -128,7 +129,7 @@ export const Claim = compose(
 )(({claim, history, classes}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
-  const {body, creator} = claim
+  const {body, slug, creator} = claim
 
   return (
     <Paper>
@@ -157,6 +158,14 @@ export const Claim = compose(
         <AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim)}/>
         <NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim)}/>
         <DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim)}/>
+      </Typography>
+      <Typography variant="caption" align="center">
+        <RoutePrefixSwitch
+          ibelieve={<Link to={believesURL("travis", slug)}>tell the world!</Link>}
+          idontbelieve={<Link to={doesntbelieveURL("travis", slug)}>tell the world!</Link>}
+          fallback={<Link to={isntsureifURL("travis", slug)}>tell the world!</Link>}
+        />
+
       </Typography>
       <Typography align="center">
         {!evidenceShown && (
