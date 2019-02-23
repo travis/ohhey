@@ -31,12 +31,7 @@ const RoutePrefixSwitch = ({believes, doesntbelieve, isntsureif, fallback}) => (
 
 
 export const ClaimBodyLink = ({username, claim: {slug, body}}) => (
-  <RoutePrefixSwitch
-    believes={<Link to={believesURL(username, slug)}>{body}</Link>}
-    doesntbelieve={<Link to={doesntbelieveURL(username, slug)}>{body}</Link>}
-    isntsureif={<Link to={isntsureifURL(username, slug)}>{body}</Link>}
-    fallback={<Link to={isntsureifURL(username, slug)}>{body}</Link>}
-  />
+  <Link to={`/somesay/${slug}`}>{body}</Link>
 )
 
 const Evidence = compose(
@@ -57,7 +52,7 @@ const Evidence = compose(
       width: '100%'
     }
   }))
-)(({classes, relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {
+)(({classes, relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}, username}) => {
   const [expanded, setExpanded] = useState(false)
   return (
     <div key={id}>
@@ -85,7 +80,7 @@ const Evidence = compose(
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           {expanded && (
-            <EvidenceLists claim={claim} className={classes.evidenceLists}/>
+            <EvidenceLists claim={claim} username={username} className={classes.evidenceLists}/>
           )}
         </ExpansionPanelDetails>
       </ExpansionPanel>
@@ -93,45 +88,47 @@ const Evidence = compose(
   )
 })
 
-const Evidences = ({list, support}) => (
+const Evidences = ({list, username, support}) => (
   <Fragment>
     {list && list.filter((evidence) => (evidence.supports === support)).map((evidence) => (
-      <Evidence evidence={evidence} key={evidence.id}/>
+      <Evidence evidence={evidence} username={username} key={evidence.id}/>
     ))}
   </Fragment>
 )
 
-const EvidenceList = ({claim, evidence, support, placeholder, sentimentMap}) => {
+const EvidenceList = ({claim, username, evidence, support, placeholder, sentimentMap}) => {
   return (
     <Fragment>
       <Typography variant="h5">
         <RoutePrefixSwitch {...sentimentMap} />
       </Typography>
-      <Evidences list={evidence} support={support}/>
+      <Evidences list={evidence} username={username} support={support}/>
     </Fragment>
   )
 }
 
-const SupportList = ({claim, evidence}) => (
-  <EvidenceList claim={claim} support={true} placeholder="why?"
+const SupportList = ({claim, username, evidence}) => (
+  <EvidenceList claim={claim} username={username}
+                support={true} placeholder="why?"
                 evidence={evidence}
                 sentimentMap={{
-                  ibelieve: "because",
-                  idontbelieve: "but other people say",
-                  somesay: "because",
-                  fallback :"because"
+                  believes: "because",
+                  doesntbelieve: "despite",
+                  isntsureif: "on one hand",
+                  fallback :"on one hand"
                 }}/>
 
 )
 
-const OpposeList = ({claim, evidence}) => (
-  <EvidenceList claim={claim} support={false} placeholder="why not?"
+const OpposeList = ({claim, username, evidence}) => (
+  <EvidenceList claim={claim} username={username}
+                support={false} placeholder="why not?"
                 evidence={evidence}
                 sentimentMap={{
-                  ibelieve: "but other people say",
-                  idontbelieve: "because",
-                  somesay: "but others say",
-                  fallback :"but other people say"
+                  believes: "despite",
+                  doesntbelieve: "because",
+                  isntsureif: "but on the other",
+                  fallback :"but on the other"
                 }}/>
 )
 
@@ -142,9 +139,9 @@ const EvidenceLists = graphql(
     }),
     props: ({data: {userEvidenceForClaim}}) => ({evidenceList: userEvidenceForClaim})
   }
-)(({claim, evidenceList, ...props}) => {
-  const Support = () => (<SupportList claim={claim} evidence={evidenceList}/>)
-  const Oppose = () => (<OpposeList claim={claim} evidence={evidenceList}/>)
+)(({claim, username, evidenceList, ...props}) => {
+  const Support = () => (<SupportList claim={claim} username={username} evidence={evidenceList}/>)
+  const Oppose = () => (<OpposeList claim={claim} username={username} evidence={evidenceList}/>)
   return (
     <div {...props}>
       <RoutePrefixSwitch

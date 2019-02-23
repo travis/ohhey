@@ -190,27 +190,33 @@
 (deftest test-get-claim-evidence-for
   (testing "Cats are great"
     (is (= [{:evidence/supports true,
-             :evidence/claim {:agreement -101
+             :evidence/claim {:agreement nil
                               :claim/body "Animals are awesome"}
              :relevance 66}
             {:evidence/supports false,
-             :evidence/claim {:agreement -101
+             :evidence/claim {:agreement nil
                               :claim/body "They don't like people"}
-             :relevance -1}]
+             :relevance nil}
+            ]
            (t/get-claim-evidence-for fresh-db [:claim/slug "cats-are-great"] [:user/username "travis"] evidence-for-spec)))
     (is (= [{:evidence/supports true,
              :evidence/claim {:agreement 100
                               :claim/body "Animals are awesome"},
-             :relevance -1}]
+             :relevance nil}]
            (t/get-claim-evidence-for fresh-db [:claim/slug "cats-are-great"] [:user/username "toby"] evidence-for-spec))))
   (testing "Dogs are great"
     (is (= [{:evidence/supports true,
+             :evidence/claim {:agreement nil
+                              :claim/body "Animals are awesome"}
+             :relevance 100}]
+           (t/get-claim-evidence-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "travis"] evidence-for-spec)))
+    (is (= [{:evidence/supports true,
              :evidence/claim {:agreement 100
                               :claim/body "Animals are awesome"}
-             :relevance -1}]
+             :relevance nil}]
            (t/get-claim-evidence-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "toby"] evidence-for-spec)))
     (is (= [{:evidence/supports true,
-             :evidence/claim {:agreement -101
+             :evidence/claim {:agreement nil
                               :claim/body "Animals are awesome"}
              :relevance 33}]
            (t/get-claim-evidence-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] evidence-for-spec)))))

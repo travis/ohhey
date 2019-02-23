@@ -328,6 +328,9 @@
     [(claim-for [?claim ?user] ?uniqueness ?agreement)
      (agreement-for ?claim ?user ?uniqueness ?agreement)]])
 
+(defn agreement-or-nil [agreement]
+  (when (not (= agreement -101)) agreement))
+
 (defn assoc-claim-stats
   ([claim support-count oppose-count agreement agreement-count agree-disagree-score score score-component-count]
    (assoc-claim-stats claim support-count oppose-count agreement agreement-count -101 agree-disagree-score score score-component-count))
@@ -336,7 +339,7 @@
           :support-count support-count :oppose-count oppose-count
           :agreement agreement
           :agreement-count agreement-count
-          :my-agreement (when (not (= my-agreement -101)) my-agreement)
+          :my-agreement (agreement-or-nil my-agreement)
           :score (+
                   agree-disagree-score
                   (if (= 0 score-component-count)
@@ -587,6 +590,12 @@
                ))
       ))))
 
+(defn merge-gcef-results [results]
+  (reduce (fn [m [evidence user rating agreement :as result]]
+            (assoc m (:evidence/id evidence) result))
+          results
+          {}))
+
 (defn get-claim-evidence-for
   ([db claim-ref user-ref] (get-claim-evidence-for db claim-ref user-ref default-evidence-spec))
   ([db claim-ref user-ref evidence-spec]
@@ -596,8 +605,9 @@
            conj
            '[:find]
            (list 'pull '?evidence evidence-spec)
-           '[?rating
-             ?agreement
+           (list 'pull '?user [:user/username])
+           '[(max ?rating)
+             (max ?agreement)
              :in $ % ?claim ?user
              :with ?uniqueness
              :where
@@ -606,9 +616,9 @@
               ?evidence ?uniqueness
               ?rating ?agreement)])
           db rules claim-ref (or user-ref anon-user-ref))]
-     (for [[evidence rating agreement]
+     (for [[evidence {username :user/username} rating agreement]
            results]
-       (assoc (assoc evidence :relevance rating)
+       (assoc (assoc evidence :relevance (when (not (= rating -1)) rating))
               :evidence/claim (assoc
                                (:evidence/claim evidence)
-                               :agreement agreement))))))
+                               :agreement (agreement-or-nil agreement)))))))

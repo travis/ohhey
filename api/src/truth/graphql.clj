@@ -185,6 +185,10 @@
       (fn [{db :db current-user :current-user} a {id :db/id evidence :evidence}]
         (or evidence {:edges (t/get-claim-evidence-as db id (:db/id current-user))}))
       }
+     :UserClaim
+     {:id (dkey :claim/id)
+      :body (dkey :claim/body)
+      :slug (dkey :claim/slug)}
      :Evidence
      {:id (dkey :evidence/id)
       :supports (dkey :evidence/supports)
@@ -195,7 +199,12 @@
            {} {evidence-id :evidence/id}]
 
         (t/get-parent-claim-as (d/db conn) [:evidence/id evidence-id] (:db/id current-user)))
-      }}}
+      }
+     :UserEvidence
+     {:id (dkey :evidence/id)
+      :supports (dkey :evidence/supports)
+      :claim (dkey :evidence/claim)}
+     }}
    (apply-middleware [handle-errors])))
 
 (defn load-schema []

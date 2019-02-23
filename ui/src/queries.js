@@ -37,6 +37,28 @@ fragment fullEvidenceFields on Evidence {
 }
 `
 
+const fullUserClaimFieldsFragment = gql`
+fragment fullUserClaimFields on UserClaim {
+  id
+  body
+  slug
+  creator { username }
+  agreement
+}
+`
+
+const fullUserEvidenceFieldsFragment = gql`
+${fullUserClaimFieldsFragment}
+fragment fullUserEvidenceFields on UserEvidence {
+  id
+  supports
+  relevance
+  claim {
+  ...fullUserClaimFields
+  }
+}
+`
+
 export const Claims = gql`
 ${fullClaimFieldsFragment}
 query Claims {
@@ -65,19 +87,19 @@ query EvidenceForClaim($claimID: ID) {
 `
 
 export const UserClaim = gql`
-${fullClaimFieldsFragment}
+${fullUserClaimFieldsFragment}
 query UserClaim($username: String!, $slug: String!) {
   userClaim(username: $username, slug: $slug) {
-    ...fullClaimFields
+    ...fullUserClaimFields
   }
 }
 `
 
 export const UserEvidenceForClaim = gql`
-${fullEvidenceFieldsFragment}
+${fullUserEvidenceFieldsFragment}
 query UserEvidenceForClaim($username: String!, $claimID: ID!) {
   userEvidenceForClaim(username: $username, claimID: $claimID) {
-    ...fullEvidenceFields
+    ...fullUserEvidenceFields
   }
 }
 `
@@ -176,7 +198,7 @@ query SearchClaims($term: String!) {
 export const QuickSearchClaims = gql`
 ${fullClaimFieldsFragment}
 query QuickSearchClaims($term: String!) {
-  searchClaims(term: $term) {
+p  searchClaims(term: $term) {
     totalCount
     results {
       score

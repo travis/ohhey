@@ -28,6 +28,15 @@ type Claim implements Node {
   score: Int
 }
 
+type UserClaim implements Node {
+  id: ID!
+  body: String
+  slug: String
+  creator: User
+  contributors: [User]
+  agreement: Int
+}
+
 type EvidenceConnection {
   edges: [Evidence]
 }
@@ -40,6 +49,14 @@ type Evidence {
   relevance: Float
   myRelevanceRating: Int
   parentClaim: Claim
+}
+
+type UserEvidence {
+  id: ID!
+  cursor: String
+  supports: Boolean
+  claim: UserClaim
+  relevance: Float
 }
 
 union SearchResultTarget = Claim | User
@@ -60,8 +77,8 @@ type Query {
   searchClaims(term: String): SearchResults
   claim(slug: String): Claim
   evidenceForClaim(claimID: ID): [Evidence]
-  userClaim(username: String!, slug: String!): Claim
-  userEvidenceForClaim(username: String!, claimID: ID!): [Evidence]
+  userClaim(username: String!, slug: String!): UserClaim
+  userEvidenceForClaim(username: String!, claimID: ID!): [UserEvidence]
 }
 
 type Mutation {

@@ -13,6 +13,7 @@ import Comments from './Comments'
 import QuickClaimSearch from './QuickClaimSearch'
 import {StopPropagation} from './util'
 import {believesURL, doesntbelieveURL, isntsureifURL} from './UserClaim'
+import {withAuth} from '../authentication'
 
 import * as goto from '../goto';
 import * as queries from '../queries';
@@ -114,6 +115,7 @@ const SentimentPicker = withRouter(({ history, match: {params: {slug}}}) => (
 ))
 
 export const Claim = compose(
+  withAuth,
   withRouter,
   withStyles(theme => ({
     claimTooltip: {
@@ -126,7 +128,7 @@ export const Claim = compose(
       float: "right", position: "relative", top: "-2em"
     }
   }))
-)(({claim, history, classes}) => {
+)(({currentUser, claim, history, classes}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
   const {body, slug, creator} = claim
@@ -159,14 +161,16 @@ export const Claim = compose(
         <NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim)}/>
         <DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim)}/>
       </Typography>
-      <Typography variant="caption" align="center">
-        <RoutePrefixSwitch
-          ibelieve={<Link to={believesURL("travis", slug)}>tell the world!</Link>}
-          idontbelieve={<Link to={doesntbelieveURL("travis", slug)}>tell the world!</Link>}
-          fallback={<Link to={isntsureifURL("travis", slug)}>tell the world!</Link>}
-        />
+      {currentUser && (
+        <Typography variant="caption" align="center">
+          <RoutePrefixSwitch
+            ibelieve={<Link to={believesURL(currentUser.username, slug)}>tell the world!</Link>}
+            idontbelieve={<Link to={doesntbelieveURL(currentUser.username, slug)}>tell the world!</Link>}
+        fallback={<Link to={isntsureifURL(currentUser.username, slug)}>tell the world!</Link>}
+          />
 
-      </Typography>
+        </Typography>
+      )}
       <Typography align="center">
         {!evidenceShown && (
           <Button color="primary" onClick={() => setShowEvidence(!evidenceShown)}>
