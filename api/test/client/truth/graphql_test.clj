@@ -1,22 +1,23 @@
 (ns truth.graphql-test
-  (:require [datomic.api :as d]
+  (:require [datomic.client.api :as d]
             [com.walmartlabs.lacinia :as gql]
             [clojure.test :refer :all]
             [expectations.clojure.test :refer :all]
             [truth.schema :as schema]
             [truth.data :as data]
             [truth.graphql :refer [load-schema]]
-            [truth.domain :as t]))
+            [truth.domain :as t]
+            [truth.cloud :as cloud]))
 
-(def uri "datomic:mem://graphql-test-interactive")
 (use-fixtures
   :each (fn [run-tests]
-          (let [uri (str "datomic:mem://graphql-test-" (t/uuid))]
-            (d/create-database uri)
-            (let [schema (load-schema)]
-              (def conn (d/connect uri))
-              (schema/load conn)
-              (data/load conn)
+          (let [client (d/client cloud/cfg)
+                db-spec {:db-name (str "graphql-test-" (t/uuid))}]
+
+            (d/create-database client db-spec)
+            (let [conn (d/connect client db-spec)]
+              (schema/client-load conn)
+              (data/client-load conn)
               (defn execute
                 ([query variables] (execute query variables "travis"))
                 ([query variables current-username]
@@ -27,10 +28,9 @@
                                   {:db db
                                    :conn conn
                                    :current-user current-user})))))
-              )
-            (run-tests)
-            (d/delete-database uri)
-            )))
+              (run-tests)
+              (d/delete-database client db-spec)))
+          ))
 
 (deftest test-currentUser
   (testing "currentUser"
