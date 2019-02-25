@@ -3,8 +3,7 @@
             [clojure.test :refer :all]
             [truth.schema :as schema]
             [truth.data :as data]
-            [truth.domain :as t
-             :refer [uuid get-user-by-email get-all-claims get-claim get-claim-evidence]]
+            [truth.domain :as t]
             ))
 
 (use-fixtures
@@ -19,69 +18,10 @@
           (run-tests)
           ))
 
-(defn dissoc-ids [map]
-  (dissoc map :db/id :user/id :claim/id :claim-vote/id :evidence/id :relevance-vote/id))
-
-(deftest test-get-user-by-email
-  (testing "it returns travis"
-    (is (= {:user/username "travis", :user/email "travis@truth.com"}
-           (dissoc-ids (get-user-by-email fresh-db "travis@truth.com"))))))
-
 (def claim-spec
   '[:claim/body
     {(:claim/contributors :default []) [:user/username]}
     {:claim/creator [:user/username]}])
-
-(def dogs-are-great
-  {:claim/body "Dogs are great",
-   :claim/contributors [],
-   :claim/creator #:user{:username "travis"},
-   :support-count 1 :oppose-count 0
-   :agreement 200 :agreement-count 2 :my-agreement nil
-   :score 533/2})
-
-(def cats-are-great
-  {:claim/body "Cats are great",
-   :claim/contributors [#:user{:username "travis"}],
-   :claim/creator #:user{:username "james"},
-   :support-count 2 :oppose-count 1
-   :agreement 100 :agreement-count 3 :my-agreement nil
-   :score 183})
-
-(deftest test-get-claim
-  (testing "Dogs are great"
-    (is (= dogs-are-great
-           (get-claim fresh-db [:claim/slug "dogs-are-great"] claim-spec))))
-  (testing "Cats are great"
-    (is (= cats-are-great
-           (get-claim fresh-db [:claim/slug "cats-are-great"] claim-spec)))))
-
-(deftest test-get-claim-as
-  (testing "Dogs are great"
-    (is (= dogs-are-great
-           (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "anon"] claim-spec)))
-    (is (= dogs-are-great
-           (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] claim-spec)))
-    (is (= (assoc dogs-are-great :my-agreement 100)
-           (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "travis"] claim-spec))))
-  (testing "Cats are great"
-    (is (= cats-are-great
-           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "anon"] claim-spec)))
-    (is (= cats-are-great
-           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "travis"] claim-spec)))
-    (is (= (assoc cats-are-great :my-agreement -100)
-           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "toby"] claim-spec)))
-    (is (= (assoc cats-are-great :my-agreement 100)
-           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "chuchu"] claim-spec)))))
-
-(deftest test-get-claim-for
-  (testing "Dogs are great"
-    (is (= 0
-           (:agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "anon"] claim-spec))))
-    (is (= 0
-           (:agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] claim-spec))))
-    (is (= 100
-           (:agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "travis"] claim-spec))))))
 
 (def evidence-spec
   '[:evidence/supports
@@ -116,6 +56,57 @@
    :agreement 0 :agreement-count 0 :my-agreement nil
    :score 0})
 
+(def dogs-are-great
+  {:claim/body "Dogs are great",
+   :claim/contributors [],
+   :claim/creator #:user{:username "travis"},
+   :support-count 1 :oppose-count 0
+   :agreement 200 :agreement-count 2 :my-agreement nil
+   :score 533/2})
+
+(def cats-are-great
+  {:claim/body "Cats are great",
+   :claim/contributors [#:user{:username "travis"}],
+   :claim/creator #:user{:username "james"},
+   :support-count 2 :oppose-count 1
+   :agreement 100 :agreement-count 3 :my-agreement nil
+   :score 183})
+
+(deftest test-get-claim
+  (testing "Dogs are great"
+    (is (= dogs-are-great
+           (t/get-claim fresh-db [:claim/slug "dogs-are-great"] claim-spec))))
+  (testing "Cats are great"
+    (is (= cats-are-great
+           (t/get-claim fresh-db [:claim/slug "cats-are-great"] claim-spec)))))
+
+(deftest test-get-claim-as
+  (testing "Dogs are great"
+    (is (= dogs-are-great
+           (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "anon"] claim-spec)))
+    (is (= dogs-are-great
+           (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] claim-spec)))
+    (is (= (assoc dogs-are-great :my-agreement 100)
+           (t/get-claim-as fresh-db [:claim/slug "dogs-are-great"] [:user/username "travis"] claim-spec))))
+  (testing "Cats are great"
+    (is (= cats-are-great
+           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "anon"] claim-spec)))
+    (is (= cats-are-great
+           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "travis"] claim-spec)))
+    (is (= (assoc cats-are-great :my-agreement -100)
+           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "toby"] claim-spec)))
+    (is (= (assoc cats-are-great :my-agreement 100)
+           (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "chuchu"] claim-spec)))))
+
+(deftest test-get-claim-for
+  (testing "Dogs are great"
+    (is (= 0
+           (:agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "anon"] claim-spec))))
+    (is (= 0
+           (:agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] claim-spec))))
+    (is (= 100
+           (:agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "travis"] claim-spec))))))
+
 (deftest test-get-claim-evidence
   (testing "Cats are great"
     (is (= [{:evidence/supports true,
@@ -127,17 +118,17 @@
             {:evidence/supports true,
              :evidence/claim dont-like-people
              :relevance 100}]
-           (get-claim-evidence fresh-db [:claim/slug "cats-are-great"] evidence-spec))))
+           (t/get-claim-evidence fresh-db [:claim/slug "cats-are-great"] evidence-spec))))
   (testing "Dogs are great"
     (is (= [{:evidence/supports true,
              :evidence/claim animals-are-awesome
              :relevance 133/2}]
-           (get-claim-evidence fresh-db [:claim/slug "dogs-are-great"] evidence-spec))))
+           (t/get-claim-evidence fresh-db [:claim/slug "dogs-are-great"] evidence-spec))))
   (testing "They don't like people"
     (is (= [{:evidence/supports true,
              :evidence/claim mean-cat
              :relevance 100}]
-           (get-claim-evidence fresh-db [:claim/slug "they-dont-like-people"] evidence-spec)))))
+           (t/get-claim-evidence fresh-db [:claim/slug "they-dont-like-people"] evidence-spec)))))
 
 (deftest test-search-claims-as
   (testing "Cats are great"
