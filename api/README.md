@@ -4,6 +4,23 @@ A Clojure library designed to ... well, that part is up to you.
 
 ## Usage
 
+## bastion test
+
+``` bash
+export DATOMIC_SYSTEM=dev
+export DATOMIC_REGION=us-east-1
+export DATOMIC_SOCKS_PORT=8182
+
+curl -x socks5h://localhost:$DATOMIC_SOCKS_PORT http://entry.$DATOMIC_SYSTEM.$DATOMIC_REGION.datomic.net:8182/
+```
+
+## starting local socks proxy
+
+```bash
+./bin/datomic-socks-proxy -p ohhey -r us-east-1 dev
+```
+
+
 FIXME
 
 ## License
