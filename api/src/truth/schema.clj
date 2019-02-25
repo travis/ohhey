@@ -1,5 +1,6 @@
 (ns truth.schema
-  (:require [datomic.api :as d]))
+  (:require [datomic.api :as d]
+            [datomic.client.api :as cd]))
 
 (def user
   [{:db/ident :user/username
@@ -117,3 +118,9 @@
   @(d/transact conn claim-vote)
   @(d/transact conn evidence)
   @(d/transact conn relevance-vote))
+
+(defn client-load [conn]
+  (cd/transact
+   conn
+   {:tx-data
+    (concat user claim claim-vote evidence relevance-vote)}))

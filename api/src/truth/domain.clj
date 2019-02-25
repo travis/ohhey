@@ -1,5 +1,5 @@
 (ns truth.domain
-  (:require [datomic.api :as d]
+  (:require [datomic.client.api :as d]
             [truth.domain.rules :refer [rules]]
             [slugger.core :as slugger]))
 
@@ -165,17 +165,16 @@
   ([db claim-ref user-ref]
    (get-claim-as db claim-ref user-ref default-claim-spec))
   ([db claim-ref user-ref claim-spec]
-   (let [result
+   (let [[result]
          (d/q
           (apply
            conj
            '[:find]
-           [(list 'pull '?claim claim-spec)
-            '(sum ?support) '(sum ?oppose)
-            '(sum ?agreement) '(sum ?agreement-count)
-            '(max ?my-agreement)
-            '(sum ?agree-disagree-score) '(sum ?support-oppose-score) '(sum ?support-oppose-score-component-count)
-            ]
+           (list 'pull '?claim claim-spec)
+           '(sum ?support) '(sum ?oppose)
+           '(sum ?agreement) '(sum ?agreement-count)
+           '(max ?my-agreement)
+           '(sum ?agree-disagree-score) '(sum ?support-oppose-score) '(sum ?support-oppose-score-component-count)
            '[:in $ % ?claim ?user
              :with ?uniqueness
              :where
@@ -189,18 +188,17 @@
   ([db evidence-ref user-ref]
    (get-parent-claim-as db evidence-ref user-ref default-claim-spec))
   ([db evidence-ref user-ref claim-spec]
-   (let [result
+   (let [[result]
          (d/q
           (apply
            conj
            '[:find]
-           [(list 'pull '?claim claim-spec)
-            '(sum ?support) '(sum ?oppose)
-            '(sum ?agreement) '(sum ?agreement-count)
-            '(max ?my-agreement)
-            '(sum ?agree-disagree-score)
-            '(sum ?support-oppose-score) '(sum ?support-oppose-score-component-count)
-            ]
+           (list 'pull '?claim claim-spec)
+           '(sum ?support) '(sum ?oppose)
+           '(sum ?agreement) '(sum ?agreement-count)
+           '(max ?my-agreement)
+           '(sum ?agree-disagree-score)
+           '(sum ?support-oppose-score) '(sum ?support-oppose-score-component-count)
            '[:in $ % ?evidence ?user
              :with ?uniqueness
              :where

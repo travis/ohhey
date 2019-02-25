@@ -1,21 +1,24 @@
 (ns truth.domain-test
-  (:require [datomic.api :as d]
+  (:require [datomic.client.api :as d]
             [clojure.test :refer :all]
             [truth.schema :as schema]
             [truth.data :as data]
             [truth.domain :as t]
+            [truth.cloud :as cloud]
             ))
 
 (use-fixtures
   :once (fn [run-tests]
-          (let [uri "datomic:mem://domain-test"]
-            (d/delete-database uri)
-            (d/create-database uri)
-            (let [conn (d/connect uri)]
-              (schema/load conn)
-              (data/load conn)
-              (def fresh-db (d/db conn))))
-          (run-tests)
+          (let [client (d/client cloud/cfg)
+                db-spec {:db-name (str "domain-test-" (t/uuid))}]
+
+            (d/create-database client db-spec)
+            (let [conn (d/connect client db-spec)]
+              (schema/client-load conn)
+              (data/client-load conn)
+              (def fresh-db (d/db conn)))
+            (run-tests)
+            (d/delete-database client db-spec))
           ))
 
 (def claim-spec
@@ -130,7 +133,8 @@
              :relevance 100}]
            (t/get-claim-evidence fresh-db [:claim/slug "they-dont-like-people"] evidence-spec)))))
 
-(deftest test-search-claims-as
+;; TODO: turn this back on once we get cloudsearch working
+#_(deftest test-search-claims-as
   (testing "Cats are great"
     (is (= [{:search/score 1.0 :search/result dogs-are-great}
             {:search/score 1.0 :search/result cats-are-great}]
@@ -216,7 +220,7 @@
   (d/pull fresh-dbp
           [:claim/body {:claim/evidence [{:evidence/claim [:claim/body]}]}]
           [:claim/body "they-dont-like-people"])
-  (get-all-claims fresh-db)
+  (t/get-all-claims fresh-db)
   (t/get-claim fresh-db [:claim/slug "cats-are-great"])
   (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "james"])
   (t/get-claim-as fresh-db [:claim/slug "cats-are-great"] [:user/username "anon"])

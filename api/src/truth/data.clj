@@ -1,8 +1,8 @@
- (ns truth.data
+(ns truth.data
   (:require [datomic.api :as d]
+            [datomic.client.api :as cd]
             [truth.domain :refer [new-user new-claim new-claim-vote
                                   new-evidence new-relevance-vote]]))
-
 
 (def users
   (map
@@ -97,3 +97,7 @@
 (defn load [conn]
   @(d/transact conn users)
   @(d/transact conn pet-claims))
+
+(defn client-load [conn]
+  (cd/transact conn {:tx-data users})
+  (cd/transact conn {:tx-data pet-claims}))
