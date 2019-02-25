@@ -1,0 +1,13 @@
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.9.0"},
+        com.datomic/datomic-pro {:mvn/version "0.9.5786"},
+        com.datomic/client-cloud {:mvn/version "0.8.71"}
+        com.walmartlabs/lacinia-pedestal {:mvn/version "0.11.0"},
+        io.aviso/logging {:mvn/version "0.3.1"},
+        slugger {:mvn/version "1.0.1"},
+        expectations/clojure-test {:mvn/version "1.1.1"}}
+ :mvn/repos {"my.datomic.com" {:url "https://my.datomic.com/repo"}}
+ :aliases
+ {:cider-clj {:extra-deps {cider/cider-nrepl {:mvn/version "0.21.1"}}
+              :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
+  :test {:extra-deps {lambdaisland/kaocha {:mvn/version "0.0-389"}}}}}

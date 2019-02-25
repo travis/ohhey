@@ -1,2 +1,2 @@
 #!/bin/bash
-lein kaocha --config-file dev-tests.edn "$@"
+clj -A:test -m kaocha.runner "$@"
