@@ -9,7 +9,7 @@
             [com.walmartlabs.lacinia.resolve :refer [resolve-as]]
             [truth.domain :as t
              :refer [get-user-by-email get-all-claims get-contributors get-claim-evidence]]
-            [datomic.api :as d]))
+            [datomic.client.api :as d]))
 
 (defn dkey
   [key]
@@ -20,19 +20,23 @@
   (fn [context variables parent]
     (try
       (resolver context variables parent)
-      (catch java.util.concurrent.ExecutionException e
+      (catch clojure.lang.ExceptionInfo e
         (let [exception-map  (Throwable->map e)]
-          (if (= (:data exception-map) #:db{:error :db.error/unique-conflict})
+          (if (= (:db/error (:data exception-map)) :db.error/unique-conflict)
             (do
               (log/debug e (str "caught :db.error/unique-conflict while resolving "resolver-path))
               (resolve-as nil {:message "this mutation attempted to assert a duplicate value"
                                :data {:truth.error/type :truth.error/unique-conflict}}))
             (do
-              (log/error e (str "caught execution exception while resolving "resolver-path))
-              (resolve-as nil {:message "unknown execution exception - please contact the administrator"
-                               :data {:truth.error/type :truth.error/unknown-execution-exception}})))))
+              (log/error e (str "caught clojure.lang.ExceptionInfo while resolving "resolver-path))
+              (resolve-as nil {:message "unknown clojure.lang.ExceptionInfo - please contact the administrator"
+                               :data {:truth.error/type :truth.error/unknown-exception-info}})))))
+      (catch java.util.concurrent.ExecutionException e
+        (log/error e (str "caught execution exception while resolving "resolver-path))
+        (resolve-as nil {:message "unknown execution exception - please contact the administrator"
+                         :data {:truth.error/type :truth.error/unknown-execution-exception}}))
       (catch Throwable t
-        (log/error t (str "caught error while resolving "resolver-path))
+        (log/error t (class t) (str "caught error while resolving "resolver-path))
         (resolve-as nil {:message "unknown error - please contact the administrator"
                          :data {:truth.error/type :truth.error/unknown-error}})))))
 
@@ -100,7 +104,7 @@
         (let [creator [:user/email (:user/email current-user)]
               claim (t/new-claim
                      (assoc claim-input :creator creator))]
-          @(d/transact conn [claim])
+          (d/transact conn {:tx-data [claim]})
           (t/get-claim-as (d/db conn)
                           [:claim/id (:claim/id claim)]
                           (:db/id current-user)))
@@ -116,10 +120,11 @@
               evidence (t/new-evidence {:supports supports
                                         :creator creator
                                         :claim claim})]
-          @(d/transact
-            conn
+          (d/transact
+           conn
+           {:tx-data
             [{:claim/id claim-id
-              :claim/evidence evidence}])
+              :claim/evidence evidence}]})
           (t/get-evidence-as (d/db conn)
                              [:evidence/id (:evidence/id evidence)]
                              (:db/id current-user)))
@@ -129,26 +134,28 @@
       :voteOnClaim
       (fn [{conn :conn db :db current-user :current-user}
            {claim-id :claimID agreement :agreement} parent]
-        @(d/transact
-          conn
+        (d/transact
+         conn
+         {:tx-data
           [(if-let [vote-id (t/get-vote-for-user-and-claim db (:db/id current-user) [:claim/id claim-id])]
              {:db/id vote-id :claim-vote/agreement agreement}
              {:claim/id claim-id
               :claim/votes (t/new-claim-vote
                             {:voter (:db/id current-user)
-                             :agreement agreement})})])
+                             :agreement agreement})})]})
         (t/get-claim-as (d/db conn) [:claim/id claim-id] (:db/id current-user)))
       :voteOnEvidence
       (fn [{conn :conn db :db current-user :current-user}
            {evidence-id :evidenceID rating :rating} parent]
-        @(d/transact
-          conn
+        (d/transact
+         conn
+         {:tx-data
           [(if-let [vote-id (t/get-vote-for-user-and-evidence db (:db/id current-user) [:evidence/id evidence-id])]
              {:db/id vote-id :relevance-vote/rating rating}
              {:evidence/id evidence-id
               :evidence/votes (t/new-relevance-vote
                                {:voter (:db/id current-user)
-                                :rating rating})})])
+                                :rating rating})})]})
         (let [db (d/db conn)
               evidence [:evidence/id evidence-id]
               user (:db/id current-user)]

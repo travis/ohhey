@@ -1,4 +1,4 @@
-{:paths ["src" "resources"]
+{:paths ["src" "resources" "dev-resources"]
  :deps {org.clojure/clojure {:mvn/version "1.9.0"},
         com.datomic/datomic-pro {:mvn/version "0.9.5786"},
         com.datomic/client-cloud {:mvn/version "0.8.71"}

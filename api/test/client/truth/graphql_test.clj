@@ -15,7 +15,8 @@
                 db-spec {:db-name (str "graphql-test-" (t/uuid))}]
 
             (d/create-database client db-spec)
-            (let [conn (d/connect client db-spec)]
+            (let [schema (load-schema)
+                  conn (d/connect client db-spec)]
               (schema/client-load conn)
               (data/client-load conn)
               (defn execute
@@ -42,19 +43,18 @@
     (is (= {:data
             {:claims
              [{:body "Dogs are great"}
-              {:body "Animals are awesome"}
-              {:body "Cats are great"}
               {:body "They don't like people"}
-              {:body "A cat was mean to me"}]}}
+              {:body "Animals are awesome"}
+              {:body "A cat was mean to me"}
+              {:body "Cats are great"}]}}
            (execute "{claims {body } }" nil)))
     (is (= {:data
             {:claims
              [{:body "Dogs are great", :contributors []}
-              {:body "Animals are awesome", :contributors []}
-              {:body "Cats are great", :contributors [{:username "travis"}]}
               {:body "They don't like people", :contributors []}
+              {:body "Animals are awesome", :contributors []}
               {:body "A cat was mean to me", :contributors []}
-              ]}}
+              {:body "Cats are great", :contributors [{:username "travis"}]}]}}
            (execute "{claims {body, contributors {username} } }" nil)))
     (is (= {:data
             {:claims
@@ -62,7 +62,13 @@
                :evidence
                {:edges '({:claim {:body "Animals are awesome"} :supports true})},
                :contributors []}
+              {:body "They don't like people",
+               :evidence {:edges [{:claim {:body "A cat was mean to me"} :supports true}]},
+               :contributors []}
               {:body "Animals are awesome",
+               :evidence {:edges []},
+               :contributors []}
+              {:body "A cat was mean to me",
                :evidence {:edges []},
                :contributors []}
               {:body "Cats are great",
@@ -72,12 +78,6 @@
                          {:claim {:body "They don't like people"} :supports true}
                          )},
                :contributors '({:username "travis"})}
-              {:body "They don't like people",
-               :evidence {:edges [{:claim {:body "A cat was mean to me"} :supports true}]},
-               :contributors []}
-              {:body "A cat was mean to me",
-               :evidence {:edges []},
-               :contributors []}
               ]}}
            (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil)))))
 
@@ -179,7 +179,8 @@ mutation AddClaim($claim: ClaimInput!) {
             (do
               (execute add-claim-mutation {:claim {:body "this mutation should return errors"}})
               (execute add-claim-mutation {:claim {:body "this mutation should return errors"}}))
-            :errors first :extensions :data)))))
+            :errors first :extensions :data
+            )))))
 
 (def search-query "
 query SearchClaims($term: String!) {
@@ -197,7 +198,8 @@ query SearchClaims($term: String!) {
   }
 }")
 
-(deftest searchClaims
+;; TODO: revive once search is using cloudsearch
+#_(deftest searchClaims
   (is (= {:data {:searchClaims
                  {:totalCount 2
                   :results
