@@ -1,0 +1,20 @@
+{:allow [;; transaction functions
+         ;;datomic.ion.starter/create-item
+
+         ;; query functions
+         ;;datomic.ion.starter/feature-item?
+
+         ;; lambda handlers
+         ;;datomic.ion.starter/echo
+         ;;datomic.ion.starter/add-item
+         ;;datomic.ion.starter/items-by-type
+
+         ;; web applications
+         truth.ions/graphql
+         ;;datomic.ion.starter/get-tutorial-schema
+         ]
+ :lambdas {:graphql
+           {:fn truth.ions/graphql
+            :integration :api-gateway/proxy
+            :description "graphql endpoint for querying the db"}}
+ :app-name "dev"}

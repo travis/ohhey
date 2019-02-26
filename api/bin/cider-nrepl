@@ -1,2 +1,2 @@
 #!/bin/bash
-clj -A:cider-clj
+AWS_PROFILE=ohhey clj -A:cider-clj
