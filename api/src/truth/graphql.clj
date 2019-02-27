@@ -9,6 +9,7 @@
             [com.walmartlabs.lacinia.resolve :refer [resolve-as]]
             [truth.domain :as t
              :refer [get-user-by-email get-all-claims get-contributors get-claim-evidence]]
+            [truth.search :as search]
             [datomic.client.api :as d]))
 
 (defn dkey
@@ -100,17 +101,19 @@
       }
      :Mutation
      {:addClaim
-      (fn addClaim [{conn :conn db :db current-user :current-user} {claim-input :claim} parent]
+      (fn addClaim [{conn :conn db :db current-user :current-user  search-creds :search-creds}
+                    {claim-input :claim} parent]
         (let [creator [:user/email (:user/email current-user)]
               claim (t/new-claim
                      (assoc claim-input :creator creator))]
           (d/transact conn {:tx-data [claim]})
+          (search/upload-claims (:doc search-creds) [claim])
           (t/get-claim-as (d/db conn)
                           [:claim/id (:claim/id claim)]
                           (:db/id current-user)))
         )
       :addEvidence
-      (fn [{conn :conn db :db current-user :current-user}
+      (fn [{conn :conn db :db current-user :current-user search-creds :search-creds}
            {claim-id :claimID {id :id :as claim} :claim supports :supports} parent]
         (let [creator [:user/email (:user/email current-user)]
               claim (if id
@@ -125,6 +128,7 @@
            {:tx-data
             [{:claim/id claim-id
               :claim/evidence evidence}]})
+          (when (not id) (search/upload-claims (:doc search-creds) [claim]))
           (t/get-evidence-as (d/db conn)
                              [:evidence/id (:evidence/id evidence)]
                              (:db/id current-user)))

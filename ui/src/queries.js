@@ -198,7 +198,7 @@ query SearchClaims($term: String!) {
 export const QuickSearchClaims = gql`
 ${fullClaimFieldsFragment}
 query QuickSearchClaims($term: String!) {
-p  searchClaims(term: $term) {
+  searchClaims(term: $term) {
     totalCount
     results {
       score
