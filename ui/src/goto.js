@@ -1,3 +1,3 @@
-export const iBelieve = (history, {slug}) => history.replace(`/ibelieve/${slug}`)
-export const iDontBelieve = (history, {slug}) => history.replace(`/idontbelieve/${slug}`)
-export const someSay = (history, {slug}) => history.replace(`/somesay/${slug}`)
+export const iBelieve = (history, {slug}, method='replace') => history[method](`/ibelieve/${slug}`)
+export const iDontBelieve = (history, {slug}, method='replace') => history[method](`/idontbelieve/${slug}`)
+export const someSay = (history, {slug}, method='replace') => history[method](`/somesay/${slug}`)

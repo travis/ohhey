@@ -64,6 +64,11 @@
                  (schema/tag-with-type (:search/result search-result) type)))
         results)})
 
+(def char-limit 255)
+(defn reject-long-bodies! [{body :body}]
+  (when (< char-limit (count body))
+    (throw (ex-info "claim body must be at most 255 characters long" {:body body :count (count body)}))))
+
 (def resolvers
   (->
    {:resolvers
@@ -110,6 +115,7 @@
      {:addClaim
       (fn addClaim [{conn :conn db :db current-user :current-user  search-creds :search-creds}
                     {claim-input :claim} parent]
+        (reject-long-bodies! claim-input)
         (let [creator [:user/email (:user/email current-user)]
               claim (t/new-claim
                      (assoc claim-input :creator creator))]
@@ -122,6 +128,8 @@
       :addEvidence
       (fn [{conn :conn db :db current-user :current-user search-creds :search-creds}
            {claim-id :claimID {id :id :as claim} :claim supports :supports} parent]
+        (when (not id)
+          (reject-long-bodies! claim))
         (let [creator [:user/email (:user/email current-user)]
               claim (if id
                       [:claim/id id]

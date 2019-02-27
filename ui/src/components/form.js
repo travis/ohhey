@@ -11,12 +11,16 @@ export const TextArea = ({inputProps, field, ...props}) =>
             <informed.TextArea forwardedRef={inputRef} {...props}/>
           )}
           {...props} />)
-export const TextInput = ({inputProps, field, ...props}) =>
-  (<Input inputProps={{field}}
-          inputComponent={({inputRef, ...props}) => (
-            <informed.Text forwardedRef={inputRef} {...props}/>
-          )}
-          {...props} />)
 
+const IText = ({inputRef, ...props}) => (
+  <informed.Text forwardedRef={inputRef} {...props}/>
+)
+
+export const TextInput = ({inputProps, field, validate, validateOnChange,
+                           validateOnBlur, forwardedRef,
+                           ...props}) =>
+  (<Input inputProps={{field, forwardedRef, validate, validateOnChange, validateOnBlur}}
+          inputComponent={IText}
+          {...props} />)
 
 export {Form};

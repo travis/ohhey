@@ -9,6 +9,7 @@ import QuickClaimSearch from '../components/QuickClaimSearch'
 import {AgreeButton, DisagreeButton} from '../components/Claims'
 import * as queries from '../queries';
 import * as goto from '../goto';
+import * as validations from '../validations';
 
 const messageForErrorType = (errorType) => {
   if (errorType === "truth.error/unique-conflict") {
@@ -61,7 +62,7 @@ export default compose(
         createClaim(claimInputs)
         .then(({data: {addClaim: claim}, errors}) => {
           if (claim) {
-            goto.iBelieve(history, claim)
+            goto.iBelieve(history, claim, 'push')
           } else {
             setErrors(errors)
           }
@@ -73,15 +74,23 @@ export default compose(
         <div key={i}>{messageForError(error)}</div>
       ))}
       <Form className={classes.form} onSubmit={createAndGoToClaim}>
-        <Fragment>
-          <TextInput field="body" fullWidth={true} inputRef={input}
-                     autoComplete="off"
-                     className={classes.bodyInput}/>
+        {({formState: {errors: {body: bodyError}}}) => (
+          <Fragment>
+            {bodyError && <Typography color="error">{bodyError}</Typography>}
+            <TextInput field="body"
+                       error={bodyError}
+                       fullWidth={true}
+                       forwardedRef={input}
+                       validate={validations.claimBody}
+                       validateOnChange
+                       autoComplete="off"
+                       className={classes.bodyInput}
+          />
           <QuickClaimSearch
             claimActions={claim => (
               <Fragment>
-                <AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim)}/>
-                <DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim)}/>
+                <AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'push')}/>
+                <DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'push')}/>
               </Fragment>
             )}
             or={
@@ -90,7 +99,8 @@ export default compose(
                 <Button type="submit">Tell the World!</Button>
               </Fragment>
             }/>
-        </Fragment>
+          </Fragment>
+        )}
       </Form>
     </Paper>
   )
