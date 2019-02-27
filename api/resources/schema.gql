@@ -75,6 +75,7 @@ type Query {
   currentUser: User
   claims: [Claim]
   searchClaims(term: String): SearchResults
+  suggestClaims(term: String): SearchResults
   claim(slug: String): Claim
   evidenceForClaim(claimID: ID): [Evidence]
   userClaim(username: String!, slug: String!): UserClaim

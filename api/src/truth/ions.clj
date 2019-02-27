@@ -110,9 +110,11 @@
   (data/delete-claims-from-search-index (get-conn) (:search (search-creds)))
   (d/delete-database (client) db-spec)
 
+  (map :id (:suggestions (:suggest (search/suggest (:search (search-creds)) "cats are"))))
   (map :id (:hit (:hits (search/suggest (:search (search-creds)) "cats are"))))
 
 
   (t/search-claims-as (d/db (get-conn)) (:search (search-creds)) [:user/username "travis"] "cats are")
+  (t/suggest-claims-as (d/db (get-conn)) (:search (search-creds)) [:user/username "toby"] "cats are great")
 
   )

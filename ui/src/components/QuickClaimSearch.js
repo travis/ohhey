@@ -46,7 +46,7 @@ export default compose(
         const term = getSearchTerm(formState)
         return !term || (term === '')
       },
-      props: ({data: {searchClaims: claimsSearch}}) => (
+      props: ({data: {suggestClaims: claimsSearch}}) => (
         {claimsSearch}
       ),
       options: ({formState}) => {

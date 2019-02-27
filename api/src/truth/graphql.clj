@@ -83,6 +83,13 @@
                (search-results-of-type :Claim))
           []))
 
+      :suggestClaims
+      (fn [{db :db search-creds :search-creds current-user :current-user} {term :term} parent]
+        (if term
+          (->> (t/suggest-claims-as db (:search search-creds) (:db/id current-user) term)
+               (search-results-of-type :Claim))
+          []))
+
       :claim
       (fn [{db :db current-user :current-user} {slug :slug} parent]
         (t/get-claim-as db [:claim/slug slug] (:db/id current-user)))

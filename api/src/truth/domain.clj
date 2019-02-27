@@ -271,7 +271,30 @@
             {:search/score search-score
              :search/result (apply assoc-claim-stats claim-result)}) results))))
 
-
+(defn suggest-claims-as
+  ([db search-creds user-ref term]
+   (search-claims-as db search-creds user-ref term default-claim-spec))
+  ([db search-creds user-ref term claim-spec]
+   (let [search-results (:suggestions (:suggest (search/suggest search-creds term)))
+         results
+         (d/q
+          (apply
+           conj
+           '[:find]
+           '?search-score
+           (list 'pull '?claim claim-spec)
+           '[(max ?my-agreement)
+             :in $ % ?user [?claim-id ...]
+             :with ?uniqueness
+             :where
+             [?claim :claim/id ?claim-id]
+             [(ground 0) ?search-score]
+             (my-agreement ?claim ?user ?uniqueness ?my-agreement)])
+          db rules (or user-ref anon-user-ref) (map :id search-results))]
+     (map (fn [[search-score claim my-agreement]]
+            {:search/score search-score
+             :search/result (assoc claim :my-agreement my-agreement)})
+          results))))
 
 (defn get-all-claims
   ([db]
