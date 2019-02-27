@@ -19,7 +19,9 @@ export const client = new ApolloClient({
       if (networkError) console.log(`[Network error]: ${networkError}`);
     }),
     new HttpLink({
-      uri: '/graphql',
+      //uri: '/graphql',
+      //uri: 'https://ofmgaea4ib.execute-api.us-east-1.amazonaws.com/dev/graphql',
+      uri: 'http://localhost:3002/graphql',
       credentials: 'same-origin'
     })
   ]),

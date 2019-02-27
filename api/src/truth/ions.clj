@@ -36,29 +36,53 @@
   (-> (lacinia/execute schema query-string nil nil)
       simplify))
 
-(def client (d/client cloud/cfg))
+(defn make-client [] (d/client cloud/cfg))
+(def client (memoize make-client))
 (def db-spec {:db-name (str "ohhey-dev")})
-(def conn (d/connect client db-spec))
+(defn get-conn [] (d/connect (client) db-spec))
 
 (defn graphql*
   "Lambda ion that executes a graphql query"
-  [{:keys [headers body] :as request}]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body (let [body (json/read-str body)
-               variables (:variables body)
-               query (:query body)
-               result (lacinia/execute
-                       schema query variables
-                       (let [db (d/db conn)
-                             current-user (t/get-user-by-username db "travis")]
-                         {:db db
-                          :conn conn
-                          :current-user current-user}))]
-           (json/write-str result))}
+  [{:keys [request-method headers body] :as request}]
+  (if (= :options request-method)
+    {:status 200
+     :headers {"Content-Type" "application/json"
+               "Access-Control-Allow-Origin" "*"
+               "access-control-allow-headers" "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
+               "access-control-allow-methods" "POST,OPTIONS" }}
+    {:status 200
+     :headers {"Content-Type" "application/json"
+               "Access-Control-Allow-Origin" "*"}
+     :body
+     (try
+       (let [body-str (slurp body)
+             body-json (json/read-str body-str
+                                      :key-fn keyword)
+             variables (:variables body-json)
+             query (:query body-json)
+             conn (get-conn)
+             result (lacinia/execute
+                     schema query variables
+                     (let [db (d/db conn)
+                           current-user (t/get-user-by-username db "travis")]
+                       {:db db
+                        :conn conn
+                        :current-user current-user}))]
+         (json/write-str result))
+       (catch Throwable t
+         (println "error processing graphql request:")
+         (println t)))
+     })
 
   )
 
 (def graphql
   "API Gateway GraphQL web service ion"
   (apigw/ionize graphql*))
+
+(comment
+  (use 'org.httpkit.server)
+
+  (def stop-server (run-server #'graphql* {:port 3002}))
+  (stop-server)
+  )
