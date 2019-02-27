@@ -76,9 +76,9 @@
         (t/get-all-claims-as db (:db/id current-user)))
 
       :searchClaims
-      (fn [{db :db current-user :current-user} {term :term} parent]
+      (fn [{db :db search-creds :search-creds current-user :current-user} {term :term} parent]
         (if term
-          (->> (t/search-claims-as db (:db/id current-user) term)
+          (->> (t/search-claims-as db (:search search-creds) (:db/id current-user) term)
                (search-results-of-type :Claim))
           []))
 

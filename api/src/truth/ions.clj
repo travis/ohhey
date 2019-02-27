@@ -9,7 +9,10 @@
 
    [truth.graphql :as graphql]
    [truth.cloud :as cloud]
-   [truth.domain :as t])
+   [truth.domain :as t]
+   [truth.schema :as schema]
+   [truth.data :as data]
+   [truth.search :as search])
   (:import (clojure.lang IPersistentMap)))
 
 (def schema (graphql/load-schema))
@@ -36,10 +39,18 @@
   (-> (lacinia/execute schema query-string nil nil)
       simplify))
 
+(def db-spec {:db-name (str "ohhey-dev")})
+(def base-search-creds {:profile "ohhey"})
+(def search-domain "ohhey-dev")
+
 (defn make-client [] (d/client cloud/cfg))
 (def client (memoize make-client))
-(def db-spec {:db-name (str "ohhey-dev")})
 (defn get-conn [] (d/connect (client) db-spec))
+
+
+(defn make-search-creds []
+  (search/make-creds base-search-creds search-domain))
+(def search-creds (memoize make-search-creds))
 
 (defn graphql*
   "Lambda ion that executes a graphql query"
@@ -67,7 +78,8 @@
                            current-user (t/get-user-by-username db "travis")]
                        {:db db
                         :conn conn
-                        :current-user current-user}))]
+                        :current-user current-user
+                        :search-creds (search-creds)}))]
          (json/write-str result))
        (catch Throwable t
          (println "error processing graphql request:")
@@ -85,4 +97,22 @@
 
   (def stop-server (run-server #'graphql* {:port 3002}))
   (stop-server)
+
+  (clojure.core.memoize/memo-clear! client)
+  (clojure.core.memoize/memo-clear! search-creds)
+
+  (d/create-database (client) db-spec)
+  (schema/client-load (get-conn))
+  (data/load-and-index-default-dataset (get-conn) (:search (search-creds)))
+
+  (data/add-all-claims-to-search-index (get-conn) (:search (search-creds)))
+
+  (data/delete-claims-from-search-index (get-conn) (:search (search-creds)))
+  (d/delete-database (client) db-spec)
+
+  (map :id (:hit (:hits (search/suggest (:search (search-creds)) "cats are"))))
+
+
+  (t/search-claims-as (d/db (get-conn)) (:search (search-creds)) [:user/username "travis"] "cats are")
+
   )

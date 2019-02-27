@@ -1,6 +1,7 @@
 (ns truth.domain
   (:require [datomic.client.api :as d]
             [truth.domain.rules :refer [rules]]
+            [truth.search :as search]
             [slugger.core :as slugger]))
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
@@ -241,10 +242,11 @@
      (map (fn [result] (apply assoc-claim-stats result)) results))))
 
 (defn search-claims-as
-  ([db user-ref term]
-   (search-claims-as db user-ref term default-claim-spec))
-  ([db user-ref term claim-spec]
-   (let [results
+  ([db search-creds user-ref term]
+   (search-claims-as db search-creds user-ref term default-claim-spec))
+  ([db search-creds user-ref term claim-spec]
+   (let [search-results (:hit (:hits (search/search search-creds term)))
+         results
          (d/q
           (apply
            conj
@@ -256,24 +258,26 @@
              (max ?my-agreement)
              (sum ?agree-disagree-score )
              (sum ?support-oppose-score) (sum ?support-oppose-score-component-count)
-             :in $ % ?user ?term
+             :in $ % ?user [?claim-id ...]
              :with ?uniqueness
              :where
-             [(fulltext $ :claim/body ?term) [[?claim _ _ ?search-score]]]
+             [?claim :claim/id ?claim-id]
+             [(ground 0) ?search-score]
              (claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
                              ?support ?oppose ?my-agreement
                              ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)])
-          db rules (or user-ref anon-user-ref) term)]
+          db rules (or user-ref anon-user-ref) (map :id search-results))]
      (map (fn [[search-score & claim-result]]
             {:search/score search-score
              :search/result (apply assoc-claim-stats claim-result)}) results))))
+
+
 
 (defn get-all-claims
   ([db]
    (get-all-claims db default-claim-spec))
   ([db claim-spec]
    (get-all-claims-as db nil claim-spec)))
-
 
 (defn assoc-evidence-stats [evidence relevance-rating-sum relevance-rating-count my-rating]
   (-> evidence

@@ -1,8 +1,11 @@
 (ns truth.data
   (:require [datomic.api :as d]
             [datomic.client.api :as cd]
-            [truth.domain :refer [new-user new-claim new-claim-vote
-                                  new-evidence new-relevance-vote]]))
+            [truth.search :as search]
+            [truth.domain
+             :refer [new-user new-claim new-claim-vote
+                     new-evidence new-relevance-vote]
+             :as t]))
 
 (def users
   (map
@@ -101,3 +104,13 @@
 (defn client-load [conn]
   (cd/transact conn {:tx-data users})
   (cd/transact conn {:tx-data pet-claims}))
+
+(defn add-all-claims-to-search-index [conn search-doc-creds]
+  (search/upload-claims search-doc-creds (t/get-all-claims (cd/db conn))))
+
+(defn load-and-index-default-dataset [conn search-doc-creds]
+  (client-load conn)
+  (add-all-claims-to-search-index conn search-doc-creds))
+
+(defn delete-claims-from-search-index [conn search-doc-creds]
+  (search/delete-claims search-doc-creds (t/get-all-claims (cd/db conn))))
