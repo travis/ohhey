@@ -68,7 +68,7 @@
      :headers {"Content-Type" "application/json"
                "Access-Control-Allow-Origin" "https://ohhey.fyi"
 ;;               "Access-Control-Allow-Origin" "http://local.ohhey.fyi:3000"
-               "access-control-allow-headers" "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Set-Cookie"
+               "access-control-allow-headers" "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Set-Cookie,*"
                "access-control-allow-methods" "POST,OPTIONS"
                "Access-Control-Allow-Credentials" "true"}}
     (try
