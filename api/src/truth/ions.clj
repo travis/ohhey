@@ -3,6 +3,7 @@
    [clojure.data.json :as json]
    [com.walmartlabs.lacinia :as lacinia]
    [clojure.walk :as walk]
+   [clojure.tools.logging :as log]
 
    [datomic.ion.lambda.api-gateway :as apigw]
    [datomic.client.api :as d]
@@ -45,7 +46,9 @@
       simplify))
 
 (def db-spec {:db-name (str "ohhey-dev")})
-(def base-search-creds {:profile "ohhey"})
+(def base-search-creds {
+                       ;; :profile "ohhey"
+                        })
 (def search-domain "ohhey-dev")
 
 (defn make-client [] (d/client cloud/cfg))
@@ -70,32 +73,34 @@
                "Access-Control-Allow-Credentials" "true"}}
     (try
       (with-local-vars [request-session session]
-       (let [body-str (slurp body)
-             body-json (json/read-str body-str
-                                      :key-fn keyword)
-             variables (:variables body-json)
-             query (:query body-json)
-             conn (get-conn)
-             result (lacinia/execute
-                     schema query variables
-                     (let [db (d/db conn)
-                           current-user (when-let [username (:identity session)]
-                                          (t/get-user-by-username db username))]
-                       {:db db
-                        :conn conn
-                        :session request-session
-                        :current-user current-user
-                        :search-creds (search-creds)}))]
-         {:status 200
-          :headers {"Content-Type" "application/json"
-                    "Access-Control-Allow-Origin" "https://ohhey.fyi"
-;;                    "Access-Control-Allow-Origin" "http://local.ohhey.fyi:3000"
-                    "Access-Control-Allow-Credentials" "true"}
-          :body (json/write-str (dissoc result :truth/session))
-          :session @request-session}))
+        (let [body-str (slurp body)
+              body-json (json/read-str body-str
+                                       :key-fn keyword)
+              variables (:variables body-json)
+              query (:query body-json)
+              conn (get-conn)
+              result (lacinia/execute
+                      schema query variables
+                      (let [db (d/db conn)
+                            current-user (when-let [username (:identity session)]
+                                           (t/get-user-by-username db username))]
+                        {:db db
+                         :conn conn
+                         :session request-session
+                         :current-user current-user
+                         :search-creds (search-creds)
+                         }))]
+          {:status 200
+           :headers {"Content-Type" "application/json"
+                     "Access-Control-Allow-Origin" "https://ohhey.fyi"
+                     ;;                    "Access-Control-Allow-Origin" "http://local.ohhey.fyi:3000"
+                     "Access-Control-Allow-Credentials" "true"}
+           :body (json/write-str (dissoc result :truth/session))
+           :session @request-session}))
       (catch Throwable t
         (println "error processing graphql request:")
-        (println t)))))
+        (println t)
+        (log/error t "error processing graphql request")))))
 
 (def auth-backend
   (session-backend
@@ -103,11 +108,19 @@
     ;;:unauthorized-handler unauthorized-handler
     }))
 
+(defn wrap-fix-set-cookie [handler]
+  (fn [request]
+    (let [{headers :headers :as response} (handler request)]
+      (assoc response
+             :headers
+             (assoc headers "Set-Cookie" (first (get headers "Set-Cookie")))))))
+
 (def graphql*
   (-> handle-graphql*
-      (wrap-authorization auth-backend)
-      (wrap-authentication auth-backend)
-      wrap-session))
+;;      (wrap-authorization auth-backend)
+;;      (wrap-authentication auth-backend)
+      wrap-session
+      wrap-fix-set-cookie))
 
 (def graphql
   "API Gateway GraphQL web service ion"
