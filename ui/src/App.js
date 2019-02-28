@@ -11,20 +11,9 @@ import ClaimPage from './pages/Claim'
 import UserClaimPage from './pages/UserClaim'
 import HomePage from './pages/Home'
 import SearchPage from './pages/Search'
-import {AuthenticationProvider, withAuth} from './authentication'
+import {AuthenticationProvider } from './authentication'
 import CssBaseline from '@material-ui/core/CssBaseline';
-
-
-const Header = withAuth(({currentUser}) => (
-  <header className="App-header">
-    TRUTH
-    {currentUser && (
-
-      <Fragment>  welcome, {currentUser.username} </Fragment>
-    )}
-  </header>
-))
-
+import Header from './components/Header'
 
 const App = () => (
   <Fragment>
@@ -33,6 +22,7 @@ const App = () => (
       <AuthenticationProvider>
         <BrowserRouter>
           <div className="App">
+            <Header/>
             <Switch>
               <Route exact path="/" component={HomePage}/>
               <Route path="/claims" component={Claims}/>

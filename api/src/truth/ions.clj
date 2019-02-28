@@ -63,29 +63,34 @@
   (if (= :options request-method)
     {:status 200
      :headers {"Content-Type" "application/json"
-               "Access-Control-Allow-Origin" "*"
-               "access-control-allow-headers" "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
-               "access-control-allow-methods" "POST,OPTIONS" }}
+               "Access-Control-Allow-Origin" "http://local.ohhey.fyi:3000"
+               "access-control-allow-headers" "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Set-Cookie"
+               "access-control-allow-methods" "POST,OPTIONS"
+               "Access-Control-Allow-Credentials" "true"}}
     (try
-      (let [body-str (slurp body)
-            body-json (json/read-str body-str
-                                     :key-fn keyword)
-            variables (:variables body-json)
-            query (:query body-json)
-            conn (get-conn)
-            result (lacinia/execute
-                    schema query variables
-                    (let [db (d/db conn)
-                          current-user (t/get-user-by-username db "travis")]
-                      {:db db
-                       :conn conn
-                       :current-user current-user
-                       :search-creds (search-creds)}))]
-        {:status 200
-         :headers {"Content-Type" "application/json"
-                   "Access-Control-Allow-Origin" "*"}
-         :body (json/write-str (dissoc result :truth/session))
-         :session (merge session (:truth/session result))})
+      (with-local-vars [request-session session]
+       (let [body-str (slurp body)
+             body-json (json/read-str body-str
+                                      :key-fn keyword)
+             variables (:variables body-json)
+             query (:query body-json)
+             conn (get-conn)
+             result (lacinia/execute
+                     schema query variables
+                     (let [db (d/db conn)
+                           current-user (when-let [username (:identity session)]
+                                          (t/get-user-by-username db username))]
+                       {:db db
+                        :conn conn
+                        :session request-session
+                        :current-user current-user
+                        :search-creds (search-creds)}))]
+         {:status 200
+          :headers {"Content-Type" "application/json"
+                    "Access-Control-Allow-Origin" "http://local.ohhey.fyi:3000"
+                    "Access-Control-Allow-Credentials" "true"}
+          :body (json/write-str (dissoc result :truth/session))
+          :session @request-session}))
       (catch Throwable t
         (println "error processing graphql request:")
         (println t)))))

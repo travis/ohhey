@@ -14,9 +14,28 @@ export const AuthenticationProvider = compose(
       userLoading: loading,
       refetchUser: refetch
     })
+  }),
+  graphql(queries.LogIn, {
+    props: ({ownProps: {client}, mutate }) => ({
+      logIn: (variables) => mutate({
+        variables,
+        update: (cache, {data: {logIn}}) => {
+          client.resetStore()
+        }
+      })
+    })
+  }),
+  graphql(queries.LogOut, {
+    props: ({ownProps: {client}, mutate }) => ({
+      logOut: () => mutate({
+        update: (cache) => {
+          client.resetStore()
+        }
+      })
+    })
   })
-)(({currentUser, userLoading, refetchUser, children}) => (
-  <Provider value={{ currentUser, userLoading, refetchUser }}>
+)(({currentUser, userLoading, refetchUser, logIn, logOut, children}) => (
+  <Provider value={{ currentUser, userLoading, refetchUser, logIn, logOut }}>
     {children}
   </Provider>
 ))

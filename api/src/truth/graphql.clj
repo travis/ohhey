@@ -112,7 +112,17 @@
         (t/get-claim-evidence-for db [:claim/id claim-id] [:user/username username]))
       }
      :Mutation
-     {:addClaim
+     {:logIn
+      (fn [{session :session conn :conn db :db current-user :current-user}
+           {username :username password :password} parent]
+        (var-set session (assoc @session :identity username))
+        (t/get-user-by-username db username))
+      :logOut
+      (fn [{session :session}
+           vars parent]
+        (var-set session (assoc @session :identity nil))
+        true)
+      :addClaim
       (fn addClaim [{conn :conn db :db current-user :current-user  search-creds :search-creds}
                     {claim-input :claim} parent]
         (reject-long-bodies! claim-input)

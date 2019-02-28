@@ -87,6 +87,8 @@ type Mutation {
   addEvidence(claimID: ID!, supports: Boolean!, claim: ClaimInput!): Evidence
   voteOnClaim(claimID: ID!, agreement: Int!): Claim
   voteOnEvidence(evidenceID: ID!, rating: Int!): Evidence
+  logIn(username: String, password: String!): User
+  logOut: Boolean
 }
 
 schema {

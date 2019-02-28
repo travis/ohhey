@@ -22,7 +22,8 @@ export const client = new ApolloClient({
       //uri: '/graphql',
       //uri: 'https://ofmgaea4ib.execute-api.us-east-1.amazonaws.com/dev/graphql',
       uri: 'http://localhost:3002/graphql',
-      credentials: 'same-origin'
+      credentials: 'include'
+      //credentials: 'same-origin'
     })
   ]),
   cache: new InMemoryCache(),

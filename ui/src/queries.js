@@ -212,3 +212,17 @@ query QuickSearchClaims($term: String!) {
   }
 }
 `
+
+export const LogIn = gql`
+  mutation LogIn($username: String, $password: String!) {
+    logIn(username: $username, password: $password) {
+      username
+    }
+  }
+`
+
+export const LogOut = gql`
+  mutation LogOut {
+    logOut
+  }
+`
