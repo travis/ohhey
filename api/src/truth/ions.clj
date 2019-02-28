@@ -12,7 +12,12 @@
    [truth.domain :as t]
    [truth.schema :as schema]
    [truth.data :as data]
-   [truth.search :as search])
+   [truth.search :as search]
+
+   [ring.middleware.session :refer [wrap-session]]
+   [buddy.auth.backends.session :refer [session-backend]]
+   [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
+   )
   (:import (clojure.lang IPersistentMap)))
 
 (def schema (graphql/load-schema))
@@ -52,41 +57,50 @@
   (search/make-creds base-search-creds search-domain))
 (def search-creds (memoize make-search-creds))
 
-(defn graphql*
+(defn handle-graphql*
   "Lambda ion that executes a graphql query"
-  [{:keys [request-method headers body] :as request}]
+  [{:keys [request-method headers body session] :as request}]
   (if (= :options request-method)
     {:status 200
      :headers {"Content-Type" "application/json"
                "Access-Control-Allow-Origin" "*"
                "access-control-allow-headers" "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
                "access-control-allow-methods" "POST,OPTIONS" }}
-    {:status 200
-     :headers {"Content-Type" "application/json"
-               "Access-Control-Allow-Origin" "*"}
-     :body
-     (try
-       (let [body-str (slurp body)
-             body-json (json/read-str body-str
-                                      :key-fn keyword)
-             variables (:variables body-json)
-             query (:query body-json)
-             conn (get-conn)
-             result (lacinia/execute
-                     schema query variables
-                     (let [db (d/db conn)
-                           current-user (t/get-user-by-username db "travis")]
-                       {:db db
-                        :conn conn
-                        :current-user current-user
-                        :search-creds (search-creds)}))]
-         (json/write-str result))
-       (catch Throwable t
-         (println "error processing graphql request:")
-         (println t)))
-     })
+    (try
+      (let [body-str (slurp body)
+            body-json (json/read-str body-str
+                                     :key-fn keyword)
+            variables (:variables body-json)
+            query (:query body-json)
+            conn (get-conn)
+            result (lacinia/execute
+                    schema query variables
+                    (let [db (d/db conn)
+                          current-user (t/get-user-by-username db "travis")]
+                      {:db db
+                       :conn conn
+                       :current-user current-user
+                       :search-creds (search-creds)}))]
+        {:status 200
+         :headers {"Content-Type" "application/json"
+                   "Access-Control-Allow-Origin" "*"}
+         :body (json/write-str (dissoc result :truth/session))
+         :session (merge session (:truth/session result))})
+      (catch Throwable t
+        (println "error processing graphql request:")
+        (println t)))))
 
-  )
+(def auth-backend
+  (session-backend
+   {
+    ;;:unauthorized-handler unauthorized-handler
+    }))
+
+(def graphql*
+  (-> handle-graphql*
+      (wrap-authorization auth-backend)
+      (wrap-authentication auth-backend)
+      wrap-session))
 
 (def graphql
   "API Gateway GraphQL web service ion"
