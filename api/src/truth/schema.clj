@@ -8,6 +8,10 @@
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The user's username"}
+   {:db/ident :user/password
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/doc "The user's password"}
    {:db/ident :user/id
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one

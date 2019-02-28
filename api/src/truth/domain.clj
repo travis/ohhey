@@ -8,11 +8,13 @@
 (def ->slug slugger/->slug)
 
 (defn new-user [{db-id :db/id id :id
-                 username :username email :email}]
+                 username :username email :email
+                 password :password}]
   {:db/id (or db-id (uuid))
    :user/id (or id (uuid))
    :user/username username
-   :user/email email})
+   :user/email email
+   :user/password password})
 
 (defn new-claim [{db-id :db/id id :id
                   body :body creator :creator

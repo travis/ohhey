@@ -11,17 +11,26 @@
   (map
    new-user
    [{:username "anon"
-     :email "anon@truth.com"}
+     :email "anon@truth.com"
+     :password ""}
     {:username "travis"
-     :email "travis@truth.com"}
+     :email "travis@truth.com"
+     :password "cats"}
     {:username "james"
-     :email "james@truth.com"}
+     :email "james@truth.com"
+     :password "aptp"}
     {:username "toby"
-     :email "toby@truth.com"}
+     :email "toby@truth.com"
+     :password "tobes"}
     {:username "chuchu"
-     :email "chuchu@truth.com"}
+     :email "chuchu@truth.com"
+     :password "keai"}
     {:username "tani"
-     :email "tani@truth.com"}
+     :email "tani@truth.com"
+     :password "flow"}
+    {:username "ian"
+     :email "ian@truth.com"
+     :password "lisp"}
     ]))
 
 (def james [:user/username "james"])
