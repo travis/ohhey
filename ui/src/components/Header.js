@@ -4,8 +4,6 @@ import {Form, TextInput} from './form'
 import {Button} from '../components/ui'
 import { withAuth } from '../authentication'
 
-
-
 export default withAuth(({currentUser, logIn, logOut}) => (
   <header className="App-header">
     {currentUser ? (
