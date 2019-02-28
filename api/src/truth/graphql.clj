@@ -116,8 +116,6 @@
       (fn [{session :session conn :conn db :db current-user :current-user}
            {username :username password :password} parent]
         (let [user (t/get-user-by-username db username)]
-          (println (:user/password user))
-          (println password)
           (if (= (:user/password user) password)
             (do
               (var-set session (assoc @session :identity username))
