@@ -1,10 +1,10 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
 import { Route, Switch, withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
+  Paper, Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   Link, PopoverButton
 } from './ui'
 import { ExpandMoreIcon } from './icons'
@@ -153,7 +153,6 @@ const EvidenceLists = graphql(
 })
 
 export default withRouter(({history, username, claim}) => {
-  const {slug, body, agreement, supportCount, opposeCount} = claim
   return (
     <Paper>
       <Typography variant="h5" align="center">

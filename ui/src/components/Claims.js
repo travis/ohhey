@@ -7,7 +7,7 @@ import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip, MenuButton, MenuItem
 } from './ui'
-import { Chat, Close, Create, Add, Remove, ExpandMoreIcon } from './icons'
+import { Chat, Close, Add, Remove, ExpandMoreIcon } from './icons'
 import {Form, TextInput} from './form'
 import Comments from './Comments'
 import QuickClaimSearch from './QuickClaimSearch'
