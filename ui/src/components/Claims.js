@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, styled } from '@material-ui/core/styles';
 import { Route, Switch, withRouter } from "react-router-dom";
 
 import {
@@ -14,6 +14,7 @@ import QuickClaimSearch from './QuickClaimSearch'
 import {StopPropagation} from './util'
 import {believesURL, doesntbelieveURL, isntsureifURL} from './UserClaim'
 import {withAuth} from '../authentication'
+import { randomFont, claimBodyFont } from '../theme'
 
 import * as goto from '../goto';
 import * as queries from '../queries';
@@ -38,6 +39,9 @@ function ClaimScore({claim}) {
       <ListItem>
         <ListItemText primary={`${score} points`} />
       </ListItem>
+      <ListItem>
+        <ListItemText primary={claimBodyFont} />
+      </ListItem>
     </List>
   )
 }
@@ -51,10 +55,16 @@ const RoutePrefixSwitch = ({ibelieve, idontbelieve, somesay, fallback}) => (
   </Switch>
 )
 
+const CBLink = withStyles({
+  link: {
+    fontFamily: claimBodyFont
+  }
+})((props) => <Link className={props.classes.link} {...props}/>)
+
 
 export const ClaimBodyLink = ({claim: {slug, body}}) => (
   <RoutePrefixSwitch
-    ibelieve={<Link to={`/ibelieve/${slug}`}>{body}</Link>}
+    ibelieve={<CBLink to={`/ibelieve/${slug}`}>{body}</CBLink>}
     idontbelieve={<Link to={`/idontbelieve/${slug}`}>{body}</Link>}
     somesay={<Link to={`/somesay/${slug}`}>{body}</Link>}
     fallback={<Link to={`/somesay/${slug}`}>{body}</Link>}
@@ -76,7 +86,7 @@ const withVote = (Component) => graphql(
 
 const agreementButton = (voteValue, text) => withVote(
   ({vote, claim: {myAgreement}, onSuccess, ...props}) => (
-    <Button color={(myAgreement === voteValue) ? 'secondary' : 'default'}
+    <Button color={(myAgreement === voteValue) ? 'primary' : 'default'}
             onClick={() => vote(voteValue).then(
               ({data: {voteOnClaim: claim}}) => onSuccess && onSuccess(claim)
             )}
@@ -131,7 +141,7 @@ export const Claim = compose(
 )(({currentUser, claim, history, classes}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
-  const {body, slug, creator} = claim
+  const {body, slug, creator, myAgreement} = claim
 
   return (
     <Paper>
@@ -151,29 +161,29 @@ export const Claim = compose(
             <ClaimScore claim={claim}/>
           </Fragment>
         )}>
-        <Typography variant="h4" color="textPrimary" align="center">
+        <Typography variant="h4" color="default" align="center">
           <ClaimBodyLink claim={claim}/>
         </Typography>
       </Tooltip>
       <Typography variant="caption" align="center">{claim.score}</Typography>
       <Typography align="center">
-        <AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim)}/>
-        <NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim)}/>
-        <DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim)}/>
+        {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim)}/>)}
+        {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim)}/>)}
+        {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim)}/>)}
       </Typography>
       {currentUser && (
         <Typography variant="caption" align="center">
           <RoutePrefixSwitch
             ibelieve={<Link to={believesURL(currentUser.username, slug)}>tell the world!</Link>}
             idontbelieve={<Link to={doesntbelieveURL(currentUser.username, slug)}>tell the world!</Link>}
-        fallback={<Link to={isntsureifURL(currentUser.username, slug)}>tell the world!</Link>}
+            fallback={<Link to={isntsureifURL(currentUser.username, slug)}>tell the world!</Link>}
           />
 
         </Typography>
       )}
       <Typography align="center">
         {!evidenceShown && (
-          <Button color="primary" onClick={() => setShowEvidence(!evidenceShown)}>
+          <Button onClick={() => setShowEvidence(!evidenceShown)}>
             {evidenceShown ? "oh I see" : "but why?"}
           </Button>
         )}

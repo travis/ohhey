@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 
-import Paper from '@material-ui/core/Paper';
+import MuiPaper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,11 +17,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 
 import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@material-ui/core/Link';
 
-export const Link = (props) => <MuiLink component={RouterLink} {...props}/>
+export const Link = (props) => <MuiLink color="inherit" component={RouterLink} {...props}/>
 
 export const PopoverButton = ({ariaID="popover", children, popoverContent}) => {
   const [buttonEl, setShowPopover] = useState(null)
@@ -76,9 +78,12 @@ export const MenuButton = ({ariaID="menu", children, menuItems}) => {
   )
 }
 
+export const Paper = (props) =>
+  <MuiPaper elevation={1} square={true} {...props}/>
+
 export {
-  Grid, Paper, Typography, Button, IconButton, Drawer,
+  Grid, Typography, Button, IconButton, Drawer,
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   Popover, Divider, List, ListItem, ListItemText, Tooltip,
-  Menu, MenuItem
+  Menu, MenuItem, AppBar, Toolbar
 }
