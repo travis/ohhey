@@ -46,19 +46,11 @@ export default withStyles({
           </MenuButton>
         </Fragment>
       ) : (
-        <MenuButton menuItems={
-          <MenuItem>
-            <Form onSubmit={logIn}>
-              <TextInput field="username"/>
-              <TextInput field="password" type="password"/>
-              <Button type="submit">log in</Button>
-            </Form>
-          </MenuItem>
-        }>
-          <Typography variant="h6">
-            Log In
-          </Typography>
-        </MenuButton>
+        <Form onSubmit={logIn}>
+          <TextInput field="username"/>
+          <TextInput field="password" type="password"/>
+          <Button type="submit">log in</Button>
+        </Form>
       )}
       </Toolbar>
     </AppBar>
