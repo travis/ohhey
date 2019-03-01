@@ -38,6 +38,9 @@ const Claim = withStyles(claimStyles)(({claim, results, classes, actions}) => (
   </ExpansionPanel>
 ))
 
+const doResultsInclude = (claimsSearch, value) =>
+      claimsSearch && claimsSearch.results.map(r => r.result.body).find(body => body === value)
+
 export default compose(
   withFormState,
   graphql(
@@ -56,13 +59,13 @@ export default compose(
       }
     }
   )
-)(({claimsSearch, history, formState, or, claimActions}) => (
+)(({claimsSearch, history, formState, create, claimActions}) => (
   <Fragment>
-    {(claimsSearch && (claimsSearch.results.length > 0)) ?
+    {claimsSearch && (claimsSearch.results.length > 0) &&
      (claimsSearch.results.map(({result: claim}) => (
        <Claim claim={claim} results={claimsSearch.results} actions={claimActions} key={claim.id}/>
-     ))) :
-     or
+     )))
     }
+    {doResultsInclude(claimsSearch, formState.values.body) ? "" : create}
   </Fragment>
 ))

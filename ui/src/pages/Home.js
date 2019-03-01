@@ -93,7 +93,7 @@ export default compose(
                 <DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'push')}/>
               </Fragment>
             )}
-            or={
+            create={
               <Fragment>
                 <Divider />
                 <Button type="submit">Tell the World!</Button>

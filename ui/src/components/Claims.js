@@ -288,7 +288,7 @@ const EvidenceAdder = compose(
         claimActions={evidenceClaim => (
           <Button onClick={() => addEvidence({id: evidenceClaim.id})}>add as evidence</Button>
         )}
-        or={
+        create={
           <Fragment>
             <Divider />
             <Button type="submit">Tell the World!</Button>
