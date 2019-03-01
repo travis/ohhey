@@ -6,6 +6,7 @@ import {Link, Button, AppBar, Toolbar, MenuButton, MenuItem, Typography} from '.
 import {AccountCircle} from '../components/icons'
 import { withAuth } from '../authentication'
 import logo from '../logo.svg';
+import {claimBodyFont} from '../theme'
 
 const HeaderLogo = withStyles(theme => (console.log(theme)) || {
   logo: {
@@ -18,13 +19,18 @@ const HeaderLogo = withStyles(theme => (console.log(theme)) || {
 )
 
 export default withStyles({
-  grow: {flexGrow: 1}
+  ohhey: {
+    flexGrow: 1,
+    marginLeft: '0.5em',
+    fontFamily: claimBodyFont
+  }
 })(withAuth(({currentUser, logIn, logOut, classes}) => (
   <header>
     <AppBar color="default" position="static">
       <Toolbar>
         <Link to="/"><HeaderLogo/></Link>
-        <Typography variant="h6" className={classes.grow}>
+        <Typography variant="h6" className={classes.ohhey}>
+          oh hey!
         </Typography>
       {currentUser ? (
         <Fragment>
