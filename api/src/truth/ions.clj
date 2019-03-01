@@ -66,11 +66,12 @@
   (if (= :options request-method)
     {:status 200
      :headers {"Content-Type" "application/json"
-               "Access-Control-Allow-Origin" "https://ohhey.fyi"
-;;               "Access-Control-Allow-Origin" "http://local.ohhey.fyi:3000"
-               "access-control-allow-headers" "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Set-Cookie,*"
-               "access-control-allow-methods" "POST,OPTIONS"
-               "Access-Control-Allow-Credentials" "true"}}
+               ;;"Access-Control-Allow-Origin" "https://ohhey.fyi"
+               ;;"Access-Control-Allow-Origin" "http://local.ohhey.fyi:3000"
+               ;;"access-control-allow-headers" "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Set-Cookie,*"
+               ;;"access-control-allow-methods" "POST,OPTIONS"
+               ;;"Access-Control-Allow-Credentials" "true"
+               }}
     (try
       (with-local-vars [request-session session]
         (let [body-str (slurp body)
@@ -92,9 +93,10 @@
                          }))]
           {:status 200
            :headers {"Content-Type" "application/json"
-                     "Access-Control-Allow-Origin" "https://ohhey.fyi"
-                     ;;                    "Access-Control-Allow-Origin" "http://local.ohhey.fyi:3000"
-                     "Access-Control-Allow-Credentials" "true"}
+                     ;;"Access-Control-Allow-Origin" "https://ohhey.fyi"
+                     ;;"Access-Control-Allow-Origin" "http://local.ohhey.fyi:3000"
+                     ;;"Access-Control-Allow-Credentials" "true"
+                     }
            :body (json/write-str (dissoc result :truth/session))
            :session @request-session}))
       (catch Throwable t
