@@ -16,8 +16,8 @@
    [truth.search :as search]
 
    [ring.middleware.session :refer [wrap-session]]
-   [buddy.auth.backends.session :refer [session-backend]]
-   [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
+;;   [buddy.auth.backends.session :refer [session-backend]]
+;;   [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
    )
   (:import (clojure.lang IPersistentMap)))
 
@@ -104,11 +104,11 @@
         (println t)
         (log/error t "error processing graphql request")))))
 
-(def auth-backend
-  (session-backend
-   {
+;;(def auth-backend
+;;  (session-backend
+;;   {
     ;;:unauthorized-handler unauthorized-handler
-    }))
+;;    }))
 
 (defn wrap-fix-set-cookie [handler]
   (fn [request]
