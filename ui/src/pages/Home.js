@@ -7,6 +7,7 @@ import {Form, TextInput} from '../components/form'
 import {Paper, Typography, Button, Divider} from '../components/ui'
 import QuickClaimSearch from '../components/QuickClaimSearch'
 import {AgreeButton, DisagreeButton} from '../components/Claims'
+import { claimBodyFont } from '../theme'
 import * as queries from '../queries';
 import * as goto from '../goto';
 import * as validations from '../validations';
@@ -50,6 +51,9 @@ export default compose(
     },
     bodyInput: {
       fontSize: "50px", padding: "0em 0.5em"
+    },
+    question: {
+      fontFamily: claimBodyFont
     }
   }))
 )(({classes, createClaim, history, error}) => {
@@ -69,7 +73,7 @@ export default compose(
         })
   return (
     <Paper>
-      <Typography align="center" variant="h2">what do you believe?</Typography>
+      <Typography align="center" variant="h2" className={classes.question}>what do you believe?</Typography>
       {errors.map((error, i) => (
         <div key={i}>{messageForError(error)}</div>
       ))}
