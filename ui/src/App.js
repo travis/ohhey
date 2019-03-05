@@ -32,9 +32,9 @@ const TeaserVideo = withStyles(theme => ({
 
 ))
 
-const UI = withAuth(({currentUser, logIn, logOut}) => (
+const UI = withAuth(({currentUser, userLoading, logIn, logOut}) => (
   <Fragment>
-    <Header/>
+    {!userLoading && <Header/>}
     {currentUser ? (
       <Switch>
         <Route exact path="/" component={HomePage}/>
