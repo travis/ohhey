@@ -23,6 +23,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@material-ui/core/Link';
 
+import SpinkitSpinner from 'react-spinkit'
+import * as theme from '../theme';
+
 export const Link = (props) => <MuiLink color="inherit" component={RouterLink} {...props}/>
 
 export const PopoverButton = ({ariaID="popover", children, popoverContent}) => {
@@ -80,6 +83,8 @@ export const MenuButton = ({ariaID="menu", children, menuItems}) => {
 
 export const Paper = (props) =>
   <MuiPaper elevation={1} square={true} {...props}/>
+
+export const Spinner = (props) => <SpinkitSpinner name="chasing-dots" color={theme.primaryColor} {...props}/>
 
 export {
   Grid, Typography, Button, IconButton, Drawer,

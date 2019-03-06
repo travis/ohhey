@@ -16,9 +16,12 @@ export const font = "Source Sans Pro"
 export const claimBodyFont = randomFont()
 //export const claimBodyFont = "Amatic SC"
 
-const palette = {
-  primary: { main: '#FF4081' },
-  secondary: { main: '#FFFF00' }
+export const primaryColor = '#FF4081'
+export const secondaryColor = '#FFFF00'
+
+export const palette = {
+  primary: { main: primaryColor },
+  secondary: { main: secondaryColor }
 };
 
 export const theme = createMuiTheme({

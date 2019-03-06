@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
 import { withStyles, styled } from '@material-ui/core/styles';
 import { Route, Switch, withRouter } from "react-router-dom";
+import {Spinner} from './ui'
 
 import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
@@ -176,7 +177,7 @@ export const Claim = compose(
           <RoutePrefixSwitch
             ibelieve={<Link to={believesURL(currentUser.username, slug)}>tell the world!</Link>}
             idontbelieve={<Link to={doesntbelieveURL(currentUser.username, slug)}>tell the world!</Link>}
-            fallback={<Link to={isntsureifURL(currentUser.username, slug)}>tell the world!</Link>}
+            fallback={<Link to={isntsureifURL(currentUser.username, slug)}>my view</Link>}
           />
 
         </Typography>
@@ -228,7 +229,7 @@ const Evidence = compose(
       width: '100%'
     }
   }))
-)(({classes, relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}}) => {
+)(({classes, relevanceVote, evidence: {id, supports, claim, myAgreement, relevance, myRelevanceRating}}) => {
   const [expanded, setExpanded] = useState(false)
   return (
     <div key={id}>
@@ -251,6 +252,9 @@ const Evidence = compose(
               }>
               {relevance}% relevant
             </PopoverButton>
+              {(myAgreement !== 100) && (<AgreeButton claim={claim}/>)}
+              {(myAgreement !== 0) && (<NotSureButton claim={claim}/>)}
+              {(myAgreement !== -100) && (<DisagreeButton claim={claim}/>)}
             </StopPropagation>
           </Typography>
         </ExpansionPanelSummary>
@@ -290,18 +294,24 @@ const EvidenceAdder = compose(
     }
   }))
 )(({claim, supports, addEvidence, placeholder, classes}) => {
+  const [submitting, setSubmitting] = useState(false)
+  const submit = async (values) => {
+    setSubmitting(true)
+    await addEvidence(values)
+    setSubmitting(false)
+  }
   return (
-    <Form onSubmit={addEvidence}>
+    <Form onSubmit={submit}>
       <TextInput field="body" placeholder={placeholder}
                  fullWidth={true} className={classes.bodyInput} autoComplete="off"/>
       <QuickClaimSearch
-        claimActions={evidenceClaim => (
-          <Button onClick={() => addEvidence({id: evidenceClaim.id})}>add as evidence</Button>
+        claimActions={evidenceClaim => submitting ? <Spinner /> : (
+          <Button onClick={() => submit({id: evidenceClaim.id})}>add as evidence</Button>
         )}
         create={
           <Fragment>
             <Divider />
-            <Button type="submit">Tell the World!</Button>
+            {submitting ? <Spinner/> : <Button type="submit">Tell the World!</Button>}
           </Fragment>
         }/>
     </Form>

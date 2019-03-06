@@ -3,6 +3,7 @@ import { graphql, compose } from "react-apollo";
 import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 
+import {Spinner} from '../components/ui'
 import {Form, TextInput} from '../components/form'
 import {Paper, Typography, Button, Divider} from '../components/ui'
 import QuickClaimSearch from '../components/QuickClaimSearch'
@@ -54,6 +55,9 @@ export default compose(
     },
     question: {
       fontFamily: claimBodyFont
+    },
+    spinner: {
+      margin: "auto"
     }
   }))
 )(({classes, createClaim, history, error}) => {
@@ -62,15 +66,18 @@ export default compose(
   useEffect(() => {
     input.current && input.current.focus()
   })
-  const createAndGoToClaim = (claimInputs) =>
-        createClaim(claimInputs)
-        .then(({data: {addClaim: claim}, errors}) => {
-          if (claim) {
-            goto.iBelieve(history, claim, 'push')
-          } else {
-            setErrors(errors)
-          }
-        })
+  const [submitting, setSubmitting] = useState(false)
+  const createAndGoToClaim = async (claimInputs) => {
+    setSubmitting(true)
+    const {data: {addClaim: claim}, errors} = await createClaim(claimInputs)
+    setSubmitting(false)
+    if (claim) {
+      goto.iBelieve(history, claim, 'push')
+    } else {
+      setErrors(errors)
+    }
+  }
+
   return (
     <Paper>
       <Typography align="center" variant="h2" className={classes.question}>what do you believe?</Typography>
@@ -100,7 +107,10 @@ export default compose(
             create={
               <Fragment>
                 <Divider />
-                <Button type="submit">Tell the World!</Button>
+                {submitting ?
+                   <Spinner className={classes.spinner}/> :
+                   <Button type="submit">Tell the World!</Button>
+                }
               </Fragment>
             }/>
           </Fragment>
