@@ -50,6 +50,9 @@ const Evidence = compose(
   withStyles(theme => ({
     evidenceLists: {
       width: '100%'
+    },
+    relevance: {
+      marginLeft: "1em"
     }
   }))
 )(({classes, relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}, username}) => {
@@ -61,22 +64,11 @@ const Evidence = compose(
           <Typography variant="subtitle2">
             <ClaimBodyLink claim={claim}/>
           </Typography>
-          <Typography variant="caption">
-            <StopPropagation>
-            <PopoverButton
-              popoverContent={
-                <Fragment>
-                  <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                  <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                  <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                  <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                  {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
-                </Fragment>
-              }>
-              {relevance}% relevant
-            </PopoverButton>
-            </StopPropagation>
-          </Typography>
+          {relevance && (
+            <Typography className={classes.relevance} variant="caption">
+              ({relevance}% relevant)
+            </Typography>
+          )}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           {expanded && (
