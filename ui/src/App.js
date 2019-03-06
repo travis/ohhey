@@ -38,7 +38,7 @@ const UI = withAuth(({currentUser, userLoading, logIn, logOut}) => (
     {currentUser ? (
       <Switch>
         <Route exact path="/" component={HomePage}/>
-        <Route path="/claims" component={Claims}/>
+        <Route path="/all" component={Claims}/>
         <Route path="/search" component={SearchPage}/>
         <Route path="/ibelieve/:slug" component={ClaimPage}/>
         <Route path="/idontbelieve/:slug" component={ClaimPage}/>
