@@ -31,7 +31,9 @@
     {:username "ian"
      :email "ian@truth.com"
      :password "lisp"}
-    ]))
+    {:username "danny"
+     :email "danny@truth.com"
+     :password "twc"}]))
 
 (def james [:user/username "james"])
 (def travis [:user/username "travis"])
@@ -118,8 +120,12 @@
   (search/upload-claims search-doc-creds (t/get-all-claims (cd/db conn))))
 
 (defn load-and-index-default-dataset [conn search-doc-creds]
-  (client-load conn)
-  (add-all-claims-to-search-index conn search-doc-creds))
+  {:db (client-load conn)
+   :search (add-all-claims-to-search-index conn search-doc-creds)})
 
 (defn delete-claims-from-search-index [conn search-doc-creds]
   (search/delete-claims search-doc-creds (t/get-all-claims (cd/db conn))))
+
+(defn clear-and-delete-database [conn search-creds client db-spec]
+  {:search (delete-claims-from-search-index conn (:doc search-creds))
+   :db (cd/delete-database client db-spec)})
