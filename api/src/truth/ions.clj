@@ -47,7 +47,7 @@
 
 (def db-spec {:db-name (str "ohhey-dev")})
 (def base-search-creds {
-                       ;; :profile "ohhey"
+                        :profile "ohhey"
                         })
 (def search-domain "ohhey-dev")
 
@@ -140,13 +140,8 @@
   (d/create-database (client) db-spec)
   (schema/client-load (get-conn))
 
-  (data/load-and-index-default-dataset (get-conn) (:search (search-creds)))
-
-  (data/add-all-claims-to-search-index (get-conn) (:search (search-creds)))
-
-  (data/delete-claims-from-search-index (get-conn) (:search (search-creds)))
-
-  (d/delete-database (client) db-spec)
+  (data/load-and-index-default-dataset (get-conn) (:doc (search-creds)))
+  (data/clear-and-delete-database (get-conn) (search-creds) (client) db-spec)
 
   (map :id (:suggestions (:suggest (search/suggest (:search (search-creds)) "cats are"))))
   (map :id (:hit (:hits (search/suggest (:search (search-creds)) "cats are"))))
