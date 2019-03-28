@@ -3,6 +3,7 @@ import { compose, Query } from "react-apollo";
 import { withStyles } from '@material-ui/core/styles';
 import {AutosuggestTextInput} from './form'
 
+
 import {
   Typography
 } from './ui'
@@ -41,9 +42,14 @@ const autosuggestStyles = theme => ({
 })
 
 export default compose(
-  withStyles(autosuggestStyles)
-)(({create, claimActions, classes, ...props}) => {
+  withStyles(autosuggestStyles),
+)(({create, claimActions, classes, setTimeout, ...props}) => {
   const [term, setTerm] = useState(props.value || "")
+  const [suggestionFetch, setSuggestionFetch] = useState(null)
+  const queueSuggestionsFetch = (value) => {
+    window.clearTimeout(suggestionFetch)
+    setSuggestionFetch(window.setTimeout(() => setTerm(value), 250))
+  }
   return (
     <Query
       query={queries.QuickSearchClaims}
@@ -54,7 +60,7 @@ export default compose(
           <AutosuggestTextInput
             theme={classes}
             suggestions={suggestions}
-            onSuggestionsFetchRequested={({value}) => setTerm(value)}
+            onSuggestionsFetchRequested={({value}) => queueSuggestionsFetch(value)}
             getSuggestionValue={({result: {body}}) => body}
             renderSuggestion={({result: claim}, {query, isHighlighted}) => (
               <Claim claim={claim} actions={claimActions} isHighlighted={isHighlighted}/>
