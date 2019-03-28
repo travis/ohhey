@@ -24,6 +24,7 @@
   {:db/id (or db-id (uuid))
    :claim/id (or id (uuid))
    :claim/body body
+   :claim/created-at (java.util.Date.)
    :claim/slug (->slug body)
    :claim/creator creator
    :claim/contributors contributors
@@ -140,6 +141,7 @@
 (def default-claim-spec '[:db/id
                           :claim/id
                           :claim/body
+                          :claim/created-at
                           :claim/slug
                           {:claim/creator [:user/username]}])
 

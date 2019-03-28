@@ -149,5 +149,6 @@
 
   (t/search-claims-as (d/db (get-conn)) (:search (search-creds)) [:user/username "travis"] "cats are")
   (t/suggest-claims-as (d/db (get-conn)) (:search (search-creds)) [:user/username "toby"] "cats are great")
+  (:claim/created-at (first (t/get-all-claims (d/db (get-conn)))))
 
   )

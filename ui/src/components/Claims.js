@@ -160,6 +160,7 @@ export const Claim = compose(
               created by {creator.username}
             </Typography>
             <ClaimScore claim={claim}/>
+            <p>Created at {new Date(claim.createdAt).toString()}</p>
           </Fragment>
         )}>
         <Typography variant="h4" color="default" align="center">

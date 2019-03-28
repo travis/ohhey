@@ -71,7 +71,17 @@
 
 (def resolvers
   (->
-   {:resolvers
+   {:scalars
+    {:Instant
+     {:parse (fn [epoch]
+               (java.util.Date. epoch))
+      :serialize (fn [instant]
+                   (try
+                     (.getTime instant)
+                     (catch Throwable _
+                       (log/warn "Error serializing instant " instant)
+                       nil)))}}
+    :resolvers
     {:Query
      {:currentUser
       (fn [{db :db current-user :current-user} arguments parent]
@@ -212,8 +222,9 @@
       }
      :Claim
      {:id (dkey :claim/id)
-      :body (dkey :claim/body)
       :slug (dkey :claim/slug)
+      :body (dkey :claim/body)
+      :createdAt (dkey :claim/created-at)
       :supportCount (dkey :support-count)
       :opposeCount (dkey :oppose-count)
       :agreement (dkey :agreement)
@@ -251,4 +262,5 @@
 
 (defn load-schema []
   (-> (parse-schema (slurp (clojure.java.io/resource "schema.gql")) resolvers)
-      schema/compile))
+      schema/compile
+      ))

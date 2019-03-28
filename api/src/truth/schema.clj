@@ -29,6 +29,10 @@
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one
     :db/doc "The text of the claim"}
+   {:db/ident :claim/created-at
+    :db/valueType :db.type/instant
+    :db/cardinality :db.cardinality/one
+    :db/doc "The instant this claim was created. Can be different from the instant of the transaction it was created in, but usually not by much."}
    {:db/ident :claim/slug
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one

@@ -1,3 +1,5 @@
+scalar Instant
+
 interface Node {
   id: ID!
 }
@@ -15,8 +17,9 @@ input ClaimInput {
 
 type Claim implements Node {
   id: ID!
-  body: String
   slug: String
+  body: String
+  createdAt: Instant
   creator: User
   contributors: [User]
   evidence: EvidenceConnection

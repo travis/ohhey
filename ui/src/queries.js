@@ -12,8 +12,9 @@ export const CurrentUser = gql`
 const fullClaimFieldsFragment = gql`
 fragment fullClaimFields on Claim {
   id
-  body
   slug
+  body
+  createdAt
   creator { username }
   supportCount
   opposeCount
