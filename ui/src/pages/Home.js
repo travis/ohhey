@@ -7,7 +7,6 @@ import {Spinner} from '../components/ui'
 import {Form } from '../components/form'
 import {Paper, Typography, Button, Divider} from '../components/ui'
 import AutosuggestClaimTextInput from '../components/AutosuggestClaimTextInput'
-import QuickClaimSearch from '../components/QuickClaimSearch'
 import {AgreeButton, DisagreeButton} from '../components/Claims'
 import { claimBodyFont } from '../theme'
 import * as queries from '../queries';

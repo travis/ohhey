@@ -1,16 +1,12 @@
 import React, {Fragment, useState} from 'react';
-import { graphql, compose, Query } from "react-apollo";
-import { withRouter } from "react-router-dom";
-import { withFormState } from 'informed'
+import { compose, Query } from "react-apollo";
 import { withStyles } from '@material-ui/core/styles';
 import {AutosuggestTextInput} from './form'
 
 import {
-  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography
+  Typography
 } from './ui'
-import { ExpandMoreIcon } from './icons'
 import { ClaimBodyLink } from './Claims'
-
 import {StopPropagation} from './util'
 
 import * as queries from '../queries';
@@ -21,8 +17,6 @@ const claimStyles = theme => ({
     fontWeight: theme.typography.fontWeightRegular
   }
 })
-
-const getSearchTerm = ({values: {body}}) => body
 
 const Claim = withStyles(claimStyles)(({claim, classes, actions}) => (
   <StopPropagation>
