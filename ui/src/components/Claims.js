@@ -11,7 +11,7 @@ import {
 import { Chat, Close, Add, Remove, ExpandMoreIcon } from './icons'
 import {Form, TextInput} from './form'
 import Comments from './Comments'
-import QuickClaimSearch from './QuickClaimSearch'
+import AutosuggestClaimTextInput from './AutosuggestClaimTextInput'
 import {StopPropagation} from './util'
 import {believesURL, doesntbelieveURL, isntsureifURL} from './UserClaim'
 import {withAuth} from '../authentication'
@@ -302,13 +302,18 @@ const EvidenceAdder = compose(
   }
   return (
     <Form onSubmit={submit}>
-      <TextInput field="body" placeholder={placeholder}
-                 fullWidth={true} className={classes.bodyInput} autoComplete="off"/>
-      <QuickClaimSearch
+      <AutosuggestClaimTextInput
+        field="body" placeholder={placeholder}
+        fullWidth={true} className={classes.bodyInput} autoComplete="off"
         claimActions={evidenceClaim => submitting ? <Spinner /> : (
           <Button onClick={() => submit({id: evidenceClaim.id})}>add as evidence</Button>
         )}
-        create={
+        onSuggestionSelected={(event, {suggestion: {result: evidenceClaim}}) => {
+          event.preventDefault();
+          submit({id: evidenceClaim.id})
+        }}
+
+        create={query =>
           <Fragment>
             <Divider />
             {submitting ? <Spinner/> : <Button type="submit">Tell the World!</Button>}

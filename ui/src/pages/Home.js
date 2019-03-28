@@ -4,8 +4,9 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 
 import {Spinner} from '../components/ui'
-import {Form, TextInput} from '../components/form'
+import {Form } from '../components/form'
 import {Paper, Typography, Button, Divider} from '../components/ui'
+import AutosuggestClaimTextInput from '../components/AutosuggestClaimTextInput'
 import QuickClaimSearch from '../components/QuickClaimSearch'
 import {AgreeButton, DisagreeButton} from '../components/Claims'
 import { claimBodyFont } from '../theme'
@@ -88,22 +89,38 @@ export default compose(
         {({formState: {errors: {body: bodyError}}}) => (
           <Fragment>
             {bodyError && <Typography color="error">{bodyError}</Typography>}
-            <TextInput field="body"
-                       error={bodyError}
-                       fullWidth={true}
-                       forwardedRef={input}
-                       validate={validations.claimBody}
-                       validateOnChange
-                       autoComplete="off"
-                       className={classes.bodyInput}
-          />
-          <QuickClaimSearch
-            claimActions={claim => (
-              <Fragment>
-                <AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'push')}/>
-                <DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'push')}/>
-              </Fragment>
-            )}
+            <AutosuggestClaimTextInput
+              field="body"
+              error={bodyError}
+              fullWidth={true}
+              inputRef={input}
+              validate={validations.claimBody}
+              validateOnChange
+              autoComplete="off"
+              className={classes.bodyInput}
+
+              onSuggestionSelected={(event, {suggestion: {result: claim}}) => {
+                event.preventDefault();
+                goto.claim(history, claim, 'push')
+              }}
+
+              claimActions={claim => (
+                <Fragment>
+                  <AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'push')}/>
+                  <DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'push')}/>
+                </Fragment>
+              )}
+              create={query =>
+                <Fragment>
+                  <Divider />
+                  {submitting ?
+                   <Spinner className={classes.spinner}/> :
+                   <Button type="submit">Tell the World!</Button>
+                  }
+                </Fragment>
+              }
+            />
+            {/*<QuickClaimSearch
             create={
               <Fragment>
                 <Divider />
@@ -112,7 +129,7 @@ export default compose(
                    <Button type="submit">Tell the World!</Button>
                 }
               </Fragment>
-            }/>
+              }/>*/}
           </Fragment>
         )}
       </Form>
