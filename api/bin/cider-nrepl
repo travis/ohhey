@@ -1,2 +1,2 @@
 #!/bin/bash
-AWS_PROFILE=ohhey clj -A:cider-clj
+AWS_REGION=us-east-1 AWS_PROFILE=ohhey clj -A:cider-clj
