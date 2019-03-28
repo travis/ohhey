@@ -48,7 +48,7 @@ export default compose(
   const [suggestionFetch, setSuggestionFetch] = useState(null)
   const queueSuggestionsFetch = (value) => {
     window.clearTimeout(suggestionFetch)
-    setSuggestionFetch(window.setTimeout(() => setTerm(value), 250))
+    setSuggestionFetch(window.setTimeout(() => setTerm(value), 200))
   }
   return (
     <Query
