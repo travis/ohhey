@@ -246,10 +246,10 @@
      (map (fn [result] (apply assoc-claim-stats result)) results))))
 
 (defn search-claims-as
-  ([db search-creds user-ref term]
-   (search-claims-as db search-creds user-ref term default-claim-spec))
-  ([db search-creds user-ref term claim-spec]
-   (let [search-results (:hit (:hits (search/search search-creds term)))
+  ([db search-client user-ref term]
+   (search-claims-as db search-client user-ref term default-claim-spec))
+  ([db search-client user-ref term claim-spec]
+   (let [search-results (:hits (search/search search-client term))
          results
          (d/q
           (apply
@@ -276,10 +276,10 @@
              :search/result (apply assoc-claim-stats claim-result)}) results))))
 
 (defn suggest-claims-as
-  ([db search-creds user-ref term]
-   (search-claims-as db search-creds user-ref term default-claim-spec))
-  ([db search-creds user-ref term claim-spec]
-   (let [search-results (:suggestions (:suggest (search/suggest search-creds term)))
+  ([db search-client user-ref term]
+   (search-claims-as db search-client user-ref term default-claim-spec))
+  ([db search-client user-ref term claim-spec]
+   (let [search-results (:suggestions (search/suggest search-client term))
          results
          (d/q
           (apply

@@ -4,11 +4,12 @@
         com.datomic/datomic-pro {:mvn/version "0.9.5786"},
         com.datomic/client-cloud {:mvn/version "0.8.71"}
         com.walmartlabs/lacinia {:mvn/version "0.31.0"}
-        amazonica {:mvn/version "0.3.139"}
         org.clojure/data.json {:mvn/version "0.2.6"}
         io.aviso/logging {:mvn/version "0.3.1"},
         slugger {:mvn/version "1.0.1"},
         ring {:mvn/version "1.7.0"}
+        software.amazon.awssdk/cloudsearch {:mvn/version "2.5.20"}
+        software.amazon.awssdk/cloudsearchdomain {:mvn/version "2.5.20"}
 ;;        buddy/buddy-core {:mvn/version "1.5.0"}
 ;;        buddy/buddy-auth {:mvn/version "2.1.0"}
         }

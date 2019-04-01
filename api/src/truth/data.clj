@@ -126,6 +126,6 @@
 (defn delete-claims-from-search-index [conn search-doc-creds]
   (search/delete-claims search-doc-creds (t/get-all-claims (cd/db conn))))
 
-(defn clear-and-delete-database [conn search-creds client db-spec]
-  {:search (delete-claims-from-search-index conn (:doc search-creds))
+(defn clear-and-delete-database [conn search-client client db-spec]
+  {:search (delete-claims-from-search-index conn search-client)
    :db (cd/delete-database client db-spec)})

@@ -7,7 +7,8 @@
             [truth.data :as data]
             [truth.graphql :refer [load-schema]]
             [truth.domain :as t]
-            [truth.cloud :as cloud]))
+            [truth.cloud :as cloud]
+            [truth.search :as search]))
 
 (use-fixtures
   :each (fn [run-tests]
@@ -16,7 +17,8 @@
 
             (d/create-database client db-spec)
             (let [schema (load-schema)
-                  conn (d/connect client db-spec)]
+                  conn (d/connect client db-spec)
+                  search-client (search/mock-search-domain-client)]
               (schema/client-load conn)
               (data/client-load conn)
               (defn execute
@@ -28,7 +30,8 @@
                                 (let [current-user (t/get-user-by-username db current-username)]
                                   {:db db
                                    :conn conn
-                                   :current-user current-user})))))
+                                   :current-user current-user
+                                   :search-client search-client})))))
               (run-tests)
               (d/delete-database client db-spec)))
           ))

@@ -46,19 +46,14 @@
       simplify))
 
 (def db-spec {:db-name (str "ohhey-dev")})
-(def base-search-creds {
-                        :profile "ohhey"
-                        })
 (def search-domain "ohhey-dev")
 
 (defn make-client [] (d/client cloud/cfg))
 (def client (memoize make-client))
 (defn get-conn [] (d/connect (client) db-spec))
 
-
-(defn make-search-creds []
-  (search/make-creds base-search-creds search-domain))
-(def search-creds (memoize make-search-creds))
+(defn make-search-client [] (search/client-for-domain search-domain))
+(def search-client (memoize make-search-client))
 
 (defn handle-graphql*
   "Lambda ion that executes a graphql query"
@@ -89,7 +84,7 @@
                          :conn conn
                          :session request-session
                          :current-user current-user
-                         :search-creds (search-creds)
+                         :search-client (search-client)
                          }))]
           {:status 200
            :headers {"Content-Type" "application/json"
@@ -135,20 +130,20 @@
   (stop-server)
 
   (clojure.core.memoize/memo-clear! client)
-  (clojure.core.memoize/memo-clear! search-creds)
+  (clojure.core.memoize/memo-clear! search-client)
 
   (d/create-database (client) db-spec)
   (schema/client-load (get-conn))
 
-  (data/load-and-index-default-dataset (get-conn) (:doc (search-creds)))
-  (data/clear-and-delete-database (get-conn) (search-creds) (client) db-spec)
+  (data/load-and-index-default-dataset (get-conn) (search-client))
+  (data/clear-and-delete-database (get-conn) (search-client) (client) db-spec)
 
-  (map :id (:suggestions (:suggest (search/suggest (:search (search-creds)) "cats are"))))
-  (map :id (:hit (:hits (search/suggest (:search (search-creds)) "cats are"))))
+  (map :id (:suggestions (:suggest (search/suggest (search-client) "cats are"))))
+  (map :id (:hit (:hits (search/suggest (search-client) "cats are"))))
 
 
-  (t/search-claims-as (d/db (get-conn)) (:search (search-creds)) [:user/username "travis"] "cats are")
-  (t/suggest-claims-as (d/db (get-conn)) (:search (search-creds)) [:user/username "toby"] "cats are great")
+  (t/search-claims-as (d/db (get-conn)) (search-client) [:user/username "travis"] "cats are")
+  (t/suggest-claims-as (d/db (get-conn)) (search-client) [:user/username "toby"] "cats are great")
   (:claim/created-at (first (t/get-all-claims (d/db (get-conn)))))
 
   )

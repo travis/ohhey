@@ -109,8 +109,8 @@
       (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} -1 100]]
              (evidence-for "dogs-are-great" "toby"))))
     (testing "cats are great"
-      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} 66 -101]
-              [{:evidence/claim {:claim/body "They don't like people"}} -1 -101]]
+      (is (= [[{:evidence/claim {:claim/body "They don't like people"}} -1 -101]
+              [{:evidence/claim {:claim/body "Animals are awesome"}} 66 -101]]
              (evidence-for "cats-are-great" "travis")))
       (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} -1 100]]
              (evidence-for "cats-are-great" "chuchu")))

@@ -29,17 +29,23 @@
               (resolve-as nil {:message "this mutation attempted to assert a duplicate value"
                                :data {:truth.error/type :truth.error/unique-conflict}}))
             (do
+              (println e (str "caught clojure.lang.ExceptionInfo while resolving "resolver-path))
               (log/error e (str "caught clojure.lang.ExceptionInfo while resolving "resolver-path))
               (resolve-as nil {:message "unknown clojure.lang.ExceptionInfo - please contact the administrator"
-                               :data {:truth.error/type :truth.error/unknown-exception-info}})))))
+                               :data {:truth.error/type :truth.error/unknown-exception-info
+                                      :truth.error/error e}})))))
       (catch java.util.concurrent.ExecutionException e
+        (println e (str "caught execution exception while resolving "resolver-path))
         (log/error e (str "caught execution exception while resolving "resolver-path))
         (resolve-as nil {:message "unknown execution exception - please contact the administrator"
-                         :data {:truth.error/type :truth.error/unknown-execution-exception}}))
+                         :data {:truth.error/type :truth.error/unknown-execution-exception
+                                :truth.error/error e}}))
       (catch Throwable t
+        (println t (class t) (str "caught error while resolving "resolver-path))
         (log/error t (class t) (str "caught error while resolving "resolver-path))
         (resolve-as nil {:message "unknown error - please contact the administrator"
-                         :data {:truth.error/type :truth.error/unknown-error}})))))
+                         :data {:truth.error/type :truth.error/unknown-error
+                                :truth.error/error t}})))))
 
 (defn apply-middleware [resolvers middlewares]
  (update-in resolvers [:resolvers]
@@ -92,16 +98,16 @@
         (t/get-all-claims-as db (:db/id current-user)))
 
       :searchClaims
-      (fn [{db :db search-creds :search-creds current-user :current-user} {term :term} parent]
+      (fn [{db :db search-client :search-client current-user :current-user} {term :term} parent]
         (if term
-          (->> (t/search-claims-as db (:search search-creds) (:db/id current-user) term)
+          (->> (t/search-claims-as db search-client (:db/id current-user) term)
                (search-results-of-type :Claim))
           []))
 
       :suggestClaims
-      (fn [{db :db search-creds :search-creds current-user :current-user} {term :term} parent]
+      (fn [{db :db search-client :search-client current-user :current-user} {term :term} parent]
         (if term
-          (->> (t/suggest-claims-as db (:search search-creds) (:db/id current-user) term)
+          (->> (t/suggest-claims-as db search-client (:db/id current-user) term)
                (search-results-of-type :Claim))
           []))
 
@@ -139,20 +145,20 @@
         (var-set session (assoc @session :identity nil))
         true)
       :addClaim
-      (fn addClaim [{conn :conn db :db current-user :current-user  search-creds :search-creds}
+      (fn addClaim [{conn :conn db :db current-user :current-user  search-client :search-client}
                     {claim-input :claim} parent]
         (reject-long-bodies! claim-input)
         (let [creator [:user/email (:user/email current-user)]
               claim (t/new-claim
                      (assoc claim-input :creator creator))]
           (d/transact conn {:tx-data [claim]})
-          (search/upload-claims (:doc search-creds) [claim])
+          (search/upload-claims search-client [claim])
           (t/get-claim-as (d/db conn)
                           [:claim/id (:claim/id claim)]
                           (:db/id current-user)))
         )
       :addEvidence
-      (fn [{conn :conn db :db current-user :current-user search-creds :search-creds}
+      (fn [{conn :conn db :db current-user :current-user search-client :search-client}
            {claim-id :claimID {id :id :as claim} :claim supports :supports} parent]
         (when (not id)
           (reject-long-bodies! claim))
@@ -169,7 +175,7 @@
            {:tx-data
             [{:claim/id claim-id
               :claim/evidence evidence}]})
-          (when (not id) (search/upload-claims (:doc search-creds) [claim]))
+          (when (not id) (search/upload-claims search-client [claim]))
           (t/get-evidence-as (d/db conn)
                              [:evidence/id (:evidence/id evidence)]
                              (:db/id current-user)))
