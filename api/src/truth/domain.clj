@@ -16,6 +16,8 @@
    :user/email email
    :user/password password})
 
+(def char-limit 255)
+
 (defn new-claim [{db-id :db/id id :id
                   body :body creator :creator
                   contributors :contributors evidence :evidence

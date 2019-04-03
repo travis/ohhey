@@ -147,16 +147,16 @@
       :addClaim
       (fn addClaim [{conn :conn db :db current-user :current-user  search-client :search-client}
                     {claim-input :claim} parent]
-        (reject-long-bodies! claim-input)
-        (let [creator [:user/email (:user/email current-user)]
-              claim (t/new-claim
-                     (assoc claim-input :creator creator))]
-          (d/transact conn {:tx-data [claim]})
-          (search/upload-claims search-client [claim])
-          (t/get-claim-as (d/db conn)
-                          [:claim/id (:claim/id claim)]
-                          (:db/id current-user)))
-        )
+        (let [result
+              (d/transact conn {:tx-data [`(truth.tfn/create-claim!
+                                            ~(assoc claim-input :db/id "new-claim")
+                                            [:user/username ~(:user/username current-user)])]})
+              new-claim-id (-> result :tempids (get "new-claim"))
+              new-claim (t/get-claim-as (d/db conn)
+                                        new-claim-id
+                                        (:db/id current-user))]
+          (search/upload-claims search-client [new-claim])
+          new-claim))
       :addEvidence
       (fn [{conn :conn db :db current-user :current-user search-client :search-client}
            {claim-id :claimID {id :id :as claim} :claim supports :supports} parent]
