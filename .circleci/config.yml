@@ -6,7 +6,7 @@ defaults: &defaults
     environment: # environment variables for primary container
       AWS_REGION: "us-east-1"
       AWS_PROFILE: "ohhey"
-      #JVM_OPTS: -Xmx3200m # limit the maximum heap size to prevent out of memory errors
+      JVM_OPTS: -Xmx3200m # limit the maximum heap size to prevent out of memory errors
 
 jobs:
   build:
