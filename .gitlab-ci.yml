@@ -16,3 +16,7 @@ before_script:
 test:
   script:
     - bin/kaocha peer
+
+deploy:
+  script:
+    - bin/push
