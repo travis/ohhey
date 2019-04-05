@@ -28,7 +28,6 @@ jobs:
             - ~/.m2
             - api/.cpcache
           key: ohhey-deps-{{ checksum "api/deps.edn" }}
-      - run: cd api && bin/kaocha peer
 
   test:
     <<: *defaults
@@ -38,7 +37,7 @@ jobs:
 #      - run:
 #          command: npm run test:startServices
 #          background: true
-      - run: cd api && bin/kaocha
+      - run: cd api && bin/kaocha peer
 
   push:
     <<: *defaults
