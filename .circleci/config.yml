@@ -28,7 +28,7 @@ jobs:
             - ~/.m2
             - api/.cpcache
           key: ohhey-deps-{{ checksum "api/deps.edn" }}
-      - run: cd api && bin/kaocha client
+      - run: cd api && bin/kaocha peer
 
   test:
     <<: *defaults
