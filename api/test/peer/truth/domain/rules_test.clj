@@ -89,37 +89,36 @@
 (deftest evidence-for
   (let [evidence-for
         (fn [slug username]
-          (d/q '[:find (pull ?evidence [{:evidence/claim
-                                         [:claim/body]}])
-                 ?rating ?agreement
-
+          (d/q '[:find ?body ?rating ?agreement
                  :in $ % ?claim ?user
                  :with ?uniqueness
                  :where
-                 (evidence-for ?claim ?user ?evidence ?uniqueness ?rating ?agreement)]
+                 (evidence-for ?claim ?user ?evidence ?uniqueness ?rating ?agreement)
+                 [?evidence :evidence/claim ?evidence-claim]
+                 [?evidence-claim :claim/body ?body]]
                fresh-db rules [:claim/slug slug] [:user/username username]))]
     (testing "dogs are great"
-      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} 100 -101]
-              [{:evidence/claim {:claim/body "Animals are awesome"}} -1 -101]]
+      (is (= [["Animals are awesome" -1 -101]
+              ["Animals are awesome" 100 -101]]
              (evidence-for "dogs-are-great" "travis")))
-      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} 33 -101]]
+      (is (= [["Animals are awesome" 33 -101]]
              (evidence-for "dogs-are-great" "james")))
-      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} -1 100]]
+      (is (= [["Animals are awesome" -1 100]]
              (evidence-for "dogs-are-great" "chuchu")))
-      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} -1 100]]
+      (is (= [["Animals are awesome" -1 100]]
              (evidence-for "dogs-are-great" "toby"))))
     (testing "cats are great"
-      (is (= [[{:evidence/claim {:claim/body "They don't like people"}} -1 -101]
-              [{:evidence/claim {:claim/body "Animals are awesome"}} 66 -101]]
+      (is (= [["They don't like people" -1 -101]
+              ["Animals are awesome" 66 -101]]
              (evidence-for "cats-are-great" "travis")))
-      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} -1 100]]
+      (is (= [["Animals are awesome" -1 100]]
              (evidence-for "cats-are-great" "chuchu")))
-      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} 100 -101]
-              [{:evidence/claim {:claim/body "Animals are awesome"}} -1 -101]]
+      (is (= [["Animals are awesome" -1 -101]
+              ["Animals are awesome" 100 -101]]
              (evidence-for "cats-are-great" "james")))
-      (is (= [[{:evidence/claim {:claim/body "Animals are awesome"}} -1 100]]
+      (is (= [[ "Animals are awesome" -1 100]]
              (evidence-for "cats-are-great" "toby")))
-      (is (= [[{:evidence/claim {:claim/body "They don't like people"}} -1 -101]]
+      (is (= [["They don't like people" -1 -101]]
              (evidence-for "cats-are-great" "tani"))))))
 
 (deftest agree-disagree-score
