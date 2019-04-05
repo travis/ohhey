@@ -20,7 +20,9 @@ test:
   image: clojure:tools-deps
   script:
     - cd api
-    - bin/kaocha peer
+    # - bin/kaocha peer
+    - ./bin/datomic-socks-proxy -p ohhey -r us-east-1 dev &
+    - bin/kaocha client
 
 push:
   stage: push
