@@ -16,7 +16,7 @@ jobs:
       - run: mkdir ~/.aws && echo $AWS_CREDENTIALS | base64 --decode > ~/.aws/credentials
       - restore_cache: # restores saved cache if checksum hasn't changed since the last run
           key: ohhey-deps-{{ checksum "api/deps.edn" }}
-      - run: clojure -A:test -e "success"
+      - run: clojure -A:test -e ":success"
       - persist_to_workspace:
           root: ~/
           paths:
