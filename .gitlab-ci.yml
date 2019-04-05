@@ -8,7 +8,7 @@ before_script:
   - chmod +x linux-install-1.10.0.442.sh
   - ./linux-install-1.10.0.442.sh
   - cd api
-  - clj
+  - clojure -A:test
 
 test:
   script:
