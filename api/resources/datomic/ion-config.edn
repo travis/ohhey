@@ -1,5 +1,5 @@
 {:allow [;; transaction functions
-         truth.tfn/create-claim!
+         truth.domain/create-claim!
 
          ;; query functions
          ;;datomic.ion.starter/feature-item?

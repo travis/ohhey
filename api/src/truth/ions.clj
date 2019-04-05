@@ -146,7 +146,7 @@
   (t/suggest-claims-as (d/db (get-conn)) (search-client) [:user/username "toby"] "cats are great")
   (:claim/created-at (first (t/get-all-claims (d/db (get-conn)))))
 
-  (-> (d/transact (get-conn) {:tx-data [`(truth.tfn/create-claim! ~{:body "hams12" :db/id "test"} [:user/username "travis"])]})
+  (-> (d/transact (get-conn) {:tx-data [`(truth.domain/create-claim! ~{:body "hams12" :db/id "test"} [:user/username "travis"])]})
       :tempids
       (get "test"))
   (log/error 1)

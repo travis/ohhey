@@ -148,12 +148,11 @@
       (fn addClaim [{conn :conn db :db current-user :current-user  search-client :search-client}
                     {claim-input :claim} parent]
         (let [result
-              (d/transact conn {:tx-data [`(truth.tfn/create-claim!
+              (d/transact conn {:tx-data [`(truth.domain/create-claim!
                                             ~(assoc claim-input :db/id "new-claim")
                                             [:user/username ~(:user/username current-user)])]})
-              new-claim-id (-> result :tempids (get "new-claim"))
               new-claim (t/get-claim-as (d/db conn)
-                                        new-claim-id
+                                        (-> result :tempids (get "new-claim"))
                                         (:db/id current-user))]
           (search/upload-claims search-client [new-claim])
           new-claim))
