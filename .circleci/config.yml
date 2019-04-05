@@ -1,0 +1,63 @@
+version: 2
+defaults: &defaults
+    working_directory: ~/ohhey
+    docker:
+      - image: circleci/clojure:tools-deps
+    environment: # environment variables for primary container
+      AWS_REGION: "us-east-1"
+      AWS_PROFILE: "ohhey"
+      #JVM_OPTS: -Xmx3200m # limit the maximum heap size to prevent out of memory errors
+
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout # check out source code to working directory
+      - mkdir ~/.aws && echo $AWS_CREDENTIALS | base64 --decode > ~/.aws/credentials
+      - restore_cache: # restores saved cache if checksum hasn't changed since the last run
+          key: ohhey-deps-{{ checksum "api/deps.edn" }}
+      - run: clojure -A:test -e "success"
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - ohhey
+
+      - save_cache: # generate and store cache in the .m2 directory using a key template
+          paths:
+            - ~/.m2
+            - api/.cpcache
+          key: ohhey-deps-{{ checksum "api/deps.edn" }}
+      - run: cd api && bin/kaocha client
+
+  test:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/
+#      - run:
+#          command: npm run test:startServices
+#          background: true
+#      - run: npm run test:all
+      - run: cd api && bin/kaocha
+
+  push:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: cd api && bin/push
+
+workflows:
+  version: 2
+  build_test_push:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - push:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
