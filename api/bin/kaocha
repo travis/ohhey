@@ -1,2 +1,2 @@
 #!/bin/bash
-AWS_PROFILE=ohhey clj -A:test -m kaocha.runner "$@"
+AWS_PROFILE=ohhey clojure -A:test -m kaocha.runner "$@"

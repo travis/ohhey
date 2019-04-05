@@ -1,2 +1,2 @@
 #!/bin/bash
-AWS_REGION=us-east-1 AWS_PROFILE=ohhey clj -A:cider-clj:test
+AWS_REGION=us-east-1 AWS_PROFILE=ohhey clojure -A:cider-clj:test
