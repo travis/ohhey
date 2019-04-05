@@ -15,4 +15,4 @@ before_script:
 
 test:
   script:
-    - bin/kaocha
+    - bin/kaocha peer
