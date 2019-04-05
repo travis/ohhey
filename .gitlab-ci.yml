@@ -27,5 +27,5 @@ push:
   only:
     - master
   script:
-    - git status
+    - git reset --hard HEAD
     - bin/push
