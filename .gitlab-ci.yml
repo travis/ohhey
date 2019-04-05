@@ -1,5 +1,6 @@
 variables:
-  AWS_DEFAULT_REGION: "us-east-1"
+  AWS_REGION: "us-east-1"
+  AWS_PROFILE: "ohhey"
 
 before_script:
   - apt-get update -y
@@ -7,6 +8,8 @@ before_script:
   - curl -O https://download.clojure.org/install/linux-install-1.10.0.442.sh
   - chmod +x linux-install-1.10.0.442.sh
   - ./linux-install-1.10.0.442.sh
+  - mkdir ~/.aws
+  - echo $AWS_CREDENTIALS | base64 --decode > ~/.aws/credentials
   - cd api
   - clojure -A:test
 
