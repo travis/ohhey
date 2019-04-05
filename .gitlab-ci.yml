@@ -2,6 +2,10 @@ variables:
   AWS_REGION: "us-east-1"
   AWS_PROFILE: "ohhey"
 
+stages:
+  - test
+  - push
+
 before_script:
   - apt-get update -y
   - apt-get install default-jre -y
@@ -14,9 +18,14 @@ before_script:
   - AWS_REGION=us-east-1 AWS_PROFILE=ohhey clojure -A:test
 
 test:
+  stage: test
   script:
     - bin/kaocha peer
 
-deploy:
+push:
+  stage: push
+  only:
+    - master
   script:
+    - git status
     - bin/push
