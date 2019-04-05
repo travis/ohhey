@@ -7,11 +7,6 @@ stages:
   - push
 
 before_script:
-  - apt-get update -y
-  - apt-get install default-jre -y
-  - curl -O https://download.clojure.org/install/linux-install-1.10.0.442.sh
-  - chmod +x linux-install-1.10.0.442.sh
-  - ./linux-install-1.10.0.442.sh
   - mkdir ~/.aws
   - echo $AWS_CREDENTIALS | base64 --decode > ~/.aws/credentials
   - cd api
@@ -19,13 +14,16 @@ before_script:
 
 test:
   stage: test
+  image: clojure:tools-deps
   script:
+    - cd api
     - bin/kaocha peer
 
 push:
   stage: push
+  image: clojure:tools-deps
   only:
     - master
   script:
-    - git reset --hard HEAD
+    - cd api
     - bin/push
