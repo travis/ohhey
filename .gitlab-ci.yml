@@ -10,6 +10,11 @@ before_script:
   - mkdir ~/.aws
   - echo $AWS_CREDENTIALS | base64 --decode > ~/.aws/credentials
 
+cache:
+  key: deps-cache-v1
+  paths:
+    - api/.cpcache
+
 test:
   stage: test
   image: clojure:tools-deps
