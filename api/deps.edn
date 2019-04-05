@@ -1,8 +1,6 @@
 {:paths ["src" "resources" "dev-resources"]
  :deps {com.datomic/ion {:mvn/version "0.9.28"}
         org.clojure/clojure {:mvn/version "1.9.0"},
-        com.datomic/datomic-pro {:mvn/version "0.9.5786"},
-        com.datomic/client-cloud {:mvn/version "0.8.71"}
         com.walmartlabs/lacinia {:mvn/version "0.31.0"}
         org.clojure/data.json {:mvn/version "0.2.6"}
         io.aviso/logging {:mvn/version "0.3.1"},
@@ -16,9 +14,12 @@
  :mvn/repos {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}
              "my.datomic.com" {:url "https://my.datomic.com/repo"}}
  :aliases
- {:dev {:extra-deps {com.datomic/ion-dev {:mvn/version "0.9.186"}}}
+ {:dev {:extra-deps {com.datomic/ion-dev {:mvn/version "0.9.186"}
+                     com.datomic/client-cloud {:mvn/version "0.8.71"}}}
   :cider-clj {:extra-deps {cider/cider-nrepl {:mvn/version "0.21.1"}
                            http-kit {:mvn/version "2.3.0"}}
               :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
-  :test {:extra-deps {lambdaisland/kaocha {:mvn/version "0.0-389"}
+  :test {:extra-deps {com.datomic/client-cloud {:mvn/version "0.8.71"}
+                      com.datomic/datomic-free {:mvn/version "0.9.5697"},
+                      lambdaisland/kaocha {:mvn/version "0.0-389"}
                       expectations/clojure-test {:mvn/version "1.1.1"}}}}}
