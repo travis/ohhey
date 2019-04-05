@@ -37,7 +37,6 @@ jobs:
 #      - run:
 #          command: npm run test:startServices
 #          background: true
-#      - run: npm run test:all
       - run: cd api && bin/kaocha
 
   push:
