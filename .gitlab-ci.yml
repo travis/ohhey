@@ -11,7 +11,7 @@ before_script:
   - mkdir ~/.aws
   - echo $AWS_CREDENTIALS | base64 --decode > ~/.aws/credentials
   - cd api
-  - clojure -A:test
+  - AWS_REGION=us-east-1 AWS_PROFILE=ohhey clojure -A:test
 
 test:
   script:
