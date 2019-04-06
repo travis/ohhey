@@ -41,11 +41,10 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: cd api
       - run:
-          command: ./bin/datomic-socks-proxy -p ohhey -r us-east-1 dev
+          command: cd api && ./bin/datomic-socks-proxy -p ohhey -r us-east-1 dev
           background: true
-      - run: bin/kaocha client
+      - run: cd api && bin/kaocha client
 
   push:
     <<: *defaults
