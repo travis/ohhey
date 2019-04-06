@@ -43,6 +43,7 @@ jobs:
           at: ~/
       - run: sudo  apt-get install python python-pip
       - run: sudo pip install awscli
+      - run: mkdir ~/.ssh
       - run: echo "3.80.10.75 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAd0hF9OU2z05dqAP+0Hul1NzC8/LSk4iI0ymEx/ki1hShb9uNGQ8wVy1QDk7b5if+iDj7DXoNSTaNeQlarpLFg=" > ~/.ssh/known_hosts
       - run:
           command: cd api && ./bin/datomic-socks-proxy -p ohhey -r us-east-1 dev
