@@ -21,12 +21,13 @@
 (defn new-claim [{db-id :db/id id :id
                   body :body creator :creator
                   contributors :contributors evidence :evidence
-                  votes :votes
-                  :or {contributors [] evidence [] votes []}}]
+                  votes :votes created-at :created-at
+                  :or {contributors [] evidence [] votes []
+                       created-at (java.util.Date.)}}]
   {:db/id (or db-id (uuid))
    :claim/id (or id (uuid))
    :claim/body body
-   :claim/created-at (java.util.Date.)
+   :claim/created-at created-at
    :claim/slug (->slug body)
    :claim/creator creator
    :claim/contributors contributors

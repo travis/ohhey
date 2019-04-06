@@ -47,6 +47,7 @@
     new-claim
     [{:id "dogs-are-great"
       :body "Dogs are great"
+      :created-at #inst "2018-02-02T12:00:00Z"
       :creator travis
       :votes (map
               new-claim-vote
@@ -60,6 +61,7 @@
                            {:id "animals-are-awesome"
                             :db/id "animals-are-awesome"
                             :body "Animals are awesome"
+                            :created-at #inst "2018-02-02T12:01:00Z"
                             :creator travis
                             :votes (map
                                     new-claim-vote
@@ -72,6 +74,7 @@
                             {:voter travis :rating 100}])}])}
 
      {:body "Cats are great"
+      :created-at #inst "2018-02-02T12:02:00Z"
       :creator james
       :contributors [travis]
       :votes (map
@@ -95,6 +98,7 @@
                            {:db/id "dont-like-people"
                             :id "dont-like-people"
                             :body "They don't like people"
+                            :created-at #inst "2018-02-02T12:03:00Z"
                             :creator travis
                             :evidence (map
                                        new-evidence
@@ -103,6 +107,8 @@
                                          :supports true
                                          :claim (new-claim
                                                  {:body "A cat was mean to me"
+                                                  :created-at #inst "2018-02-02T12:04:00Z"
+
                                                   :creator travis})}])})}
                   {:creator tani
                    :claim "dont-like-people"
