@@ -57,6 +57,13 @@ jobs:
           at: ~/
       - run: cd api && bin/push
 
+  deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: cd api && bin/deploy $CIRCLE_SHA1
+
 workflows:
   version: 2
   build_test_push:
@@ -78,3 +85,10 @@ workflows:
           filters:
             branches:
               only: master
+      - hold:
+          type: approval # requires that an in-app button be clicked by an appropriate member of the project to continue.
+          requires:
+           - push
+      - deploy:
+          requires:
+            - hold
