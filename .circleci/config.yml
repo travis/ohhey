@@ -3,7 +3,7 @@ version: 2.1
 defaults: &defaults
     working_directory: ~/ohhey
     docker:
-      - image: circleci/clojure:tools-deps
+      - image: ohhey/circleci
     environment: # environment variables for primary container
       AWS_REGION: "us-east-1"
       AWS_PROFILE: "ohhey"
