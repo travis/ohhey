@@ -57,7 +57,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: cd api && bin/push
+      - run: cd api && git status && git reset --hard HEAD && bin/push
 
   deploy:
     <<: *defaults
