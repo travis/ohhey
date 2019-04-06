@@ -34,10 +34,18 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-#      - run:
-#          command: npm run test:startServices
-#          background: true
       - run: cd api && bin/kaocha peer
+
+  integration_test:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: cd api
+      - run:
+          command: ./bin/datomic-socks-proxy -p ohhey -r us-east-1 dev
+          background: true
+      - run: bin/kaocha client
 
   push:
     <<: *defaults
@@ -54,9 +62,16 @@ workflows:
       - test:
           requires:
             - build
+      - integration_test:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
       - push:
           requires:
             - test
+            - integration_test
           filters:
             branches:
               only: master
