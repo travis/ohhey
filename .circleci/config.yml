@@ -41,8 +41,8 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: apt-get install python python-pip
-      - run: pip install awscli
+      - run: sudo  apt-get install python python-pip
+      - run: sudo pip install awscli
       - run:
           command: cd api && ./bin/datomic-socks-proxy -p ohhey -r us-east-1 dev
           background: true
