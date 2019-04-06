@@ -22,6 +22,7 @@ jobs:
           key: ohhey-deps-{{ checksum "api/deps.edn" }}
       # build ui
       - node/install
+      - node/install-npm
       - run: cd ui && npm run build
       # install api deps
       - run: cd api && clojure -A:test -e ":success"
