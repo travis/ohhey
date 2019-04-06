@@ -21,7 +21,7 @@ jobs:
       - restore_cache: # restores saved cache if checksum hasn't changed since the last run
           key: ohhey-deps-{{ checksum "api/deps.edn" }}
       # build ui
-      - node/install-npm
+      - node/install
       - run: cd ui && npm run build
       # install api deps
       - run: cd api && clojure -A:test -e ":success"
