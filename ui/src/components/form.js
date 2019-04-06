@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Form, BasicText, asField} from 'informed';
+import {Form, asField} from 'informed';
 import Input from '@material-ui/core/Input';
 import Autosuggest from 'react-autosuggest';
 import * as informed from 'informed';

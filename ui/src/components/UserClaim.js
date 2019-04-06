@@ -5,11 +5,9 @@ import { withStyles } from '@material-ui/core/styles';
 
 import {
   Paper, Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  Link, PopoverButton
+  Link
 } from './ui'
 import { ExpandMoreIcon } from './icons'
-import {StopPropagation} from './util'
-import {RelevanceButton} from './Claims'
 import * as queries from '../queries';
 
 const userPrefix = 'someonenamed'

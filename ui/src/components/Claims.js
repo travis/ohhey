@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
-import { withStyles, styled } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import { Route, Switch, withRouter } from "react-router-dom";
 import {Spinner} from './ui'
 
@@ -9,13 +9,13 @@ import {
   PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip, MenuButton, MenuItem
 } from './ui'
 import { Chat, Close, Add, Remove, ExpandMoreIcon } from './icons'
-import {Form, TextInput} from './form'
+import {Form} from './form'
 import Comments from './Comments'
 import AutosuggestClaimTextInput from './AutosuggestClaimTextInput'
 import {StopPropagation} from './util'
 import {believesURL, doesntbelieveURL, isntsureifURL} from './UserClaim'
 import {withAuth} from '../authentication'
-import { randomFont, claimBodyFont } from '../theme'
+import { claimBodyFont } from '../theme'
 
 import * as goto from '../goto';
 import * as queries from '../queries';

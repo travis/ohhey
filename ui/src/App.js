@@ -15,7 +15,7 @@ import {AuthenticationProvider } from './authentication'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from './components/Header'
 import { withAuth } from './authentication'
-import {font, theme} from './theme'
+import {theme} from './theme'
 
 const TeaserVideo = withStyles(theme => ({
   teaserVideo: {
@@ -50,7 +50,6 @@ const UI = withAuth(({currentUser, userLoading, logIn, logOut}) => (
     ) : (
       <TeaserVideo/>
     )}
-  {/*    font: {font} */}
   </Fragment>
 ))
 

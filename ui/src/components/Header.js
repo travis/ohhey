@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 import {Form, TextInput} from './form'
@@ -15,7 +15,7 @@ const HeaderLogo = withStyles(theme => (console.log(theme)) || {
     width: "2em"
   }
 })(
-  ({classes}) => <img className={classes.logo} src={logo}/>
+  ({classes}) => <img alt="logo" className={classes.logo} src={logo}/>
 )
 
 export default withStyles({
