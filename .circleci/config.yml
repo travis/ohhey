@@ -1,4 +1,8 @@
-version: 2
+version: 2.1
+
+orbs:
+  node: circleci/node@1.0.1
+
 defaults: &defaults
     working_directory: ~/ohhey
     docker:
@@ -16,12 +20,11 @@ jobs:
       - run: mkdir ~/.aws && echo $AWS_CREDENTIALS | base64 --decode > ~/.aws/credentials
       - restore_cache: # restores saved cache if checksum hasn't changed since the last run
           key: ohhey-deps-{{ checksum "api/deps.edn" }}
+      # build ui
+      - node/install-npm
+      - run: cd ui && npm run build
       # install api deps
       - run: cd api && clojure -A:test -e ":success"
-      # build ui
-      - run: sudo curl -sL https://deb.nodesource.com/setup_10.x | bash -
-      - run: sudo apt-get install -y nodejs
-      - run: cd ui && npm run build
       - persist_to_workspace:
           root: ~/
           paths:
