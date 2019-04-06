@@ -65,6 +65,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - run: cd api && bin/deploy $CIRCLE_SHA1
+      - run: cd ui && npm run deploy
 
 workflows:
   version: 2
