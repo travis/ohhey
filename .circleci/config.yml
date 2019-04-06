@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@1.0.1
-
 defaults: &defaults
     working_directory: ~/ohhey
     docker:
@@ -21,11 +18,9 @@ jobs:
       - restore_cache: # restores saved cache if checksum hasn't changed since the last run
           key: ohhey-deps-{{ checksum "api/deps.edn" }}
       # build ui
-      - node/install
-      - node/install-npm
       - run: cd ui && npm run build
       # install api deps
-      - run: cd api && clojure -A:test -e ":success"
+      - run: cd api && clojure -A:test -e ":deps-success"
       - persist_to_workspace:
           root: ~/
           paths:
@@ -50,8 +45,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: sudo  apt-get install python python-pip
-      - run: sudo pip install awscli
       - run: mkdir ~/.ssh
       - run: echo "3.80.10.75 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAd0hF9OU2z05dqAP+0Hul1NzC8/LSk4iI0ymEx/ki1hShb9uNGQ8wVy1QDk7b5if+iDj7DXoNSTaNeQlarpLFg=" > ~/.ssh/known_hosts
       - run:

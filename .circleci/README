@@ -1,0 +1,3 @@
+CircleCI configs
+
+Docker Hub should build a Docker image automatically when you push a new Dockerfile.
