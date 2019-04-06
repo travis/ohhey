@@ -59,7 +59,7 @@ const rtdbLink = createRtdbLink({
   database: firebase.database()
 });
 */
-export const firebaseClient = new ApolloClient({
-//  link: rtdbLink,
-//  cache: new InMemoryCache()
-});
+export const firebaseClient = client; /*new ApolloClient({
+  link: rtdbLink,
+  cache: new InMemoryCache()
+});*/
