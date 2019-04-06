@@ -16,9 +16,9 @@ jobs:
       - checkout # check out source code to working directory
       - run: mkdir ~/.aws && echo $AWS_CREDENTIALS | base64 --decode > ~/.aws/credentials
       - restore_cache: # restores saved cache if checksum hasn't changed since the last run
-          key: ohhey-deps-{{ checksum "api/deps.edn" }}
+          key: ohhey-deps-{{ checksum "api/deps.edn" }}-{{ checksum "ui/package-lock.json" }}
       # build ui
-      - run: cd ui && npm run build
+      - run: cd ui && npm install && npm run build
       # install api deps
       - run: cd api && clojure -A:test -e ":deps-success"
       - persist_to_workspace:
@@ -31,7 +31,7 @@ jobs:
           paths:
             - ~/.m2
             - api/.cpcache
-          key: ohhey-deps-{{ checksum "api/deps.edn" }}
+          key: ohhey-deps-{{ checksum "api/deps.edn" }}-{{ checksum "ui/package-lock.json" }}
 
   test:
     <<: *defaults
