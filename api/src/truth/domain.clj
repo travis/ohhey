@@ -241,26 +241,26 @@
   ([db user-ref]
    (get-all-claims-as db user-ref default-claim-spec))
   ([db user-ref claim-spec]
-   (let [results
-         (d/q
-          (apply
-           conj
-           '[:find]
-           (list 'pull '?claim claim-spec)
-           '[(sum ?support) (sum ?oppose)
-             (sum ?agreement) (sum ?agreement-count)
-             (max ?my-agreement)
-             (sum ?agree-disagree-score)
-             (sum ?support-oppose-score) (sum ?support-oppose-score-component-count)
-             :in $ % ?user
-             :with ?uniqueness
-             :where
-             [?claim :claim/id _]
-             (claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
-                             ?support ?oppose ?my-agreement
-                             ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)])
-          db rules (or user-ref anon-user-ref))]
-     (map (fn [result] (apply assoc-claim-stats result)) results))))
+   (->> (d/q
+         (apply
+          conj
+          '[:find]
+          (list 'pull '?claim claim-spec)
+          '[(sum ?support) (sum ?oppose)
+            (sum ?agreement) (sum ?agreement-count)
+            (max ?my-agreement)
+            (sum ?agree-disagree-score)
+            (sum ?support-oppose-score) (sum ?support-oppose-score-component-count)
+            :in $ % ?user
+            :with ?uniqueness
+            :where
+            [?claim :claim/id _]
+            (claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
+                            ?support ?oppose ?my-agreement
+                            ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)])
+         db rules (or user-ref anon-user-ref))
+        (map (fn [result] (apply assoc-claim-stats result)))
+        (sort-by :claim/created-at))))
 
 (defn search-claims-as
   ([db search-client user-ref term]

@@ -45,28 +45,34 @@
   (testing "claims"
     (is (= {:data
             {:claims
-             [{:body "Dogs are great"}
+             [{:body "Animals are awesome"}
               {:body "A cat was mean to me"}
-              {:body "Cats are great"}
               {:body "They don't like people"}
-              {:body "Animals are awesome"}]}}
+              {:body "Dogs are great"}
+              {:body "Cats are great"}]}}
            (execute "{claims {body } }" nil)))
     (is (= {:data
             {:claims
-             [{:body "Dogs are great", :contributors []}
+             [{:body "Animals are awesome", :contributors []}
               {:body "A cat was mean to me", :contributors []}
-              {:body "Cats are great", :contributors [{:username "travis"}]}
-              {:body "Animals are awesome", :contributors []}
-              {:body "They don't like people", :contributors []}]}}
+              {:body "They don't like people", :contributors []}
+              {:body "Dogs are great", :contributors []}
+              {:body "Cats are great", :contributors [{:username "travis"}]}]}}
            (execute "{claims {body, contributors {username} } }" nil)))
     (is (= {:data
             {:claims
-             [{:body "Dogs are great",
-               :evidence
-               {:edges '({:claim {:body "Animals are awesome"} :supports true})},
+             [{:body "Animals are awesome",
+               :evidence {:edges []},
                :contributors []}
               {:body "A cat was mean to me",
                :evidence {:edges []},
+               :contributors []}
+              {:body "They don't like people",
+               :evidence {:edges [{:claim {:body "A cat was mean to me"} :supports true}]},
+               :contributors []}
+              {:body "Dogs are great",
+               :evidence
+               {:edges '({:claim {:body "Animals are awesome"} :supports true})},
                :contributors []}
               {:body "Cats are great",
                :evidence
@@ -75,12 +81,7 @@
                          {:claim {:body "They don't like people"} :supports true}
                          )},
                :contributors '({:username "travis"})}
-              {:body "Animals are awesome",
-               :evidence {:edges []},
-               :contributors []}
-              {:body "They don't like people",
-               :evidence {:edges [{:claim {:body "A cat was mean to me"} :supports true}]},
-               :contributors []}]}}
+              ]}}
            (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil)))))
 
 (deftest test-evidenceForClaims
