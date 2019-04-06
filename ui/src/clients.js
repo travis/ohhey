@@ -4,8 +4,8 @@ import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { ApolloLink } from 'apollo-link';
 
-import {createRtdbLink} from 'apollo-link-firebase';
-import * as firebase from 'firebase';
+//import {createRtdbLink} from 'apollo-link-firebase';
+//import * as firebase from 'firebase';
 
 export const client = new ApolloClient({
   link: ApolloLink.from([
@@ -40,6 +40,9 @@ export const client = new ApolloClient({
     }
   }
 });
+/*
+
+comment out until we can resolve build issues with grpc
 
 // initialize firebase
 firebase.initializeApp({
@@ -55,8 +58,8 @@ firebase.initializeApp({
 const rtdbLink = createRtdbLink({
   database: firebase.database()
 });
-
+*/
 export const firebaseClient = new ApolloClient({
-  link: rtdbLink,
-  cache: new InMemoryCache()
+//  link: rtdbLink,
+//  cache: new InMemoryCache()
 });

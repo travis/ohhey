@@ -10,7 +10,6 @@
     "apollo-client": "^2.4.12",
     "apollo-link": "^1.2.8",
     "apollo-link-error": "^1.1.7",
-    "apollo-link-firebase": "^1.1.0",
     "apollo-link-http": "^1.5.11",
     "graphql": "^14.1.1",
     "informed": "^2.1.14",
