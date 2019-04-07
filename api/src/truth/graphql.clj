@@ -159,25 +159,18 @@
       :addEvidence
       (fn [{conn :conn db :db current-user :current-user search-client :search-client}
            {claim-id :claimID {id :id :as claim} :claim supports :supports} parent]
-        (when (not id)
-          (reject-long-bodies! claim))
-        (let [creator [:user/email (:user/email current-user)]
-              claim (if id
-                      [:claim/id id]
-                      (t/new-claim
-                       (assoc claim :creator creator)))
-              evidence (t/new-evidence {:supports supports
-                                        :creator creator
-                                        :claim claim})]
-          (d/transact
-           conn
-           {:tx-data
-            [{:claim/id claim-id
-              :claim/evidence evidence}]})
-          (when (not id) (search/upload-claims search-client [claim]))
-          (t/get-evidence-as (d/db conn)
-                             [:evidence/id (:evidence/id evidence)]
-                             (:db/id current-user)))
+        (let [result
+              (d/transact
+               conn
+               {:tx-data
+                [`(truth.domain/add-evidence!
+                   ~claim-id ~{:claim claim :supports supports :db/id "new-evidence"}
+                   ~[:user/username (:user/username current-user)])]})
+              new-evidence (t/get-evidence-as (d/db conn)
+                                              (-> result :tempids (get "new-evidence"))
+                                              (:db/id current-user))]
+          #_(when (not id) (search/upload-claims search-client [claim]))
+          new-evidence)
 
 
         )

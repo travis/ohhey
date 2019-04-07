@@ -60,6 +60,8 @@
    :relevance-vote/voter voter
    :relevance-vote/rating rating})
 
+;; claim validation
+
 (defn reject-long-bodies! [{body :body}]
   (when (< char-limit (count body))
     (throw (ex-info "claim body must be at most 255 characters long" {:body body :count (count body)}))))
@@ -70,11 +72,28 @@
      (when (not (= (java.lang.Character$UnicodeBlock/of c) java.lang.Character$UnicodeBlock/BASIC_LATIN))
        (throw (ex-info (str "claim body must not contain invalid character '"c"'") {:body body :char c}))))))
 
+;; transaction functions
+
 (defn create-claim! [db claim-input creator]
   (reject-long-bodies! claim-input)
   (reject-invalid-chars! claim-input)
   [(new-claim
     (assoc claim-input :creator creator))])
+
+(defn add-evidence! [db claim-id
+                     {{id :id :as evidence-claim-input} :claim :as evidence-input}
+                     creator]
+  [{:claim/id claim-id
+    :claim/evidence
+    (new-evidence (assoc
+                   evidence-input
+                   :creator creator
+                   :claim (if id
+                            [:claim/id id]
+                            (first
+                             (create-claim! db evidence-claim-input creator)))))}])
+
+;; queries
 
 (defn get-user-by-email [db email]
   (first (first

@@ -1,5 +1,6 @@
 {:allow [;; transaction functions
          truth.domain/create-claim!
+         truth.domain/add-evidence!
 
          ;; query functions
          ;;datomic.ion.starter/feature-item?
