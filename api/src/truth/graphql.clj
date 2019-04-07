@@ -169,7 +169,7 @@
               new-evidence (t/get-evidence-as (d/db conn)
                                               (-> result :tempids (get "new-evidence"))
                                               (:db/id current-user))]
-          #_(when (not id) (search/upload-claims search-client [claim]))
+          (when (not id) (search/upload-claims search-client [claim]))
           new-evidence)
 
 
