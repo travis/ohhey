@@ -136,9 +136,8 @@
             (do
               (var-set session (assoc @session :identity username))
               user)
-            nil)
+            nil)))
 
-         ))
       :logOut
       (fn [{session :session}
            vars parent]
@@ -156,6 +155,7 @@
                                         (:db/id current-user))]
           (search/upload-claims search-client [new-claim])
           new-claim))
+
       :addEvidence
       (fn [{conn :conn db :db current-user :current-user search-client :search-client}
            {claim-id :claimID {id :id :as claim} :claim supports :supports} parent]
@@ -170,23 +170,17 @@
                                               (-> result :tempids (get "new-evidence"))
                                               (:db/id current-user))]
           (when (not id) (search/upload-claims search-client [claim]))
-          new-evidence)
+          new-evidence))
 
-
-        )
       :voteOnClaim
       (fn [{conn :conn db :db current-user :current-user}
            {claim-id :claimID agreement :agreement} parent]
         (d/transact
          conn
          {:tx-data
-          [(if-let [vote-id (t/get-vote-for-user-and-claim db (:db/id current-user) [:claim/id claim-id])]
-             {:db/id vote-id :claim-vote/agreement agreement}
-             {:claim/id claim-id
-              :claim/votes (t/new-claim-vote
-                            {:voter (:db/id current-user)
-                             :agreement agreement})})]})
+          [`(truth.domain/vote-on-claim! ~claim-id ~current-user ~agreement)]})
         (t/get-claim-as (d/db conn) [:claim/id claim-id] (:db/id current-user)))
+
       :voteOnEvidence
       (fn [{conn :conn db :db current-user :current-user}
            {evidence-id :evidenceID rating :rating} parent]

@@ -60,39 +60,6 @@
    :relevance-vote/voter voter
    :relevance-vote/rating rating})
 
-;; claim validation
-
-(defn reject-long-bodies! [{body :body}]
-  (when (< char-limit (count body))
-    (throw (ex-info "claim body must be at most 255 characters long" {:body body :count (count body)}))))
-
-(defn reject-invalid-chars! [{body :body}]
-  (doall
-   (for [c body]
-     (when (not (= (java.lang.Character$UnicodeBlock/of c) java.lang.Character$UnicodeBlock/BASIC_LATIN))
-       (throw (ex-info (str "claim body must not contain invalid character '"c"'") {:body body :char c}))))))
-
-;; transaction functions
-
-(defn create-claim! [db claim-input creator]
-  (reject-long-bodies! claim-input)
-  (reject-invalid-chars! claim-input)
-  [(new-claim
-    (assoc claim-input :creator creator))])
-
-(defn add-evidence! [db claim-id
-                     {{id :id :as evidence-claim-input} :claim :as evidence-input}
-                     creator]
-  [{:claim/id claim-id
-    :claim/evidence
-    (new-evidence (assoc
-                   evidence-input
-                   :creator creator
-                   :claim (if id
-                            [:claim/id id]
-                            (first
-                             (create-claim! db evidence-claim-input creator)))))}])
-
 ;; queries
 
 (defn get-user-by-email [db email]
@@ -475,3 +442,44 @@
               :evidence/claim (assoc
                                (:evidence/claim evidence)
                                :agreement (agreement-or-nil agreement)))))))
+
+;; claim validation
+
+(defn reject-long-bodies! [{body :body}]
+  (when (< char-limit (count body))
+    (throw (ex-info "claim body must be at most 255 characters long" {:body body :count (count body)}))))
+
+(defn reject-invalid-chars! [{body :body}]
+  (doall
+   (for [c body]
+     (when (not (= (java.lang.Character$UnicodeBlock/of c) java.lang.Character$UnicodeBlock/BASIC_LATIN))
+       (throw (ex-info (str "claim body must not contain invalid character '"c"'") {:body body :char c}))))))
+
+;; transaction functions
+
+(defn create-claim! [db claim-input creator]
+  (reject-long-bodies! claim-input)
+  (reject-invalid-chars! claim-input)
+  [(new-claim
+    (assoc claim-input :creator creator))])
+
+(defn add-evidence! [db claim-id
+                     {{id :id :as evidence-claim-input} :claim :as evidence-input}
+                     creator]
+  [{:claim/id claim-id
+    :claim/evidence
+    (new-evidence (assoc
+                   evidence-input
+                   :creator creator
+                   :claim (if id
+                            [:claim/id id]
+                            (first
+                             (create-claim! db evidence-claim-input creator)))))}])
+
+(defn vote-on-claim! [db claim-id voter agreement]
+  [(if-let [vote-id (get-vote-for-user-and-claim db (:db/id voter) [:claim/id claim-id])]
+     {:db/id vote-id :claim-vote/agreement agreement}
+     {:claim/id claim-id
+      :claim/votes (new-claim-vote
+                    {:voter (:db/id voter)
+                     :agreement agreement})})])
