@@ -483,3 +483,11 @@
       :claim/votes (new-claim-vote
                     {:voter (:db/id voter)
                      :agreement agreement})})])
+
+(defn vote-on-evidence! [db evidence-id voter rating]
+  [(if-let [vote-id (get-vote-for-user-and-evidence db (:db/id voter) [:evidence/id evidence-id])]
+     {:db/id vote-id :relevance-vote/rating rating}
+     {:evidence/id evidence-id
+      :evidence/votes (new-relevance-vote
+                       {:voter (:db/id voter)
+                        :rating rating})})])

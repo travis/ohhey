@@ -187,12 +187,7 @@
         (d/transact
          conn
          {:tx-data
-          [(if-let [vote-id (t/get-vote-for-user-and-evidence db (:db/id current-user) [:evidence/id evidence-id])]
-             {:db/id vote-id :relevance-vote/rating rating}
-             {:evidence/id evidence-id
-              :evidence/votes (t/new-relevance-vote
-                               {:voter (:db/id current-user)
-                                :rating rating})})]})
+          [`(truth.domain/vote-on-evidence! ~evidence-id ~current-user ~rating)]})
         (let [db (d/db conn)
               evidence [:evidence/id evidence-id]
               user (:db/id current-user)]

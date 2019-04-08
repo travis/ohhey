@@ -2,6 +2,7 @@
          truth.domain/create-claim!
          truth.domain/add-evidence!
          truth.domain/vote-on-claim!
+         truth.domain/vote-on-evidence!
 
          ;; query functions
          ;;datomic.ion.starter/feature-item?

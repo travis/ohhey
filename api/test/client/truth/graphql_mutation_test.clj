@@ -131,33 +131,3 @@ mutation AddClaim($claim: ClaimInput!) {
               (execute add-claim-mutation {:claim {:body "this mutation should return errors"}}))
             :errors first :extensions :data
             )))))
-
-(def search-query "
-query SearchClaims($term: String!) {
-  searchClaims(term: $term) {
-    totalCount
-    results {
-      score
-      result {
-      __typename
-        ... on Claim {
-          body
-        }
-      }
-    }
-  }
-}")
-
-;; TODO: revive once search is using cloudsearch
-#_(deftest searchClaims
-  (is (= {:data {:searchClaims
-                 {:totalCount 2
-                  :results
-                  [{:score 1.0
-                    :result {:__typename :Claim
-                             :body "Dogs are great"}}
-                   {:score 1.0
-                    :result {:__typename :Claim
-                             :body "Cats are great"}}
-                   ]}}}
-         (execute search-query {:term "are great"}))))
