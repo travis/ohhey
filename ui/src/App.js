@@ -4,6 +4,7 @@ import { ApolloProvider } from "react-apollo";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
+import styled, { ThemeProvider } from 'styled-components';
 
 import {client} from './clients'
 import Claims from './components/Claims'
@@ -32,21 +33,28 @@ const TeaserVideo = withStyles(theme => ({
 
 ))
 
+const Content = styled.div`
+margin: 12px 12px;
+`
+
 const UI = withAuth(({currentUser, userLoading, logIn, logOut}) => (
   <Fragment>
+    <CssBaseline/>
     {!userLoading && <Header/>}
     {currentUser ? (
-      <Switch>
-        <Route exact path="/" component={HomePage}/>
-        <Route path="/all" component={Claims}/>
-        <Route path="/search" component={SearchPage}/>
-        <Route path="/ibelieve/:slug" component={ClaimPage}/>
-        <Route path="/idontbelieve/:slug" component={ClaimPage}/>
-        <Route path="/somesay/:slug" component={ClaimPage}/>
-        <Route path="/someonenamed/:username/believes/:slug" component={UserClaimPage}/>
-        <Route path="/someonenamed/:username/doesntbelieve/:slug" component={UserClaimPage}/>
-        <Route path="/someonenamed/:username/isntsureif/:slug" component={UserClaimPage}/>
-      </Switch>
+      <Content>
+        <Switch>
+          <Route exact path="/" component={HomePage}/>
+          <Route path="/all" component={Claims}/>
+          <Route path="/search" component={SearchPage}/>
+          <Route path="/ibelieve/:slug" component={ClaimPage}/>
+          <Route path="/idontbelieve/:slug" component={ClaimPage}/>
+          <Route path="/somesay/:slug" component={ClaimPage}/>
+          <Route path="/someonenamed/:username/believes/:slug" component={UserClaimPage}/>
+          <Route path="/someonenamed/:username/doesntbelieve/:slug" component={UserClaimPage}/>
+          <Route path="/someonenamed/:username/isntsureif/:slug" component={UserClaimPage}/>
+        </Switch>
+      </Content>
     ) : (
       <TeaserVideo/>
     )}
@@ -55,7 +63,7 @@ const UI = withAuth(({currentUser, userLoading, logIn, logOut}) => (
 
 const App = () => (
   <MuiThemeProvider theme={theme}>
-    <CssBaseline/>
+    <ThemeProvider theme={theme}>
     <ApolloProvider client={client}>
       <AuthenticationProvider>
         <BrowserRouter>
@@ -63,6 +71,7 @@ const App = () => (
         </BrowserRouter>
       </AuthenticationProvider>
     </ApolloProvider>
+    </ThemeProvider>
   </MuiThemeProvider>
 );
 

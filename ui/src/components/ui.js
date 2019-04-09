@@ -24,6 +24,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@material-ui/core/Link';
 
 import SpinkitSpinner from 'react-spinkit'
+import styled from 'styled-components'
 import * as theme from '../theme';
 
 export const Link = (props) => <MuiLink color="inherit" component={RouterLink} {...props}/>
@@ -82,7 +83,23 @@ export const MenuButton = ({ariaID="menu", children, menuItems}) => {
 }
 
 export const Paper = (props) =>
-  <MuiPaper elevation={1} square={true} {...props}/>
+  <MuiPaper elevation={1} {...props}/>
+
+export const ClaimPaper = styled(Paper)`
+&& {
+  color: blue;
+  background-color: rgb(255, 255, 250, 0.5);
+  background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+}
+`
+
+export const ClaimBody = styled(Typography)`
+&& {
+  color: blue;
+  background-color: rgb(255, 255, 250, 0.5);
+  background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+}
+`
 
 export const Spinner = (props) => <SpinkitSpinner name="chasing-dots" color={theme.primaryColor} {...props}/>
 

@@ -1,12 +1,14 @@
 import React, { Fragment, useState } from 'react';
+import styled from 'styled-components'
 import { graphql, compose } from "react-apollo";
 import { withStyles } from '@material-ui/core/styles';
 import { Route, Switch, withRouter } from "react-router-dom";
-import {Spinner} from './ui'
+import {Spinner, ClaimPaper} from './ui'
 
 import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip, MenuButton, MenuItem
+  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip, MenuButton, MenuItem, Grid,
+  ClaimBody
 } from './ui'
 import { Chat, Close, Add, Remove, ExpandMoreIcon } from './icons'
 import {Form} from './form'
@@ -145,7 +147,7 @@ export const Claim = compose(
   const {body, slug, creator, myAgreement} = claim
 
   return (
-    <Paper>
+    <ClaimPaper>
       <Typography variant="h5" align="center">
         <RoutePrefixSwitch
           ibelieve={<SentimentPicker>I believe</SentimentPicker>}
@@ -163,9 +165,9 @@ export const Claim = compose(
             <p>Created at {new Date(claim.createdAt).toString()}</p>
           </Fragment>
         )}>
-        <Typography variant="h4" color="default" align="center">
+        <ClaimBody variant="h4" align="center">
           <ClaimBodyLink claim={claim}/>
-        </Typography>
+        </ClaimBody>
       </Tooltip>
       <Typography variant="caption" align="center">{claim.score}</Typography>
       <Typography align="center">
@@ -201,7 +203,7 @@ export const Claim = compose(
       {evidenceShown && (
         <EvidenceLists claim={claim}/>
       )}
-    </Paper>
+    </ClaimPaper>
   )
 })
 
@@ -397,9 +399,12 @@ export default graphql(
     props: ({data: {claims}}) => ({claims})
   }
 )(({claims}) => (
-  <Fragment>
+  <Grid container spacing={24}>
     {claims && claims.map((claim) => (
-      <Claim claim={claim} key={claim.id}/>
+      <Grid item xs={12}>
+        <Claim claim={claim} key={claim.id}/>
+      </Grid>
+
     ))}
-  </Fragment>
+  </Grid>
 ))

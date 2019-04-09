@@ -4,7 +4,7 @@ import { Route, Switch, withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  Paper, Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
+  ClaimPaper, Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   Link
 } from './ui'
 import { ExpandMoreIcon } from './icons'
@@ -144,7 +144,7 @@ const EvidenceLists = graphql(
 
 export default withRouter(({history, username, claim}) => {
   return (
-    <Paper>
+    <ClaimPaper>
       <Typography variant="h5" align="center">
         @{username}
         <RoutePrefixSwitch
@@ -157,6 +157,6 @@ export default withRouter(({history, username, claim}) => {
         <ClaimBodyLink username={username} claim={claim}/>
       </Typography>
       <EvidenceLists username={username} claim={claim}/>
-    </Paper>
+    </ClaimPaper>
   )
 })
