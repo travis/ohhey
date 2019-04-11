@@ -165,7 +165,7 @@ export const Claim = compose(
             <p>Created at {new Date(claim.createdAt).toString()}</p>
           </Fragment>
         )}>
-        <ClaimBody variant="h4" align="center">
+        <ClaimBody>
           <ClaimBodyLink claim={claim}/>
         </ClaimBody>
       </Tooltip>
@@ -394,17 +394,18 @@ const EvidenceLists = graphql(
   )
 })
 
+const ClaimsGrid = ({claims}) => (
+  <Grid container spacing={24}>
+    {claims && claims.map((claim) => (
+      <Grid item xs={12} key={claim.id}>
+        <Claim claim={claim}/>
+      </Grid>
+    ))}
+  </Grid>
+)
+
 export default graphql(
   queries.Claims, {
     props: ({data: {claims}}) => ({claims})
   }
-)(({claims}) => (
-  <Grid container spacing={24}>
-    {claims && claims.map((claim) => (
-      <Grid item xs={12}>
-        <Claim claim={claim} key={claim.id}/>
-      </Grid>
-
-    ))}
-  </Grid>
-))
+)(ClaimsGrid)

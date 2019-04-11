@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react'
 
 import MuiPaper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import MuiTypography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Drawer from '@material-ui/core/Drawer';
@@ -19,12 +19,16 @@ import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import { withTheme } from '@material-ui/core/styles';
 
 import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@material-ui/core/Link';
 
 import SpinkitSpinner from 'react-spinkit'
 import styled from 'styled-components'
+import { compose, space, width, fontSize, fontFamily, color, backgroundImage } from 'styled-system'
+
+
 import * as theme from '../theme';
 
 export const Link = (props) => <MuiLink color="inherit" component={RouterLink} {...props}/>
@@ -82,29 +86,35 @@ export const MenuButton = ({ariaID="menu", children, menuItems}) => {
   )
 }
 
-export const Paper = (props) =>
-  <MuiPaper elevation={1} {...props}/>
+export const Typography = styled(
+  // don't pass "color" along to MuiTypography because it means something different there
+  ({color, ...props}) => <MuiTypography {...props}/>
+)(
+  compose(fontFamily)
+)
 
-export const ClaimPaper = styled(Paper)`
-&& {
-  color: blue;
-  background-color: rgb(255, 255, 250, 0.5);
-  background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
-}
-`
+export const Paper = styled(
+  ({backgroundImage, ...props}) => <MuiPaper elevation={1} {...props}/>
+)(compose(backgroundImage, space))
 
-export const ClaimBody = styled(Typography)`
-&& {
-  color: blue;
-  background-color: rgb(255, 255, 250, 0.5);
-  background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
-}
-`
+export const ClaimPaper = (props) => (
+  <Paper padding={3}
+         backgroundImage="url('https://www.transparenttextures.com/patterns/groovepaper.png')"
+         {...props} />
+)
 
-export const Spinner = (props) => <SpinkitSpinner name="chasing-dots" color={theme.primaryColor} {...props}/>
+export const ClaimBody = (props) => (
+  <Typography fontFamily="claimBody" variant="h5" align="center" color="claimText" {...props}/>
+)
+
+const StyledSpinner = styled(SpinkitSpinner)(compose(color))
+
+export const Spinner = (props) => (
+  <StyledSpinner name="chasing-dots" color="primary" {...props}/>
+)
 
 export {
-  Grid, Typography, Button, IconButton, Drawer,
+  Grid, Button, IconButton, Drawer,
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   Popover, Divider, List, ListItem, ListItemText, Tooltip,
   Menu, MenuItem, AppBar, Toolbar

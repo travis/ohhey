@@ -6,7 +6,7 @@ import {Link, Button, AppBar, Toolbar, MenuButton, MenuItem, Typography} from '.
 import {AccountCircle} from '../components/icons'
 import { withAuth } from '../authentication'
 import logo from '../logo.svg';
-import {claimBodyFont} from '../theme'
+import {font} from '../theme'
 
 const HeaderLogo = withStyles(theme => (console.log(theme)) || {
   logo: {
@@ -22,7 +22,7 @@ export default withStyles({
   ohhey: {
     flexGrow: 1,
     marginLeft: '0.5em',
-    fontFamily: claimBodyFont
+    fontFamily: 'Lobster'
   }
 })(withAuth(({currentUser, logIn, logOut, classes}) => (
   <header>

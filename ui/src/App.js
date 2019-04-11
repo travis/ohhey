@@ -3,8 +3,8 @@ import React, {Fragment} from 'react';
 import { ApolloProvider } from "react-apollo";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import { withStyles, MuiThemeProvider } from '@material-ui/core/styles';
-import styled, { ThemeProvider } from 'styled-components';
+import { withStyles } from '@material-ui/core/styles';
+import styled from 'styled-components';
 
 import {client} from './clients'
 import Claims from './components/Claims'
@@ -16,7 +16,7 @@ import {AuthenticationProvider } from './authentication'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from './components/Header'
 import { withAuth } from './authentication'
-import {theme} from './theme'
+import {ThemeProvider} from './theme'
 
 const TeaserVideo = withStyles(theme => ({
   teaserVideo: {
@@ -62,8 +62,7 @@ const UI = withAuth(({currentUser, userLoading, logIn, logOut}) => (
 ))
 
 const App = () => (
-  <MuiThemeProvider theme={theme}>
-    <ThemeProvider theme={theme}>
+  <ThemeProvider>
     <ApolloProvider client={client}>
       <AuthenticationProvider>
         <BrowserRouter>
@@ -71,8 +70,7 @@ const App = () => (
         </BrowserRouter>
       </AuthenticationProvider>
     </ApolloProvider>
-    </ThemeProvider>
-  </MuiThemeProvider>
+  </ThemeProvider>
 );
 
 
