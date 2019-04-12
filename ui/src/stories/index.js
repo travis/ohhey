@@ -8,10 +8,10 @@ import { ApolloProvider } from 'react-apollo';
 
 import { client } from './apollo'
 import { Spinner, ClaimPaper, ClaimBody } from '../components/ui'
-import Claims from '../components/Claims'
+import Claims, { SupportList } from '../components/Claims'
 import Header from '../components/Header'
 import { ThemeProvider, fonts } from '../theme'
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
+import { claim } from './data'
 
 addDecorator(storyFn => (
   <ThemeProvider>
@@ -37,14 +37,7 @@ storiesOf('ClaimPaper', module)
        </ClaimPaper>
       )
 
-const claimsStories = storiesOf('Claims', module)
+storiesOf('Claims', module)
   .addDecorator(StoryRouter())
-  .add('with text', () =>
-       <Claims />
-      )
-
-fonts.map(font => claimsStories.add(`with ${font}`, () => (
-  <StyledComponentsThemeProvider theme={(theme) => ({...theme, claimBodyFont: font})}>
-    <Claims />
-  </StyledComponentsThemeProvider>
-)))
+  .add('default', () => <Claims />)
+  .add("SupportList", () => <SupportList claim={claim}/>)

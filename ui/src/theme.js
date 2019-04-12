@@ -2,7 +2,6 @@ import React from 'react';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/styles';
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
 import { transparentize } from 'polished';
 
 import primaryColor from '@material-ui/core/colors/pink';
@@ -41,8 +40,6 @@ export const theme = createMuiTheme({
 
 export const ThemeProvider = ({children}) => (
   <MuiThemeProvider theme={theme}>
-    <StyledComponentsThemeProvider theme={theme}>
-      {children}
-    </StyledComponentsThemeProvider>
+    {children}
   </MuiThemeProvider>
 )

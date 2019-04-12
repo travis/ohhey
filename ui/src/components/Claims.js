@@ -7,7 +7,7 @@ import {Spinner, ClaimPaper} from './ui'
 import {
   Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip, MenuButton, MenuItem, Grid,
-  ClaimBody
+  ClaimBody, Box
 } from './ui'
 import { Chat, Close, Add, Remove, ExpandMoreIcon } from './icons'
 import {Form} from './form'
@@ -290,12 +290,8 @@ const EvidenceAdder = compose(
         }
       })
     })
-  }),
-  withStyles(theme => ({
-    bodyInput: {
-    }
-  }))
-)(({claim, supports, addEvidence, placeholder, classes}) => {
+  })
+)(({claim, supports, addEvidence, placeholder}) => {
   const [submitting, setSubmitting] = useState(false)
   const submit = async (values) => {
     setSubmitting(true)
@@ -306,7 +302,8 @@ const EvidenceAdder = compose(
     <Form onSubmit={submit}>
       <AutosuggestClaimTextInput
         field="body" placeholder={placeholder}
-        fullWidth={true} className={classes.bodyInput} autoComplete="off"
+        fullWidth={true}
+        autoComplete="off"
         claimActions={evidenceClaim => submitting ? <Spinner /> : (
           <Button onClick={() => submit({id: evidenceClaim.id})}>add as evidence</Button>
         )}
@@ -318,7 +315,7 @@ const EvidenceAdder = compose(
         create={query =>
           <Fragment>
             <Divider />
-            {submitting ? <Spinner/> : <Button type="submit">Tell the World!</Button>}
+            {submitting ? <Spinner/> : <Button type="submit">add new evidence</Button>}
           </Fragment>
         }/>
     </Form>
@@ -332,25 +329,23 @@ const Evidences = ({list, support}) => (
     ))}
   </Fragment>)
 
-const EvidenceList = ({claim, evidence, support, placeholder, sentimentMap}) => {
-  const [showAdder, setShowAdder] = useState(false)
+export const EvidenceList = ({claim, evidence, support, placeholder, sentimentMap}) => {
   return (
-    <Fragment>
-      <Typography variant="h5">
-        <RoutePrefixSwitch {...sentimentMap} />
-        <IconButton onClick={() => setShowAdder(!showAdder)}>
-          {showAdder ? <Remove/> : <Add/> }
-        </IconButton>
-      </Typography>
-      {showAdder && (
-        <EvidenceAdder supports={support} claim={claim} placeholder={placeholder}/>
-      )}
+    <Box mt={2}>
+      <Box  display="flex">
+        <Typography variant="h5" fontFamily="claimBody">
+          <RoutePrefixSwitch {...sentimentMap} />
+        </Typography>
+        <Box ml={2} flexGrow={2}>
+          <EvidenceAdder supports={support} claim={claim} placeholder={placeholder} />
+        </Box>
+      </Box>
       <Evidences list={evidence} support={support}/>
-    </Fragment>
+    </Box>
   )
 }
 
-const SupportList = ({claim, evidence}) => (
+export const SupportList = ({claim, evidence}) => (
   <EvidenceList claim={claim} support={true} placeholder="why?"
                 evidence={evidence}
                 sentimentMap={{
@@ -362,7 +357,7 @@ const SupportList = ({claim, evidence}) => (
 
 )
 
-const OpposeList = ({claim, evidence}) => (
+export const OpposeList = ({claim, evidence}) => (
   <EvidenceList claim={claim} support={false} placeholder="why not?"
                 evidence={evidence}
                 sentimentMap={{

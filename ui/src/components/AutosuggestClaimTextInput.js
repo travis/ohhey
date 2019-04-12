@@ -56,6 +56,8 @@ export default compose(
       variables={{term}}>
       {({loading, error, data}) => {
         const suggestions = (data && data.suggestClaims && data.suggestClaims.results) || []
+        const shouldShowCreate = (query) =>
+              create && query && !doSuggestionsInclude(suggestions, query)
         return  (
           <AutosuggestTextInput
             theme={classes}
@@ -67,7 +69,7 @@ export default compose(
             )}
             renderSuggestionsContainer={({containerProps, children, query}) => (
               <div {...containerProps}>
-                {create && doSuggestionsInclude(suggestions, query) ? "" : create(query)}
+                {shouldShowCreate(query) ? create(query) : ""}
                 {children}
               </div>
             )}

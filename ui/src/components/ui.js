@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react'
 
+import Box from '@material-ui/core/Box';
 import MuiPaper from '@material-ui/core/Paper';
 import MuiTypography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -15,7 +16,7 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Grid from '@material-ui/core/Grid';
+import MuiGrid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -26,9 +27,7 @@ import MuiLink from '@material-ui/core/Link';
 
 import SpinkitSpinner from 'react-spinkit'
 import { styled } from '@material-ui/styles';
-import { palette, spacing, typography } from "@material-ui/system"
-import { compose } from '../util'
-
+import { compose, css, palette, spacing, typography } from "@material-ui/system"
 
 import * as theme from '../theme';
 
@@ -98,11 +97,14 @@ export const ClaimPaper = styled((props) => (
   backgroundImage: "url('https://www.transparenttextures.com/patterns/groovepaper.png')"
 })
 
-const Typography = styled(MuiTypography)(compose(typography))
+const Typography = styled(MuiTypography)(css(compose(typography)))
+const Grid = styled(MuiGrid)(compose(spacing))
 
 export const ClaimBody = (props) => (
   <Typography fontFamily="claimBody" variant="h5" align="center" color="textPrimary" {...props}/>
 )
+
+//export const Claim
 
 const StyledSpinner = styled(SpinkitSpinner)(compose(palette))
 
@@ -111,7 +113,7 @@ export const Spinner = (props) => (
 )
 
 export {
-  Grid, Button, IconButton, Drawer, Typography,
+  Box, Grid, Button, IconButton, Drawer, Typography,
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   Popover, Divider, List, ListItem, ListItemText, Tooltip,
   Menu, MenuItem, AppBar, Toolbar

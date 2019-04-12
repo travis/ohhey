@@ -1,0 +1,6 @@
+export const claim = {body: "This is a claim", slug: "this-is-a-claim", creator: {username: "travis"}}
+export const claims = [
+  claim,
+  {body: "This is a claim that stretches the limits of this system. It has precisely 255 characters, the maximum number of characters that a claim can have and still be valid. Anything longer than this will be rejected by the system because it is too long. Goodbye.", slug: "this-is-another-claim",
+   creator: {username: "chuchu"}}
+].map((claim, i) => ({id: i, ...claim}))
