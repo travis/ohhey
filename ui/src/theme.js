@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { createMuiTheme } from '@material-ui/core/styles';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/styles';
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
 import { transparentize } from 'polished';
 
@@ -23,32 +23,21 @@ export const claimBodyFont = "EB Garamond"
 
 
 export const palette = {
-  primary: primaryColor,//{ main: primaryColor },
-  secondary: secondaryColor,//{ main: secondaryColor },
-  claimBodyText: transparentize(0.25, '#000'),
+  primary: primaryColor,
+  secondary: secondaryColor,
   text: {
     primary: "rgb(0, 0, 0, 0.8)"
   }
 };
 
-const muiTheme = createMuiTheme({
+export const theme = createMuiTheme({
+  spacing: 8,
+  palette,
   typography: {
-    useNextVariants: true,
-    fontFamily: font
-  },
-  palette
+    claimBody: "EB Garamond"
+  }
 })
 
-export const theme = console.log("mui", muiTheme) || {
-  ...muiTheme,
-  fonts: {
-    claimBody: claimBodyFont
-  },
-  colors: {
-    primary: muiTheme.palette.primary.main,
-    claimText: muiTheme.palette.text.primary
-  }
-}
 
 export const ThemeProvider = ({children}) => (
   <MuiThemeProvider theme={theme}>

@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from 'react';
-import styled from 'styled-components'
 import { graphql, compose } from "react-apollo";
 import { withStyles } from '@material-ui/core/styles';
 import { Route, Switch, withRouter } from "react-router-dom";
@@ -395,7 +394,7 @@ const EvidenceLists = graphql(
 })
 
 const ClaimsGrid = ({claims}) => (
-  <Grid container spacing={24}>
+  <Grid container spacing={1}>
     {claims && claims.map((claim) => (
       <Grid item xs={12} key={claim.id}>
         <Claim claim={claim}/>

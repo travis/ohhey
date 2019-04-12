@@ -25,8 +25,9 @@ import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@material-ui/core/Link';
 
 import SpinkitSpinner from 'react-spinkit'
-import styled from 'styled-components'
-import { compose, space, width, fontSize, fontFamily, color, backgroundImage } from 'styled-system'
+import { styled } from '@material-ui/styles';
+import { palette, spacing, typography } from "@material-ui/system"
+import { compose } from '../util'
 
 
 import * as theme from '../theme';
@@ -86,35 +87,31 @@ export const MenuButton = ({ariaID="menu", children, menuItems}) => {
   )
 }
 
-export const Typography = styled(
-  // don't pass "color" along to MuiTypography because it means something different there
-  ({color, ...props}) => <MuiTypography {...props}/>
-)(
-  compose(fontFamily)
-)
-
 export const Paper = styled(
-  ({backgroundImage, ...props}) => <MuiPaper elevation={1} {...props}/>
-)(compose(backgroundImage, space))
+  (props) => <MuiPaper elevation={1} {...props}/>
+)(compose(spacing))
 
-export const ClaimPaper = (props) => (
+export const ClaimPaper = styled((props) => (
   <Paper padding={3}
-         backgroundImage="url('https://www.transparenttextures.com/patterns/groovepaper.png')"
          {...props} />
-)
+))({
+  backgroundImage: "url('https://www.transparenttextures.com/patterns/groovepaper.png')"
+})
+
+const Typography = styled(MuiTypography)(compose(typography))
 
 export const ClaimBody = (props) => (
-  <Typography fontFamily="claimBody" variant="h5" align="center" color="claimText" {...props}/>
+  <Typography fontFamily="claimBody" variant="h5" align="center" color="textPrimary" {...props}/>
 )
 
-const StyledSpinner = styled(SpinkitSpinner)(compose(color))
+const StyledSpinner = styled(SpinkitSpinner)(compose(palette))
 
 export const Spinner = (props) => (
-  <StyledSpinner name="chasing-dots" color="primary" {...props}/>
+  <StyledSpinner name="chasing-dots" color="primary.main" {...props}/>
 )
 
 export {
-  Grid, Button, IconButton, Drawer,
+  Grid, Button, IconButton, Drawer, Typography,
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   Popover, Divider, List, ListItem, ListItemText, Tooltip,
   Menu, MenuItem, AppBar, Toolbar

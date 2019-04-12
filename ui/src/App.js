@@ -4,7 +4,7 @@ import { ApolloProvider } from "react-apollo";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { withStyles } from '@material-ui/core/styles';
-import styled from 'styled-components';
+import Box from '@material-ui/core/Box'
 
 import {client} from './clients'
 import Claims from './components/Claims'
@@ -33,9 +33,7 @@ const TeaserVideo = withStyles(theme => ({
 
 ))
 
-const Content = styled.div`
-margin: 12px 12px;
-`
+const Content = (props) => <Box m={1} {...props}/>
 
 const UI = withAuth(({currentUser, userLoading, logIn, logOut}) => (
   <Fragment>
