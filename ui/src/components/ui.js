@@ -20,7 +20,6 @@ import MuiGrid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { withTheme } from '@material-ui/core/styles';
 
 import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@material-ui/core/Link';
@@ -28,8 +27,6 @@ import MuiLink from '@material-ui/core/Link';
 import SpinkitSpinner from 'react-spinkit'
 import { styled } from '@material-ui/styles';
 import { compose, css, positions, palette, spacing, typography, flexbox, sizing } from "@material-ui/system"
-
-import * as theme from '../theme';
 
 export const Link = (props) => <MuiLink color="inherit" component={RouterLink} {...props}/>
 

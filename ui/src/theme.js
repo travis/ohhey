@@ -2,7 +2,6 @@ import React from 'react';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/styles';
-import { transparentize } from 'polished';
 
 import primaryColor from '@material-ui/core/colors/pink';
 import secondaryColor from '@material-ui/core/colors/lightBlue';

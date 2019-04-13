@@ -5,11 +5,11 @@ import { Route, Switch, withRouter } from "react-router-dom";
 import {Spinner, ClaimPaper} from './ui'
 
 import {
-  Paper, Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
+  Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip, MenuButton, MenuItem, Grid,
   ClaimBody, Box
 } from './ui'
-import { Chat, Close, Add, Remove, ExpandMoreIcon } from './icons'
+import { Chat, Close, ExpandMoreIcon } from './icons'
 import {Form} from './form'
 import Comments from './Comments'
 import AutosuggestClaimTextInput from './AutosuggestClaimTextInput'

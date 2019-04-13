@@ -6,7 +6,6 @@ import {Link, Button, AppBar, Toolbar, MenuButton, MenuItem, Typography} from '.
 import {AccountCircle} from '../components/icons'
 import { withAuth } from '../authentication'
 import logo from '../logo.svg';
-import {font} from '../theme'
 
 const HeaderLogo = withStyles(theme => (console.log(theme)) || {
   logo: {
