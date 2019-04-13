@@ -3,7 +3,7 @@ import React, { Fragment, useState } from 'react'
 import Box from '@material-ui/core/Box';
 import MuiPaper from '@material-ui/core/Paper';
 import MuiTypography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+import MuiButton from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Drawer from '@material-ui/core/Drawer';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -27,23 +27,24 @@ import MuiLink from '@material-ui/core/Link';
 
 import SpinkitSpinner from 'react-spinkit'
 import { styled } from '@material-ui/styles';
-import { compose, css, palette, spacing, typography } from "@material-ui/system"
+import { compose, css, positions, palette, spacing, typography, flexbox, sizing } from "@material-ui/system"
 
 import * as theme from '../theme';
 
 export const Link = (props) => <MuiLink color="inherit" component={RouterLink} {...props}/>
 
-export const PopoverButton = ({ariaID="popover", children, popoverContent}) => {
+export const PopoverButton = styled(({ariaID="popover", children, popoverContent, ...buttonProps}) => {
   const [buttonEl, setShowPopover] = useState(null)
   const popoverShown = Boolean(buttonEl);
   return (
     <Fragment>
-    <Button
-      aria-owns={popoverShown ? ariaID : undefined}
-      aria-haspopup="true"
-      onClick={(e) => setShowPopover(e.target)}>
-      {children}
-    </Button>
+      <Button
+        aria-owns={popoverShown ? ariaID : undefined}
+        aria-haspopup="true"
+        onClick={(e) => setShowPopover(e.target)}
+        {...buttonProps}>
+        {children}
+      </Button>
       <Popover
         id={ariaID}
         open={popoverShown}
@@ -61,7 +62,7 @@ export const PopoverButton = ({ariaID="popover", children, popoverContent}) => {
       </Popover>
     </Fragment>
   )
-}
+})(compose(positions, spacing, sizing, typography))
 
 export const MenuButton = ({ariaID="menu", children, menuItems}) => {
   const [buttonEl, setShowMenu] = useState(null)
@@ -97,9 +98,6 @@ export const ClaimPaper = styled((props) => (
   backgroundImage: "url('https://www.transparenttextures.com/patterns/groovepaper.png')"
 })
 
-const Typography = styled(MuiTypography)(css(compose(typography)))
-const Grid = styled(MuiGrid)(compose(spacing))
-
 export const ClaimBody = (props) => (
   <Typography fontFamily="claimBody" variant="h5" align="center" color="textPrimary" {...props}/>
 )
@@ -111,6 +109,11 @@ const StyledSpinner = styled(SpinkitSpinner)(compose(palette))
 export const Spinner = (props) => (
   <StyledSpinner name="chasing-dots" color="primary.main" {...props}/>
 )
+
+const Typography = styled(MuiTypography)(css(compose(typography, flexbox)))
+const Grid = styled(MuiGrid)(compose(spacing))
+const Button = styled(MuiButton)(compose(typography))
+
 
 export {
   Box, Grid, Button, IconButton, Drawer, Typography,

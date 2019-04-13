@@ -1,7 +1,8 @@
 import React from 'react';
+import Box from '@material-ui/core/Box';
 
 export const StopPropagation = ({children, ...rest}) => (
-  <span onClick={(e) => e.stopPropagation()} {...rest}>
+  <Box onClick={(e) => e.stopPropagation()} {...rest}>
     {children}
-  </span>
+  </Box>
 )
