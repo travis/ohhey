@@ -6,11 +6,11 @@ import { Spinner, ClaimPaper } from './ui'
 import { ClaimToolbar } from './claim'
 
 import {
-  Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, MenuButton, MenuItem, Grid,
-  ClaimBody, Box, Toolbar
+  Typography, Button, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
+  PopoverButton, Link, Divider, MenuButton, MenuItem, Grid,
+  ClaimBody, Box
 } from './ui'
-import { Chat, Close, ExpandMoreIcon, Info, Person } from './icons'
+import { ExpandMoreIcon } from './icons'
 import {Form} from './form'
 import AutosuggestClaimTextInput from './AutosuggestClaimTextInput'
 import { StopPropagation } from './util'
@@ -98,7 +98,7 @@ export const Claim = compose(
   }))
 )(({currentUser, claim, history, classes}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
-  const {body, creator, myAgreement} = claim
+  const { myAgreement} = claim
 
   return (
     <ClaimPaper>

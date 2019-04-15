@@ -7,11 +7,9 @@ import * as goto from '../goto';
 import { withAuth } from '../authentication'
 
 import {
-  Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, MenuButton, MenuItem, Grid,
-  ClaimBody, Box, Toolbar
+  Typography, Button, Drawer, List, ListItem, ListItemText, IconButton, Toolbar
 } from './ui'
-import { Chat, Close, ExpandMoreIcon, Info, Person } from './icons'
+import { Chat, Close, Info, Person } from './icons'
 
 import Comments from './Comments'
 
@@ -58,7 +56,7 @@ export const ClaimToolbar = compose(
 )(({history, currentUser, claim}) => {
   const [commentsShown, setShowComments] = useState(false)
   const [infoShown, setShowInfo] = useState(false)
-  const {body, creator, myAgreement} = claim
+  const { body, creator } = claim
   return (
     <Fragment>
       <Toolbar position="absolute" mt={-3} left={0} right={0} minHeight={18} px={0.75} justifyContent="flex-end">
