@@ -39,6 +39,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - run: cd api && bin/kaocha peer
+      - run: cd ui && npm test
 
   integration_test:
     <<: *defaults

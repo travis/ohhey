@@ -1,0 +1,414 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots ClaimPaper with ClaimBody 1`] = `
+<div
+  className="MuiPaper-root-177 MuiPaper-elevation1-180 MuiPaper-rounded-178 Component-root-175 Component-root-176 Component-root-174"
+>
+  <h5
+    className="MuiTypography-root-206 MuiTypography-h5-215 MuiTypography-colorTextPrimary-231 MuiTypography-alignCenter-222 WithStyles(ForwardRef(Typography))-root-204 WithStyles(ForwardRef(Typography))-root-205"
+  >
+    This is a claim body
+  </h5>
+</div>
+`;
+
+exports[`Storyshots Claims Evidence 1`] = `
+<div
+  className="MuiPaper-root-413 MuiPaper-elevation0-415 MuiPaper-rounded-414 MuiExpansionPanel-root-409 MuiExpansionPanel-rounded-410 Component-panel-408"
+>
+  <div
+    aria-disabled={false}
+    aria-expanded={false}
+    className="MuiButtonBase-root-446 MuiExpansionPanelSummary-root-440"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="button"
+    tabIndex="0"
+  >
+    <div
+      className="MuiExpansionPanelSummary-content-444"
+    >
+      <div
+        className="MuiBox-root-449 MuiBox-root-450"
+        onClick={[Function]}
+      >
+        <button
+          aria-haspopup="true"
+          className="MuiButtonBase-root-446 MuiButton-root-455 MuiButton-text-457 WithStyles(ForwardRef(Button))-root-453 WithStyles(ForwardRef(Button))-root-454 Component-root-451 Component-root-452"
+          disabled={false}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onKeyDown={[Function]}
+          onKeyUp={[Function]}
+          onMouseDown={[Function]}
+          onMouseLeave={[Function]}
+          onMouseUp={[Function]}
+          onTouchEnd={[Function]}
+          onTouchMove={[Function]}
+          onTouchStart={[Function]}
+          tabIndex="0"
+          type="button"
+        >
+          <span
+            className="MuiButton-label-456"
+          >
+            66
+            %
+          </span>
+        </button>
+      </div>
+      <div
+        className="MuiBox-root-449 MuiBox-root-475"
+      >
+        <h6
+          className="MuiTypography-root-478 MuiTypography-h6-488 WithStyles(ForwardRef(Typography))-root-476 WithStyles(ForwardRef(Typography))-root-477"
+        >
+          <a
+            className="MuiTypography-root-478 MuiTypography-colorInherit-500 MuiLink-root-508 MuiLink-underlineHover-510"
+            href="/somesay/this-is-another-claim"
+            onClick={[Function]}
+          >
+            This is a claim that stretches the limits of this system. It has precisely 255 characters, the maximum number of characters that a claim can have and still be valid. Anything longer than this will be rejected by the system because it is too long. Goodbye.
+          </a>
+        </h6>
+        <div
+          className="MuiBox-root-449 MuiBox-root-513"
+          onClick={[Function]}
+        >
+          <button
+            className="MuiButtonBase-root-446 MuiButton-root-455 MuiButton-text-457 WithStyles(ForwardRef(Button))-root-453 WithStyles(ForwardRef(Button))-root-514"
+            disabled={false}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseLeave={[Function]}
+            onMouseUp={[Function]}
+            onTouchEnd={[Function]}
+            onTouchMove={[Function]}
+            onTouchStart={[Function]}
+            tabIndex="0"
+            type="button"
+          >
+            <span
+              className="MuiButton-label-456"
+            >
+              I agree
+            </span>
+          </button>
+          <button
+            className="MuiButtonBase-root-446 MuiButton-root-455 MuiButton-text-457 WithStyles(ForwardRef(Button))-root-453 WithStyles(ForwardRef(Button))-root-515"
+            disabled={false}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseLeave={[Function]}
+            onMouseUp={[Function]}
+            onTouchEnd={[Function]}
+            onTouchMove={[Function]}
+            onTouchStart={[Function]}
+            tabIndex="0"
+            type="button"
+          >
+            <span
+              className="MuiButton-label-456"
+            >
+              I'm not sure
+            </span>
+          </button>
+          <button
+            className="MuiButtonBase-root-446 MuiButton-root-455 MuiButton-text-457 WithStyles(ForwardRef(Button))-root-453 WithStyles(ForwardRef(Button))-root-516"
+            disabled={false}
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseLeave={[Function]}
+            onMouseUp={[Function]}
+            onTouchEnd={[Function]}
+            onTouchMove={[Function]}
+            onTouchStart={[Function]}
+            tabIndex="0"
+            type="button"
+          >
+            <span
+              className="MuiButton-label-456"
+            >
+              I disagree
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      aria-disabled={false}
+      aria-hidden="true"
+      className="MuiButtonBase-root-446 MuiIconButton-root-517 MuiIconButton-edgeEnd-519 MuiExpansionPanelSummary-expandIcon-445"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      role="button"
+      tabIndex={-1}
+    >
+      <span
+        className="MuiIconButton-label-525"
+      >
+        <svg
+          aria-hidden="true"
+          className="MuiSvgIcon-root-526"
+          focusable="false"
+          role="presentation"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+          />
+          <path
+            d="M0 0h24v24H0z"
+            fill="none"
+          />
+        </svg>
+      </span>
+    </div>
+  </div>
+  <div
+    className="MuiCollapse-container-535 MuiCollapse-hidden-537"
+    style={
+      Object {
+        "minHeight": "0px",
+      }
+    }
+  >
+    <div
+      className="MuiCollapse-wrapper-538"
+    >
+      <div
+        className="MuiCollapse-wrapperInner-539"
+      >
+        <div
+          role="region"
+        >
+          <div
+            className="MuiExpansionPanelDetails-root-540"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots Claims SupportList 1`] = `
+<div
+  className="MuiBox-root-341 MuiBox-root-342"
+>
+  <div
+    className="MuiBox-root-341 MuiBox-root-343"
+  >
+    <h5
+      className="MuiTypography-root-346 MuiTypography-h5-355 WithStyles(ForwardRef(Typography))-root-344 WithStyles(ForwardRef(Typography))-root-345"
+    >
+      because
+    </h5>
+    <div
+      className="MuiBox-root-341 MuiBox-root-376"
+    >
+      <form
+        onReset={[Function]}
+        onSubmit={[Function]}
+      >
+        <div
+          aria-expanded={false}
+          aria-haspopup="listbox"
+          aria-owns="react-autowhatever-1"
+          role="combobox"
+          style={Object {}}
+        >
+          <div
+            className="MuiInputBase-root-391 MuiInput-root-379 MuiInput-underline-383 MuiInputBase-fullWidth-400 MuiInput-fullWidth-386"
+            field="body"
+            onClick={[Function]}
+          >
+            <input
+              aria-activedescendant={null}
+              aria-autocomplete="list"
+              aria-controls="react-autowhatever-1"
+              autoComplete="off"
+              className="MuiInputBase-input-401 MuiInput-input-387"
+              onBlur={[Function]}
+              onChange={[Function]}
+              onFocus={[Function]}
+              onKeyDown={[Function]}
+              placeholder="why?"
+              style={Object {}}
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            id="react-autowhatever-1"
+            role="listbox"
+            style={Object {}}
+          >
+            
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots Claims default 1`] = `
+<div
+  className="MuiGrid-root-238 MuiGrid-container-239 MuiGrid-spacing-xs-1-261 WithStyles(ForwardRef(Grid))-root-236 WithStyles(ForwardRef(Grid))-root-237"
+/>
+`;
+
+exports[`Storyshots Header default 1`] = `
+<header>
+  <header
+    className="MuiPaper-root-43 MuiPaper-elevation4-49 MuiAppBar-root-34 MuiAppBar-positionStatic-38 MuiAppBar-colorDefault-40"
+  >
+    <div
+      className="MuiToolbar-root-72 MuiToolbar-regular-74 MuiToolbar-gutters-73 WithStyles(ForwardRef(Toolbar))-root-70 WithStyles(ForwardRef(Toolbar))-root-71"
+    >
+      <button
+        aria-haspopup="true"
+        className="MuiButtonBase-root-95 MuiButton-root-78 MuiButton-text-80 WithStyles(ForwardRef(Button))-root-76 WithStyles(ForwardRef(Button))-root-77"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex="0"
+        type="button"
+      >
+        <span
+          className="MuiButton-label-79"
+        >
+          <img
+            alt="logo"
+            className="Component-logo-98"
+            src="logo.svg"
+          />
+        </span>
+        <span
+          className="MuiTouchRipple-root-164"
+        />
+      </button>
+      <h6
+        className="MuiTypography-root-105 MuiTypography-h6-115 WithStyles(ForwardRef(Typography))-root-103 WithStyles(ForwardRef(Typography))-root-104 Component-ohhey-33"
+      >
+        oh hey!
+      </h6>
+      <form
+        onReset={[Function]}
+        onSubmit={[Function]}
+      >
+        <div
+          className="MuiInputBase-root-147 MuiInput-root-135 MuiInput-underline-139"
+          onClick={[Function]}
+        >
+          <input
+            className="MuiInputBase-input-157 MuiInput-input-143"
+            name="username"
+            onBlur={[Function]}
+            onChange={[Function]}
+            onFocus={[Function]}
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          className="MuiInputBase-root-147 MuiInput-root-135 MuiInput-underline-139"
+          onClick={[Function]}
+        >
+          <input
+            className="MuiInputBase-input-157 MuiInput-input-143"
+            name="password"
+            onBlur={[Function]}
+            onChange={[Function]}
+            onFocus={[Function]}
+            type="password"
+            value=""
+          />
+        </div>
+        <button
+          className="MuiButtonBase-root-95 MuiButton-root-78 MuiButton-text-80 WithStyles(ForwardRef(Button))-root-76 WithStyles(ForwardRef(Button))-root-163"
+          disabled={false}
+          onBlur={[Function]}
+          onFocus={[Function]}
+          onKeyDown={[Function]}
+          onKeyUp={[Function]}
+          onMouseDown={[Function]}
+          onMouseLeave={[Function]}
+          onMouseUp={[Function]}
+          onTouchEnd={[Function]}
+          onTouchMove={[Function]}
+          onTouchStart={[Function]}
+          tabIndex="0"
+          type="submit"
+        >
+          <span
+            className="MuiButton-label-79"
+          >
+            log in
+          </span>
+          <span
+            className="MuiTouchRipple-root-164"
+          />
+        </button>
+      </form>
+    </div>
+  </header>
+</header>
+`;
+
+exports[`Storyshots UI components ClaimPaper 1`] = `
+<div
+  className="MuiPaper-root-6 MuiPaper-elevation1-9 MuiPaper-rounded-7 Component-root-4 Component-root-5 Component-root-3"
+>
+  This is some paper on which to write a claim.
+</div>
+`;
+
+exports[`Storyshots UI components Spinner 1`] = `
+<div
+  className="sk-fade-in sk-spinner Spinner-root-1 Spinner-root-2 sk-chasing-dots"
+>
+  <div />
+  <div />
+</div>
+`;
