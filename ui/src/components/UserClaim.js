@@ -9,14 +9,7 @@ import {
 } from './ui'
 import { ExpandMoreIcon } from './icons'
 import * as queries from '../queries';
-
-const userPrefix = 'someonenamed'
-export const believesURL = (username, slug) =>
-      `/${userPrefix}/${username}/believes/${slug}`
-export const doesntbelieveURL = (username, slug) =>
-      `/${userPrefix}/${username}/doesntbelieve/${slug}`
-export const isntsureifURL = (username, slug) =>
-      `/${userPrefix}/${username}/isntsureif/${slug}`
+import { userPrefix } from '../urls'
 
 const RoutePrefixSwitch = ({believes, doesntbelieve, isntsureif, fallback}) => (
   <Switch>

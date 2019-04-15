@@ -7,13 +7,13 @@ import {AccountCircle} from '../components/icons'
 import { withAuth } from '../authentication'
 import logo from '../logo.svg';
 
-const HeaderLogo = withStyles(theme => (console.log(theme)) || {
+const HeaderLogo = withStyles(theme => ({
   logo: {
     color: theme.palette.primary,
     display: "inline",
     width: "2em"
   }
-})(
+}))(
   ({classes}) => <img alt="logo" className={classes.logo} src={logo}/>
 )
 
@@ -26,7 +26,7 @@ export default withStyles({
 })(withAuth(({currentUser, logIn, logOut, classes}) => (
   <header>
     <AppBar color="default" position="static">
-      <Toolbar>
+      <Toolbar >
         <MenuButton menuItems={[
           <MenuItem key="/">
             <Link to="/">What?</Link>

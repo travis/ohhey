@@ -6,21 +6,19 @@ import {Spinner, ClaimPaper} from './ui'
 
 import {
   Typography, Button, Drawer, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, Tooltip, MenuButton, MenuItem, Grid,
-  ClaimBody, Box
+  PopoverButton, List, ListItem, ListItemText, Link, IconButton, Divider, MenuButton, MenuItem, Grid,
+  ClaimBody, Box, Toolbar
 } from './ui'
-import { Chat, Close, ExpandMoreIcon } from './icons'
+import { Chat, Close, ExpandMoreIcon, Info, Person } from './icons'
 import {Form} from './form'
 import Comments from './Comments'
 import AutosuggestClaimTextInput from './AutosuggestClaimTextInput'
 import {StopPropagation} from './util'
-import {believesURL, doesntbelieveURL, isntsureifURL} from './UserClaim'
 import {withAuth} from '../authentication'
 import { claimBodyFont } from '../theme'
 
 import * as goto from '../goto';
 import * as queries from '../queries';
-
 
 function ClaimScore({claim}) {
   const {agreement, agreementCount, supportCount, opposeCount, score} = claim
@@ -57,16 +55,9 @@ const RoutePrefixSwitch = ({ibelieve, idontbelieve, somesay, fallback}) => (
   </Switch>
 )
 
-const CBLink = withStyles({
-  link: {
-    fontFamily: claimBodyFont
-  }
-})((props) => <Link className={props.classes.link} {...props}/>)
-
-
 export const ClaimBodyLink = ({claim: {slug, body}}) => (
   <RoutePrefixSwitch
-    ibelieve={<CBLink to={`/ibelieve/${slug}`}>{body}</CBLink>}
+    ibelieve={<Link to={`/ibelieve/${slug}`}>{body}</Link>}
     idontbelieve={<Link to={`/idontbelieve/${slug}`}>{body}</Link>}
     somesay={<Link to={`/somesay/${slug}`}>{body}</Link>}
     fallback={<Link to={`/somesay/${slug}`}>{body}</Link>}
@@ -127,27 +118,60 @@ const SentimentPicker = withRouter(({ history, match: {params: {slug}}}) => (
   </MenuButton>
 ))
 
+const ClaimToolbarButton = withStyles(theme => ({
+  root: {
+    borderLeftWidth: props => props.noBorder ? 0 : "1px",
+    borderLeftStyle: "groove",
+    borderLeftColor: theme.palette.text.hint,
+    borderRadius: 0,
+    minWidth: 0
+  },
+  label: {
+    fontSize: "0.75rem",
+    color: theme.palette.text.secondary
+  }
+}))(({noBorder, ...props}) => <Button {...props}/>)
+
 export const Claim = compose(
   withAuth,
   withRouter,
   withStyles(theme => ({
-    claimTooltip: {
-      backgroundColor: theme.palette.common.white,
-      color: 'rgba(0, 0, 0, 0.87)',
-      boxShadow: theme.shadows[1],
-      fontSize: 11
-    },
-    iconButton: {
-      float: "right", position: "relative", top: "-2em"
-    }
   }))
 )(({currentUser, claim, history, classes}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const [commentsShown, setShowComments] = useState(false)
-  const {body, slug, creator, myAgreement} = claim
+  const [infoShown, setShowInfo] = useState(false)
+  const {body, creator, myAgreement} = claim
 
   return (
     <ClaimPaper>
+      <Toolbar position="absolute" mt={-3} left={0} right={0} minHeight={18} px={0.75} justifyContent="flex-end">
+        <Typography variant="caption" align="center" marginRight={1}>{claim.score}</Typography>
+        {claim && currentUser && (
+          <ClaimToolbarButton onClick={() => goto.userView(history, currentUser, claim, 'push')}>
+            <Person fontSize="inherit"/>
+          </ClaimToolbarButton>
+        )}
+        <ClaimToolbarButton onClick={() => setShowComments(true)}>
+          <Chat fontSize="inherit"/>
+        </ClaimToolbarButton>
+        <ClaimToolbarButton onClick={() => setShowInfo(true)}>
+          <Info fontSize="inherit"/>
+        </ClaimToolbarButton>
+      </Toolbar>
+      <Drawer open={commentsShown} anchor="right" onClose={() => setShowComments(false)}>
+        <IconButton onClick={() => setShowComments(false)}><Close/></IconButton>
+        <h3>Comments on {body}</h3>
+        <Comments claim={claim}/>
+      </Drawer>
+      <Drawer open={infoShown} anchor="left" onClose={() => setShowInfo(false)}>
+        <IconButton onClick={() => setShowInfo(false)}><Close/></IconButton>
+        <Typography variant="caption" color="textSecondary" align="center">
+          created by {creator.username}
+        </Typography>
+        <ClaimScore claim={claim}/>
+        <p>Created at {new Date(claim.createdAt).toString()}</p>
+      </Drawer>
       <Typography variant="h5" align="center">
         <RoutePrefixSwitch
           ibelieve={<SentimentPicker>I believe</SentimentPicker>}
@@ -155,36 +179,14 @@ export const Claim = compose(
           somesay={<SentimentPicker>some people say</SentimentPicker>}
         />
       </Typography>
-      <Tooltip classes={{tooltip: classes.claimTooltip}} interactive
-        title={(
-          <Fragment>
-            <Typography variant="caption" color="textSecondary" align="center">
-              created by {creator.username}
-            </Typography>
-            <ClaimScore claim={claim}/>
-            <p>Created at {new Date(claim.createdAt).toString()}</p>
-          </Fragment>
-        )}>
-        <ClaimBody>
-          <ClaimBodyLink claim={claim}/>
-        </ClaimBody>
-      </Tooltip>
-      <Typography variant="caption" align="center">{claim.score}</Typography>
+      <ClaimBody>
+        <ClaimBodyLink claim={claim}/>
+      </ClaimBody>
       <Typography align="center">
         {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim)}/>)}
         {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim)}/>)}
         {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim)}/>)}
       </Typography>
-      {currentUser && (
-        <Typography variant="caption" align="center">
-          <RoutePrefixSwitch
-            ibelieve={<Link to={believesURL(currentUser.username, slug)}>tell the world!</Link>}
-            idontbelieve={<Link to={doesntbelieveURL(currentUser.username, slug)}>tell the world!</Link>}
-            fallback={<Link to={isntsureifURL(currentUser.username, slug)}>my view</Link>}
-          />
-
-        </Typography>
-      )}
       <Typography align="center">
         {!evidenceShown && (
           <Button onClick={() => setShowEvidence(!evidenceShown)}>
@@ -192,14 +194,6 @@ export const Claim = compose(
           </Button>
         )}
       </Typography>
-      <IconButton className={classes.iconButton} onClick={() => setShowComments(!commentsShown)}>
-        <Chat/>
-      </IconButton>
-      <Drawer open={commentsShown} anchor="right" onClose={() => setShowComments(false)}>
-        <IconButton onClick={() => setShowComments(false)}><Close/></IconButton>
-        <h3>Comments on {body}</h3>
-        <Comments claim={claim}/>
-      </Drawer>
       {evidenceShown && (
         <EvidenceLists claim={claim}/>
       )}

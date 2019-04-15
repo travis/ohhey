@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import MuiPaper from '@material-ui/core/Paper';
 import MuiTypography from '@material-ui/core/Typography';
 import MuiButton from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
+import MuiIconButton from '@material-ui/core/IconButton';
 import Drawer from '@material-ui/core/Drawer';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -13,13 +13,14 @@ import Popover from '@material-ui/core/Popover';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import MuiList from '@material-ui/core/List';
+import MuiListItem from '@material-ui/core/ListItem';
+import MuiListItemText from '@material-ui/core/ListItemText';
+import MuiListItemIcon from '@material-ui/core/ListItemIcon';
 import MuiGrid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import MuiToolbar from '@material-ui/core/Toolbar';
 
 import { Link as RouterLink } from 'react-router-dom'
 import MuiLink from '@material-ui/core/Link';
@@ -107,14 +108,20 @@ export const Spinner = (props) => (
   <StyledSpinner name="chasing-dots" color="primary.main" {...props}/>
 )
 
-const Typography = styled(MuiTypography)(css(compose(typography, flexbox)))
+const Typography = styled(MuiTypography)(css(compose(typography, flexbox, spacing)))
 const Grid = styled(MuiGrid)(compose(spacing))
 const Button = styled(MuiButton)(compose(typography))
+const List = styled(MuiList)(compose(spacing))
+const ListItem = styled(MuiListItem)(compose(spacing))
+const ListItemText = styled(MuiListItemText)(compose(spacing))
+const ListItemIcon = styled(MuiListItemIcon)(compose(spacing))
+const Toolbar = styled(MuiToolbar)(compose(spacing, positions, sizing, flexbox))
+const IconButton = styled(MuiIconButton)(css(compose(spacing, positions)))
 
 
 export {
   Box, Grid, Button, IconButton, Drawer, Typography,
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  Popover, Divider, List, ListItem, ListItemText, Tooltip,
+  Popover, Divider, List, ListItem, ListItemText, ListItemIcon, Tooltip,
   Menu, MenuItem, AppBar, Toolbar
 }
