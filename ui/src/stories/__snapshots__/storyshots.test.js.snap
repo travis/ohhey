@@ -504,6 +504,7 @@ exports[`Storyshots UserClaim default 1`] = `
   >
     @
     toby
+     believes 
   </h6>
   <h5
     className="MuiTypography-root-590 MuiTypography-h5-599 MuiTypography-colorTextPrimary-615 MuiTypography-alignCenter-606 WithStyles(ForwardRef(Typography))-root-588 WithStyles(ForwardRef(Typography))-root-668"
@@ -516,6 +517,9 @@ exports[`Storyshots UserClaim default 1`] = `
       This is a claim
     </a>
   </h5>
-  <div />
+  <div>
+    
+    
+  </div>
 </div>
 `;
