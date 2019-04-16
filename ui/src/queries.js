@@ -80,7 +80,7 @@ query Claim($slug: String) {
 
 export const EvidenceForClaim = gql`
 ${fullEvidenceFieldsFragment}
-query EvidenceForClaim($claimID: ID) {
+query EvidenceForClaim($claimID: ID!) {
   evidenceForClaim(claimID: $claimID) {
     ...fullEvidenceFields
   }

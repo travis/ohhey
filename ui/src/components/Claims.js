@@ -6,7 +6,7 @@ import { Spinner, ClaimPaper } from './ui'
 import {
   ClaimToolbar, EvidenceExpansionPanel, EvidenceExpansionPanelSummary,
   EvidenceExpansionPanelDetails, EvidenceClaimBodyType,
-  ClaimIntroType
+  ClaimIntroType, RelevanceBox
 } from './claim'
 import {
   Typography, Button, PopoverButton, Link, Divider, MenuButton, MenuItem, Grid,
@@ -177,22 +177,24 @@ export const Evidence = compose(
   return (
     <EvidenceExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
       <EvidenceExpansionPanelSummary>
-        <StopPropagation width={36} position="absolute" left={-16}>
-          <PopoverButton
-            px={0} mr={1} minWidth={36} fontWeight={200} fontSize={12}
-            popoverContent={
-              <Box m={2}>
-                <Typography>How relevant is this to "{parentClaim.body}" ?</Typography>
-                <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
-              </Box>
-            }>
-            {relevance}%
-          </PopoverButton>
-        </StopPropagation>
+        <RelevanceBox>
+          <StopPropagation>
+            <PopoverButton
+              px={0} mr={1} minWidth={36} fontWeight="inherit" fontSize="inherit"
+              popoverContent={
+                <Box m={2}>
+                  <Typography>How relevant is this to "{parentClaim.body}" ?</Typography>
+                  <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                  <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                  <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                  <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                  {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
+                </Box>
+              }>
+              {relevance}%
+            </PopoverButton>
+          </StopPropagation>
+        </RelevanceBox>
         <EvidenceClaimBodyType>
           <ClaimBodyLink claim={claim}/>
         </EvidenceClaimBodyType>

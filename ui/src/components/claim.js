@@ -1,6 +1,6 @@
 import React, {Fragment, useState} from 'react';
 import { compose } from "react-apollo";
-import { styled } from '@material-ui/core/styles';
+import { withStyles, styled } from '@material-ui/core/styles';
 import { withRouter } from "react-router-dom";
 
 import { ExpandMoreIcon } from './icons'
@@ -8,7 +8,7 @@ import * as goto from '../goto';
 import { withAuth } from '../authentication'
 
 import {
-  Typography, Button, Drawer, List, ListItem, ListItemText, IconButton, Toolbar,
+  Box, Typography, Button, Drawer, List, ListItem, ListItemText, IconButton, Toolbar,
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails
 } from './ui'
 import { Chat, Close, Info, Person } from './icons'
@@ -92,11 +92,16 @@ export const EvidenceExpansionPanel = styled(
 })
 
 
-export const EvidenceExpansionPanelSummary = styled(
+export const EvidenceExpansionPanelSummary = withStyles({
+  root: {
+    width: '100%',
+  },
+  content: {
+    alignItems: "center"
+  }
+})(
   (props) => <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>} {...props}/>
-)({
-  width: '100%'
-})
+)
 
 export const EvidenceExpansionPanelDetails = ExpansionPanelDetails
 
@@ -106,4 +111,9 @@ export const ClaimIntroType = (props) => (
 
 export const EvidenceClaimBodyType = (props) => (
   <Typography variant="h6" fontFamily="claimBody" {...props}/>
+)
+
+export const RelevanceBox = (props) => (
+  <Box width={36} position="absolute" left={-16} fontWeight={200} fontSize={12}
+       {...props}/>
 )

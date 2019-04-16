@@ -3,7 +3,7 @@ import { graphql, compose } from "react-apollo";
 import { withStyles } from '@material-ui/core/styles';
 import {
   ClaimToolbar, EvidenceExpansionPanel, EvidenceExpansionPanelSummary, EvidenceExpansionPanelDetails,
-  ClaimIntroType, EvidenceClaimBodyType
+  ClaimIntroType, EvidenceClaimBodyType, RelevanceBox
 } from './claim'
 import {
   ClaimPaper, ClaimBody, Typography, Box, Link
@@ -31,9 +31,6 @@ const Evidence = compose(
   withStyles(theme => ({
     evidenceLists: {
       width: '100%'
-    },
-    relevance: {
-      marginLeft: "1em"
     }
   }))
 )(({classes, relevanceVote, username,
@@ -44,14 +41,12 @@ const Evidence = compose(
     <div key={id}>
       <EvidenceExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
         <EvidenceExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <RelevanceBox>
+            {relevance && (<Fragment>{relevance}%</Fragment>)}
+          </RelevanceBox>
           <EvidenceClaimBodyType>
             <ClaimBodyLink claim={claim}/>
           </EvidenceClaimBodyType>
-          {relevance && (
-            <Typography className={classes.relevance} variant="caption">
-              ({relevance}% relevant)
-            </Typography>
-          )}
         </EvidenceExpansionPanelSummary>
         <EvidenceExpansionPanelDetails>
           {expanded && (
