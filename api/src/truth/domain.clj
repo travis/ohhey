@@ -168,7 +168,7 @@
              :where
              (claim-for ?claim ?user ?uniqueness ?agreement)])
           db rules claim-ref (or user-ref anon-user-ref))]
-     (assoc claim :agreement agreement))))
+     (assoc claim :user-agreement agreement))))
 
 (defn get-claim-as
   ([db claim-ref user-ref]
@@ -438,10 +438,10 @@
           db rules claim-ref (or user-ref anon-user-ref))]
      (for [[evidence {username :user/username} rating agreement]
            results]
-       (assoc (assoc evidence :relevance (when (not (= rating -1)) rating))
+       (assoc (assoc evidence :user-relevance (when (not (= rating -1)) rating))
               :evidence/claim (assoc
                                (:evidence/claim evidence)
-                               :agreement (agreement-or-nil agreement)))))))
+                               :user-agreement (agreement-or-nil agreement)))))))
 
 ;; claim validation
 

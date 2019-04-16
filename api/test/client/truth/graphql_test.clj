@@ -41,6 +41,18 @@
     (is (= {:data {:currentUser {:username "travis"}}}
            (execute "{currentUser {username} }" nil)))))
 
+(deftest test-claim
+  (testing "claim"
+    (is (= {:data
+            {:claim
+             {:body "Dogs are great"}}}
+           (execute "{claim(slug: \"dogs-are-great\") {body}}" nil))))
+  (testing "claim with user metadata"
+    (is (= {:data
+            {:claim
+             {:body "Dogs are great", :userMeta {:agreement 100}}}}
+           (execute "{claim(slug: \"dogs-are-great\") { body, userMeta(username: \"travis\") { agreement }}}" nil)))))
+
 (deftest test-claims
   (testing "claims"
     (is (= {:data
@@ -83,10 +95,24 @@
                :contributors []}]}}
            (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil)))))
 
-(deftest test-evidenceForClaims
+(deftest test-evidenceForClaim
   (testing "evidenceForClaims {supports, claim {body}}"
     (is (= {:data {:evidenceForClaim [{:supports true :claim {:body "Animals are awesome" :supportCount 0}}]}}
-           (execute "query EvidenceForClaim($claimID: ID) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID "dogs-are-great"})))))
+           (execute "query EvidenceForClaim($claimID: ID!) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID "dogs-are-great"}))))
+  (testing "evidenceForClaim(username: \"travis\")"
+    (is (= {:data
+            {:evidenceForClaim
+             [{:supports true :claim {:body "Animals are awesome"}
+               :userMeta {:relevance 100.0}}]}}
+           (execute "
+query UserEvidenceForClaim($username: String!, $claimID: ID!) {
+  evidenceForClaim(username: $username, claimID: $claimID) {
+    supports
+    claim { body }
+    userMeta(username: $username) { relevance }
+  }
+}"
+                    {:username "travis" :claimID "dogs-are-great"})))))
 
 (def search-query "
 query SearchClaims($term: String!) {

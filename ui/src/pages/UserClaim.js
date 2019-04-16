@@ -13,7 +13,7 @@ export default compose(
   withRouter,
   graphql(
     queries.UserClaim, {
-      props: ({data: {userClaim}}) => ({claim: userClaim}),
+      props: ({data: {claim}}) => ({claim}),
       options: ({match: {params: {username, slug}}}) => ({
         variables: {username, slug}
       })

@@ -48,7 +48,8 @@ const Evidence = compose(
       marginLeft: "1em"
     }
   }))
-)(({classes, relevanceVote, evidence: {id, supports, claim, relevance, myRelevanceRating}, username}) => {
+)(({classes, relevanceVote, username,
+    evidence: {id, supports, claim,  myRelevanceRating, userMeta: {relevance}}}) => {
   const [expanded, setExpanded] = useState(false)
   return (
     <div key={id}>
@@ -125,7 +126,7 @@ const EvidenceLists = graphql(
     options: ({username, claim}) => ({
       variables: {username, claimID: claim.id}
     }),
-    props: ({data: {userEvidenceForClaim}}) => ({evidenceList: userEvidenceForClaim})
+    props: ({data: {evidenceForClaim}}) => ({evidenceList: evidenceForClaim})
   }
 )(({claim, username, evidenceList, nested, ...props}) => {
   const Support = () => (evidenceList && (evidenceList.length > 0) && (

@@ -39,24 +39,24 @@ fragment fullEvidenceFields on Evidence {
 `
 
 const fullUserClaimFieldsFragment = gql`
-fragment fullUserClaimFields on UserClaim {
+fragment fullUserClaimFields on Claim {
   id
   body
   slug
   creator { username }
-  agreement
+  userMeta(username: $username) { agreement}
 }
 `
 
 const fullUserEvidenceFieldsFragment = gql`
 ${fullUserClaimFieldsFragment}
-fragment fullUserEvidenceFields on UserEvidence {
+fragment fullUserEvidenceFields on Evidence {
   id
   supports
-  relevance
   claim {
   ...fullUserClaimFields
   }
+  userMeta(username: $username) { relevance }
 }
 `
 
@@ -90,7 +90,7 @@ query EvidenceForClaim($claimID: ID) {
 export const UserClaim = gql`
 ${fullUserClaimFieldsFragment}
 query UserClaim($username: String!, $slug: String!) {
-  userClaim(username: $username, slug: $slug) {
+  claim(slug: $slug) {
     ...fullUserClaimFields
   }
 }
@@ -99,7 +99,7 @@ query UserClaim($username: String!, $slug: String!) {
 export const UserEvidenceForClaim = gql`
 ${fullUserEvidenceFieldsFragment}
 query UserEvidenceForClaim($username: String!, $claimID: ID!) {
-  userEvidenceForClaim(username: $username, claimID: $claimID) {
+  evidenceForClaim(username: $username, claimID: $claimID) {
     ...fullUserEvidenceFields
   }
 }

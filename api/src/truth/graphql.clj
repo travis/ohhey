@@ -7,6 +7,7 @@
             [com.walmartlabs.lacinia.schema :as schema]
             [com.walmartlabs.lacinia.parser.schema :refer [parse-schema]]
             [com.walmartlabs.lacinia.resolve :refer [resolve-as]]
+            [com.walmartlabs.lacinia.executor :refer [selects-field? selections-seq selections-tree]]
             [truth.domain :as t
              :refer [get-user-by-email get-all-claims get-contributors get-claim-evidence]]
             [truth.search :as search]
@@ -112,20 +113,16 @@
           []))
 
       :claim
-      (fn [{db :db current-user :current-user} {slug :slug} parent]
-        (t/get-claim-as db [:claim/slug slug] (:db/id current-user)))
+      (fn [{db :db current-user :current-user :as context} {slug :slug} parent]
+        (if (selects-field? context :Claim/userMeta)
+          (t/get-claim-for db [:claim/slug slug] [:user/username (-> (selections-tree context) :Claim/userMeta :args :username)])
+          (t/get-claim-as db [:claim/slug slug] (:db/id current-user))))
 
       :evidenceForClaim
-      (fn [{db :db current-user :current-user} {claim-id :claimID} parent]
-        (t/get-claim-evidence-as db [:claim/id claim-id] (:db/id current-user)))
-
-      :userClaim
-      (fn [{db :db current-user :current-user} {slug :slug username :username} parent]
-        (t/get-claim-for db [:claim/slug slug] [:user/username username]))
-
-      :userEvidenceForClaim
       (fn [{db :db current-user :current-user} {claim-id :claimID username :username} parent]
-        (t/get-claim-evidence-for db [:claim/id claim-id] [:user/username username]))
+        (if username
+          (t/get-claim-evidence-for db [:claim/id claim-id] [:user/username username])
+          (t/get-claim-evidence-as db [:claim/id claim-id] (:db/id current-user))))
       }
      :Mutation
      {:logIn
@@ -224,11 +221,10 @@
       :evidence
       (fn [{db :db current-user :current-user} a {id :db/id evidence :evidence}]
         (or evidence {:edges (t/get-claim-evidence-as db id (:db/id current-user))}))
+      :userMeta
+      (fn [{db :db} {username :username} {claim-id :claim/id agreement :user-agreement :as claim}]
+        {:id (str claim-id ":" username) :agreement agreement :user {:user/username username}})
       }
-     :UserClaim
-     {:id (dkey :claim/id)
-      :body (dkey :claim/body)
-      :slug (dkey :claim/slug)}
      :Evidence
      {:id (dkey :evidence/id)
       :supports (dkey :evidence/supports)
@@ -239,11 +235,11 @@
            {} {evidence-id :evidence/id}]
 
         (t/get-parent-claim-as (d/db conn) [:evidence/id evidence-id] (:db/id current-user)))
+
+      :userMeta
+      (fn [{db :db} {username :username} {evidence-id :evidence/id relevance :user-relevance}]
+        {:id (str evidence-id ":" username) :relevance relevance :user {:user/username username}})
       }
-     :UserEvidence
-     {:id (dkey :evidence/id)
-      :supports (dkey :evidence/supports)
-      :claim (dkey :evidence/claim)}
      }}
    (apply-middleware [handle-errors])))
 
