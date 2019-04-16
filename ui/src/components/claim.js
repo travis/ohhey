@@ -1,6 +1,6 @@
 import React, {Fragment, useState} from 'react';
 import { compose } from "react-apollo";
-import { withStyles, styled } from '@material-ui/core/styles';
+import { styled } from '@material-ui/core/styles';
 import { withRouter } from "react-router-dom";
 
 import { ExpandMoreIcon } from './icons'

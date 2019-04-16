@@ -13,6 +13,12 @@ type User {
   email: String
 }
 
+type UserClaimMeta {
+  id: ID!
+  user: User
+  agreement: Int
+}
+
 input ClaimInput {
   id: ID
   body: String
@@ -31,20 +37,18 @@ type Claim implements Node {
   agreement: Int
   agreementCount: Int
   myAgreement: Int
-  score: Int
-}
-
-type UserClaim implements Node {
-  id: ID!
-  body: String
-  slug: String
-  creator: User
-  contributors: [User]
-  agreement: Int
+  score: Int,
+  userMeta(username: String!): UserClaimMeta
 }
 
 type EvidenceConnection {
   edges: [Evidence]
+}
+
+type UserEvidenceMeta {
+  id: ID!
+  user: User
+  relevance: Float
 }
 
 type Evidence {
@@ -55,14 +59,7 @@ type Evidence {
   relevance: Float
   myRelevanceRating: Int
   parentClaim: Claim
-}
-
-type UserEvidence {
-  id: ID!
-  cursor: String
-  supports: Boolean
-  claim: UserClaim
-  relevance: Float
+  userMeta(username: String!): UserEvidenceMeta
 }
 
 union SearchResultTarget = Claim | User
@@ -83,9 +80,7 @@ type Query {
   searchClaims(term: String): SearchResults
   suggestClaims(term: String): SearchResults
   claim(slug: String): Claim
-  evidenceForClaim(claimID: ID): [Evidence]
-  userClaim(username: String!, slug: String!): UserClaim
-  userEvidenceForClaim(username: String!, claimID: ID!): [UserEvidence]
+  evidenceForClaim(claimID: ID!, username: String): [Evidence]
 }
 
 type Mutation {

@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
-import { Route, Switch, withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import {
   ClaimToolbar, EvidenceExpansionPanel, EvidenceExpansionPanelSummary, EvidenceExpansionPanelDetails,
@@ -11,17 +10,6 @@ import {
 } from './ui'
 import { ExpandMoreIcon } from './icons'
 import * as queries from '../queries';
-import { userPrefix } from '../urls'
-
-const RoutePrefixSwitch = ({believes, doesntbelieve, isntsureif, fallback}) => (
-  <Switch>
-    {believes &&  <Route path={`/${userPrefix}/:username/believes/:slug`}><Fragment>{believes}</Fragment></Route>}
-    {doesntbelieve && <Route path={`/${userPrefix}/:username/doesntbelieve/:slug`}><Fragment>{doesntbelieve}</Fragment></Route>}
-    {isntsureif && <Route path={`/${userPrefix}/:username/isntsureif/:slug`}><Fragment>{isntsureif}</Fragment></Route>}
-    {fallback && <Route path={`/${userPrefix}/:username`}><Fragment>{fallback}</Fragment></Route>}
-  </Switch>
-)
-
 
 export const ClaimBodyLink = ({username, claim: {slug, body}}) => (
   <Link to={`/somesay/${slug}`}>{body}</Link>
@@ -49,8 +37,9 @@ const Evidence = compose(
     }
   }))
 )(({classes, relevanceVote, username,
-    evidence: {id, supports, claim,  myRelevanceRating, userMeta: {relevance}}}) => {
+    evidence: {id, supports, claim,  myRelevanceRating, userMeta}}) => {
   const [expanded, setExpanded] = useState(false)
+  const relevance = userMeta && userMeta.relevance
   return (
     <div key={id}>
       <EvidenceExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
@@ -82,13 +71,30 @@ const Evidences = ({list, username, support}) => (
   </Fragment>
 )
 
+const evidenceIntroText = (claim, sentimentMap) => {
+  if (claim) {
+    switch(claim.userMeta && claim.userMeta.agreement) {
+    case undefined:
+      return ""
+    case null:
+      return ""
+    case 100:
+      return sentimentMap.believes
+    case -100:
+      return sentimentMap.doesntbelieve
+    default:
+      return sentimentMap.isntsureif
+    }
+  }
+}
+
 const EvidenceList = ({claim, username, evidence, support,
                        placeholder, sentimentMap, nested}) => {
   return (
     <Box mt={2}>
       <Box display="flex">
         <Typography variant={nested? "h6" : "h5"} fontFamily="claimBody">
-          <RoutePrefixSwitch {...sentimentMap} />
+          {evidenceIntroText(claim, sentimentMap)}
         </Typography>
       </Box>
       <Evidences claim={claim} list={evidence} support={support}/>
@@ -104,7 +110,6 @@ const SupportList = ({claim, username, evidence}) => (
                   believes: "because",
                   doesntbelieve: "despite",
                   isntsureif: "on one hand",
-                  fallback :"on one hand"
                 }}/>
 
 )
@@ -117,7 +122,6 @@ const OpposeList = ({claim, username, evidence}) => (
                   believes: "despite",
                   doesntbelieve: "because",
                   isntsureif: "but on the other",
-                  fallback :"but on the other"
                 }}/>
 )
 
@@ -129,6 +133,7 @@ const EvidenceLists = graphql(
     props: ({data: {evidenceForClaim}}) => ({evidenceList: evidenceForClaim})
   }
 )(({claim, username, evidenceList, nested, ...props}) => {
+  const agreement = claim && claim.userMeta && claim.userMeta.agreement
   const Support = () => (evidenceList && (evidenceList.length > 0) && (
     <SupportList claim={claim} username={username} evidence={evidenceList} nested={nested}/>
   )) || ""
@@ -137,25 +142,37 @@ const EvidenceLists = graphql(
   )) || ""
   return (
     <div {...props}>
-      <RoutePrefixSwitch
-        doesntbelieve={<Fragment><Oppose/><Support/></Fragment>}
-        fallback={<Fragment><Support/><Oppose/></Fragment>}
-      />
+      {(agreement === -100) ?
+         (<Fragment><Oppose/><Support/></Fragment>) :
+         (<Fragment><Support/><Oppose/></Fragment>)
+      }
     </div>
   )
 })
 
-export default withRouter(({history, username, claim}) => {
+const introText = (claim) => {
+  const agreement = claim && claim.userMeta && claim.userMeta.agreement
+  switch(agreement) {
+  case undefined:
+    return ""
+  case null:
+    return ""
+  case 100:
+    return " believes "
+  case -100:
+    return " doesn't believe "
+  default:
+    return " isn't sure whether "
+  }
+}
+
+export default ({username, claim}) => {
   return (
     <ClaimPaper>
       <ClaimToolbar claim={claim} />
       <ClaimIntroType>
         @{username}
-        <RoutePrefixSwitch
-          believes=" believes"
-          doesntbelieve=" doesn't believe"
-          isntsureif=" isn't sure whether"
-        />
+        {introText(claim)}
       </ClaimIntroType>
       <ClaimBody>
         <ClaimBodyLink username={username} claim={claim}/>
@@ -163,4 +180,4 @@ export default withRouter(({history, username, claim}) => {
       <EvidenceLists username={username} claim={claim}/>
     </ClaimPaper>
   )
-})
+}
