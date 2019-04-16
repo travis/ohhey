@@ -2,10 +2,12 @@ import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
 import { Route, Switch, withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
-
 import {
-  ClaimPaper, Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  Link
+  ClaimToolbar, EvidenceExpansionPanel, EvidenceExpansionPanelSummary, EvidenceExpansionPanelDetails,
+  ClaimIntroType
+} from './claim'
+import {
+  ClaimPaper, ClaimBody, Typography, Box, Link
 } from './ui'
 import { ExpandMoreIcon } from './icons'
 import * as queries from '../queries';
@@ -50,8 +52,8 @@ const Evidence = compose(
   const [expanded, setExpanded] = useState(false)
   return (
     <div key={id}>
-      <ExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+      <EvidenceExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
+        <EvidenceExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle2">
             <ClaimBodyLink claim={claim}/>
           </Typography>
@@ -60,13 +62,13 @@ const Evidence = compose(
               ({relevance}% relevant)
             </Typography>
           )}
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </EvidenceExpansionPanelSummary>
+        <EvidenceExpansionPanelDetails>
           {expanded && (
-            <EvidenceLists claim={claim} username={username} className={classes.evidenceLists}/>
+            <EvidenceLists claim={claim} username={username} className={classes.evidenceLists} nested={true} />
           )}
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </EvidenceExpansionPanelDetails>
+      </EvidenceExpansionPanel>
     </div>
   )
 })
@@ -79,14 +81,17 @@ const Evidences = ({list, username, support}) => (
   </Fragment>
 )
 
-const EvidenceList = ({claim, username, evidence, support, placeholder, sentimentMap}) => {
+const EvidenceList = ({claim, username, evidence, support,
+                       placeholder, sentimentMap, nested}) => {
   return (
-    <Fragment>
-      <Typography variant="h5">
-        <RoutePrefixSwitch {...sentimentMap} />
-      </Typography>
-      <Evidences list={evidence} username={username} support={support}/>
-    </Fragment>
+    <Box mt={2}>
+      <Box display="flex">
+        <Typography variant={nested? "h6" : "h5"} fontFamily="claimBody">
+          <RoutePrefixSwitch {...sentimentMap} />
+        </Typography>
+      </Box>
+      <Evidences claim={claim} list={evidence} support={support}/>
+    </Box>
   )
 }
 
@@ -122,9 +127,13 @@ const EvidenceLists = graphql(
     }),
     props: ({data: {userEvidenceForClaim}}) => ({evidenceList: userEvidenceForClaim})
   }
-)(({claim, username, evidenceList, ...props}) => {
-  const Support = () => (<SupportList claim={claim} username={username} evidence={evidenceList}/>)
-  const Oppose = () => (<OpposeList claim={claim} username={username} evidence={evidenceList}/>)
+)(({claim, username, evidenceList, nested, ...props}) => {
+  const Support = () => (evidenceList && (evidenceList.length > 0) && (
+    <SupportList claim={claim} username={username} evidence={evidenceList} nested={nested}/>
+  )) || ""
+  const Oppose = () => (evidenceList && (evidenceList.length > 0) && (
+    <OpposeList claim={claim} username={username} evidence={evidenceList} nested={nested}/>
+  )) || ""
   return (
     <div {...props}>
       <RoutePrefixSwitch
@@ -138,17 +147,18 @@ const EvidenceLists = graphql(
 export default withRouter(({history, username, claim}) => {
   return (
     <ClaimPaper>
-      <Typography variant="h5" align="center">
+      <ClaimToolbar claim={claim} />
+      <ClaimIntroType>
         @{username}
         <RoutePrefixSwitch
           believes=" believes"
           doesntbelieve=" doesn't believe"
           isntsureif=" isn't sure whether"
         />
-      </Typography>
-      <Typography variant="h4" color="textPrimary" align="center">
+      </ClaimIntroType>
+      <ClaimBody>
         <ClaimBodyLink username={username} claim={claim}/>
-      </Typography>
+      </ClaimBody>
       <EvidenceLists username={username} claim={claim}/>
     </ClaimPaper>
   )

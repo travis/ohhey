@@ -9,6 +9,7 @@ import { ApolloProvider } from 'react-apollo';
 import { client } from './apollo'
 import { Spinner, ClaimPaper, ClaimBody } from '../components/ui'
 import Claims, { SupportList, Evidence } from '../components/Claims'
+import UserClaim from '../components/UserClaim'
 import Header from '../components/Header'
 import { ThemeProvider, fonts } from '../theme'
 import { claim, longClaim } from './data'
@@ -42,3 +43,7 @@ storiesOf('Claims', module)
   .add('default', () => <Claims />)
   .add("SupportList", () => <SupportList claim={claim}/>)
   .add("Evidence", () => <Evidence claim={claim} evidence={{claim: longClaim, relevance: 66}}/>)
+
+storiesOf('UserClaim', module)
+  .addDecorator(StoryRouter())
+  .add('default', () => <UserClaim username={"toby"} claim={claim} />)

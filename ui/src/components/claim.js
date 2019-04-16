@@ -1,13 +1,15 @@
 import React, {Fragment, useState} from 'react';
 import { compose } from "react-apollo";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, styled } from '@material-ui/core/styles';
 import { withRouter } from "react-router-dom";
 
+import { ExpandMoreIcon } from './icons'
 import * as goto from '../goto';
 import { withAuth } from '../authentication'
 
 import {
-  Typography, Button, Drawer, List, ListItem, ListItemText, IconButton, Toolbar
+  Typography, Button, Drawer, List, ListItem, ListItemText, IconButton, Toolbar,
+  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails
 } from './ui'
 import { Chat, Close, Info, Person } from './icons'
 
@@ -36,19 +38,7 @@ function ClaimScore({claim}) {
   )
 }
 
-const ClaimToolbarButton = withStyles(theme => ({
-  root: {
-    borderLeftWidth: props => props.noBorder ? 0 : "1px",
-    borderLeftStyle: "groove",
-    borderLeftColor: theme.palette.text.hint,
-    borderRadius: 0,
-    minWidth: 0
-  },
-  label: {
-    fontSize: "0.75rem",
-    color: theme.palette.text.secondary
-  }
-}))(({noBorder, ...props}) => <Button {...props}/>)
+const ClaimToolbarButton = styled(Button)({})
 
 export const ClaimToolbar = compose(
   withRouter,
@@ -80,12 +70,36 @@ export const ClaimToolbar = compose(
       </Drawer>
       <Drawer open={infoShown} anchor="left" onClose={() => setShowInfo(false)}>
         <IconButton onClick={() => setShowInfo(false)}><Close/></IconButton>
-        <Typography variant="caption" color="textSecondary" align="center">
-          created by {creator.username}
-        </Typography>
+        {creator && (
+          <Typography variant="caption" color="textSecondary" align="center">
+            created by {creator.username}
+          </Typography>
+        )}
         <ClaimScore claim={claim}/>
         <p>Created at {new Date(claim.createdAt).toString()}</p>
       </Drawer>
     </Fragment>
   )
 })
+
+export const EvidenceExpansionPanel = styled(
+  (props) => (<ExpansionPanel elevation={0} {...props}/>)
+)({
+  backgroundColor: "transparent",
+  '&:before': {
+    display: "none"
+  }
+})
+
+
+export const EvidenceExpansionPanelSummary = styled(
+  (props) => <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>} {...props}/>
+)({
+  width: '100%'
+})
+
+export const EvidenceExpansionPanelDetails = ExpansionPanelDetails
+
+export const ClaimIntroType = (props) => (
+  <Typography {...props} variant="subtitle1" align="center"/>
+)

@@ -62,7 +62,7 @@ export const PopoverButton = styled(({ariaID="popover", children, popoverContent
   )
 })(compose(positions, spacing, sizing, typography))
 
-export const MenuButton = ({ariaID="menu", children, menuItems}) => {
+export const MenuButton = ({ariaID="menu", children, menuItems, ...props}) => {
   const [buttonEl, setShowMenu] = useState(null)
   const menuShown = Boolean(buttonEl);
   return (
@@ -70,7 +70,8 @@ export const MenuButton = ({ariaID="menu", children, menuItems}) => {
       <Button
         aria-owns={menuShown ? ariaID : undefined}
         aria-haspopup="true"
-        onClick={(e) => setShowMenu(e.target)}>
+        onClick={(e) => setShowMenu(e.target)}
+        {...props}>
         {children}
       </Button>
       <Menu

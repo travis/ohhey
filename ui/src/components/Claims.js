@@ -1,17 +1,18 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, styled } from '@material-ui/core/styles';
 import { Route, Switch, withRouter } from "react-router-dom";
 import { Spinner, ClaimPaper } from './ui'
-import { ClaimToolbar } from './claim'
-
 import {
-  Typography, Button, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
-  PopoverButton, Link, Divider, MenuButton, MenuItem, Grid,
+  ClaimToolbar, EvidenceExpansionPanel, EvidenceExpansionPanelSummary,
+  EvidenceExpansionPanelDetails,
+  ClaimIntroType
+} from './claim'
+import {
+  Typography, Button, PopoverButton, Link, Divider, MenuButton, MenuItem, Grid,
   ClaimBody, Box
 } from './ui'
-import { ExpandMoreIcon } from './icons'
-import {Form} from './form'
+import { Form } from './form'
 import AutosuggestClaimTextInput from './AutosuggestClaimTextInput'
 import { StopPropagation } from './util'
 import { withAuth } from '../authentication'
@@ -67,29 +68,37 @@ export const AgreeButton = agreementButton(100, "I agree")
 export const DisagreeButton = agreementButton(-100, "I disagree")
 export const NotSureButton = agreementButton(0, "I'm not sure")
 
-const SentimentPicker = withRouter(({ history, match: {params: {slug}}}) => (
-  <MenuButton menuItems={[
-    <MenuItem key="ibelieve"
-              onClick={() => goto.iBelieve(history, {slug})}>
-      I believe
-    </MenuItem>,
-    <MenuItem key="idontbelieve"
-              onClick={() => goto.iDontBelieve(history, {slug})}>
-      I don't believe
-    </MenuItem>,
-    <MenuItem key="somesay"
-              onClick={() => goto.someSay(history, {slug})}>
-      some people say
-    </MenuItem>
-  ]
-    }>
-    <RoutePrefixSwitch
-      ibelieve="I believe"
-      idontbelieve="I don't believe"
-      somesay="some people say"
-    />
-  </MenuButton>
-))
+const SentimentMenuButton = styled(MenuButton)({
+  textTransform: "inherit",
+  fontWeight: "inherit",
+  fontSize: "inherit"
+})
+
+const SentimentPicker = withRouter(
+  ({ history, match: {params: {slug}}}) => (
+    <SentimentMenuButton menuItems={[
+      <MenuItem key="ibelieve"
+                onClick={() => goto.iBelieve(history, {slug})}>
+        I believe
+      </MenuItem>,
+      <MenuItem key="idontbelieve"
+                onClick={() => goto.iDontBelieve(history, {slug})}>
+        I don't believe
+      </MenuItem>,
+      <MenuItem key="somesay"
+                onClick={() => goto.someSay(history, {slug})}>
+        some people say
+      </MenuItem>
+    ]
+                          }>
+      <RoutePrefixSwitch
+        ibelieve="I believe"
+        idontbelieve="I don't believe"
+        somesay="some people say"
+      />
+    </SentimentMenuButton>
+  )
+)
 
 export const Claim = compose(
   withAuth,
@@ -103,13 +112,13 @@ export const Claim = compose(
   return (
     <ClaimPaper>
       <ClaimToolbar claim={claim} />
-      <Typography variant="h5" align="center">
+      <ClaimIntroType>
         <RoutePrefixSwitch
           ibelieve={<SentimentPicker>I believe</SentimentPicker>}
           idontbelieve={<SentimentPicker>I don't believe</SentimentPicker>}
           somesay={<SentimentPicker>some people say</SentimentPicker>}
         />
-      </Typography>
+      </ClaimIntroType>
       <ClaimBody>
         <ClaimBodyLink claim={claim}/>
       </ClaimBody>
@@ -166,8 +175,8 @@ export const Evidence = compose(
 )(({classes, relevanceVote, claim: parentClaim, evidence: {id, supports, claim, myAgreement, relevance, myRelevanceRating}}) => {
   const [expanded, setExpanded] = useState(false)
   return (
-    <ExpansionPanel onChange={(e, expanded) => setExpanded(expanded)} elevation={0} className={classes.panel}>
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} className={classes.summary}>
+    <EvidenceExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
+      <EvidenceExpansionPanelSummary>
         <StopPropagation width={36} position="absolute" left={-16}>
           <PopoverButton
             px={0} mr={1} minWidth={36} fontWeight={200} fontSize={12}
@@ -184,23 +193,21 @@ export const Evidence = compose(
             {relevance}%
           </PopoverButton>
         </StopPropagation>
-        <Box>
-          <Typography variant="h6" fontFamily="claimBody">
-            <ClaimBodyLink claim={claim}/>
-          </Typography>
-          <StopPropagation>
-            {(myAgreement !== 100) && (<AgreeButton claim={claim}/>)}
-            {(myAgreement !== 0) && (<NotSureButton claim={claim}/>)}
-            {(myAgreement !== -100) && (<DisagreeButton claim={claim}/>)}
-          </StopPropagation>
-        </Box>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
+        <Typography variant="h6" fontFamily="claimBody">
+          <ClaimBodyLink claim={claim}/>
+        </Typography>
+        <StopPropagation>
+          {(myAgreement !== 100) && (<AgreeButton claim={claim}/>)}
+          {(myAgreement !== 0) && (<NotSureButton claim={claim}/>)}
+          {(myAgreement !== -100) && (<DisagreeButton claim={claim}/>)}
+        </StopPropagation>
+      </EvidenceExpansionPanelSummary>
+      <EvidenceExpansionPanelDetails>
           {expanded && (
             <EvidenceLists claim={claim} className={classes.evidenceLists} nested={true} />
           )}
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+      </EvidenceExpansionPanelDetails>
+    </EvidenceExpansionPanel>
   )
 })
 
