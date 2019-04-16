@@ -101,5 +101,9 @@ export const EvidenceExpansionPanelSummary = styled(
 export const EvidenceExpansionPanelDetails = ExpansionPanelDetails
 
 export const ClaimIntroType = (props) => (
-  <Typography {...props} variant="subtitle1" align="center"/>
+  <Typography variant="subtitle1" align="center" {...props} />
+)
+
+export const EvidenceClaimBodyType = (props) => (
+  <Typography variant="h6" fontFamily="claimBody" {...props}/>
 )

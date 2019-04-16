@@ -5,7 +5,7 @@ import { Route, Switch, withRouter } from "react-router-dom";
 import { Spinner, ClaimPaper } from './ui'
 import {
   ClaimToolbar, EvidenceExpansionPanel, EvidenceExpansionPanelSummary,
-  EvidenceExpansionPanelDetails,
+  EvidenceExpansionPanelDetails, EvidenceClaimBodyType,
   ClaimIntroType
 } from './claim'
 import {
@@ -193,9 +193,9 @@ export const Evidence = compose(
             {relevance}%
           </PopoverButton>
         </StopPropagation>
-        <Typography variant="h6" fontFamily="claimBody">
+        <EvidenceClaimBodyType>
           <ClaimBodyLink claim={claim}/>
-        </Typography>
+        </EvidenceClaimBodyType>
         <StopPropagation>
           {(myAgreement !== 100) && (<AgreeButton claim={claim}/>)}
           {(myAgreement !== 0) && (<NotSureButton claim={claim}/>)}

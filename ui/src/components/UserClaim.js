@@ -3,7 +3,7 @@ import { graphql, compose } from "react-apollo";
 import { withStyles } from '@material-ui/core/styles';
 import {
   ClaimToolbar, EvidenceExpansionPanel, EvidenceExpansionPanelSummary, EvidenceExpansionPanelDetails,
-  ClaimIntroType
+  ClaimIntroType, EvidenceClaimBodyType
 } from './claim'
 import {
   ClaimPaper, ClaimBody, Typography, Box, Link
@@ -44,9 +44,9 @@ const Evidence = compose(
     <div key={id}>
       <EvidenceExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
         <EvidenceExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2">
+          <EvidenceClaimBodyType>
             <ClaimBodyLink claim={claim}/>
-          </Typography>
+          </EvidenceClaimBodyType>
           {relevance && (
             <Typography className={classes.relevance} variant="caption">
               ({relevance}% relevant)
@@ -97,32 +97,29 @@ const EvidenceList = ({claim, username, evidence, support,
           {evidenceIntroText(claim, sentimentMap)}
         </Typography>
       </Box>
-      <Evidences claim={claim} list={evidence} support={support}/>
+      <Evidences claim={claim} list={evidence} support={support} username={username}/>
     </Box>
   )
 }
 
-const SupportList = ({claim, username, evidence}) => (
-  <EvidenceList claim={claim} username={username}
-                support={true} placeholder="why?"
-                evidence={evidence}
+const SupportList = (props) => (
+  <EvidenceList support={true} placeholder="why?"
                 sentimentMap={{
                   believes: "because",
                   doesntbelieve: "despite",
                   isntsureif: "on one hand",
-                }}/>
-
+                }}
+                {...props}/>
 )
 
-const OpposeList = ({claim, username, evidence}) => (
-  <EvidenceList claim={claim} username={username}
-                support={false} placeholder="why not?"
-                evidence={evidence}
+const OpposeList = (props) => (
+  <EvidenceList support={false} placeholder="why not?"
                 sentimentMap={{
                   believes: "despite",
                   doesntbelieve: "because",
                   isntsureif: "but on the other",
-                }}/>
+                }}
+                {...props}/>
 )
 
 const EvidenceLists = graphql(

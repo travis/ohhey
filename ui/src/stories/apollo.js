@@ -4,6 +4,7 @@ import { SchemaLink } from 'apollo-link-schema';
 import { makeExecutableSchema } from 'graphql-tools'
 import typeDefs from './typeDefs'
 import { claim, claims, supportingEvidence, opposingEvidence } from './data'
+import { makeLinkFrom } from '../clients'
 
 const cache = new InMemoryCache();
 
@@ -23,9 +24,7 @@ const executableSchema = makeExecutableSchema({
   }
 });
 
-const link = new SchemaLink({ schema: executableSchema });
-
 export const client = new ApolloClient({
-  link,
+  link: makeLinkFrom(new SchemaLink({ schema: executableSchema })),
   cache
 });

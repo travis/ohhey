@@ -7,26 +7,35 @@ import { ApolloLink } from 'apollo-link';
 //import {createRtdbLink} from 'apollo-link-firebase';
 //import * as firebase from 'firebase';
 
+export const makeLinkFrom = (networkLink) => ApolloLink.from([
+  onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors)
+      graphQLErrors.map(({ message, locations, path }) =>
+                        console.log(
+                          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+                        ),
+                       );
+    if (networkError) console.log(`[Network error]: ${networkError}`);
+  }),
+  networkLink
+])
+ApolloLink.from([
+  onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors)
+      graphQLErrors.map(({ message, locations, path }) =>
+                        console.log(
+                          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+                        ),
+                       );
+    if (networkError) console.log(`[Network error]: ${networkError}`);
+  })
+])
+
 export const client = new ApolloClient({
-  link: ApolloLink.from([
-    onError(({ graphQLErrors, networkError }) => {
-      if (graphQLErrors)
-        graphQLErrors.map(({ message, locations, path }) =>
-                          console.log(
-                            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-                          ),
-                         );
-      if (networkError) console.log(`[Network error]: ${networkError}`);
-    }),
-    new HttpLink({
-      uri: '/graphql',
-      //uri: 'https://ofmgaea4ib.execute-api.us-east-1.amazonaws.com/dev/graphql',
-      //uri: 'http://localhost:3002/graphql',
-      //uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
-      //credentials: 'include'
-      credentials: 'same-origin'
-    })
-  ]),
+  link: makeLinkFrom(new HttpLink({
+    uri: '/graphql',
+    credentials: 'same-origin'
+  })),
   cache: new InMemoryCache(),
   defaultOptions: {
     query: {
