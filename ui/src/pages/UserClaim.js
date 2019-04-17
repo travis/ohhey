@@ -23,7 +23,7 @@ export default compose(
 )(({history, match: {params: {username}}, claim}) => {
   useEffect(() => {
     if (claim) {
-      history.replace(urls.userView({username}, claim))
+      history.replace(urls.userView(claim))
     }
   }, [claim])
   return (

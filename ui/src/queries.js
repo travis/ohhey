@@ -44,7 +44,13 @@ fragment fullUserClaimFields on Claim {
   body
   slug
   creator { username }
-  userMeta(username: $username) { agreement}
+  userMeta(username: $username) {
+    id
+    agreement
+    user {
+      username
+    }
+  }
 }
 `
 

@@ -48,7 +48,7 @@ const ViewToggleLink = withAuth(({authData: {currentUser}, claim, ...props}) => 
       )
     } else if (currentUser) {
       return (
-        <Link to={urls.userView(currentUser, claim)} {...props}>
+        <Link to={urls.currentUserView(currentUser, claim)} {...props}>
           <Person fontSize="inherit"/>
         </Link>
       )

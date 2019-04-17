@@ -13,5 +13,5 @@ export const claim = (history, claim, method='replace') => {
   }
 }
 
-export const userView = (history, user, claim, method='replace') =>
-  history[method](urls.userView(user, claim))
+export const userView = (history, claim, method='replace') =>
+  history[method](urls.userView(claim))

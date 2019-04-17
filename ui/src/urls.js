@@ -23,12 +23,19 @@ export const doesntBelieve = (username, slug) =>
 export const isntSureIf = (username, slug) =>
   `/${userPrefix}/${username}/isntsureif/${slug}`
 
-export const userView = ({username}, {slug, myAgreement}) => {
-  if (myAgreement === 100) {
+const urlForUserAndAgreement = (slug, username, agreement) => {
+  if (agreement === 100) {
     return believes(username, slug)
-  } else if (myAgreement === -100) {
+  } else if (agreement === -100) {
     return doesntBelieve(username, slug)
   } else {
     return isntSureIf(username, slug)
   }
 }
+
+export const userView = ({slug, userMeta: {agreement, user: {username}}}) =>
+  urlForUserAndAgreement(slug, username, agreement)
+
+
+export const currentUserView = ({username}, {slug, myAgreement}) =>
+  urlForUserAndAgreement(slug, username, myAgreement)
