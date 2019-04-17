@@ -5,10 +5,9 @@ import { withStyles } from '@material-ui/core/styles';
 
 import {Spinner} from '../components/ui'
 import {Form } from '../components/form'
-import {Paper, Typography, Button, Divider, ClaimPaper} from '../components/ui'
+import {Typography, Button, Divider, ClaimPaper} from '../components/ui'
 import AutosuggestClaimTextInput from '../components/AutosuggestClaimTextInput'
 import {AgreeButton, DisagreeButton} from '../components/Claims'
-import { claimBodyFont } from '../theme'
 import * as queries from '../queries';
 import * as goto from '../goto';
 import * as validations from '../validations';
