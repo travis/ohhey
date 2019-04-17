@@ -36,7 +36,6 @@ export const theme = createMuiTheme({
   }
 })
 
-
 export const ThemeProvider = ({children}) => (
   <MuiThemeProvider theme={theme}>
     {children}

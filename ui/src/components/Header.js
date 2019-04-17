@@ -23,7 +23,7 @@ export default withStyles({
     marginLeft: '0.5em',
     fontFamily: 'Lobster'
   }
-})(withAuth(({currentUser, logIn, logOut, classes}) => (
+})(withAuth(({authData: {currentUser, logIn, logOut}, classes}) => (
   <header>
     <AppBar color="default" position="static">
       <Toolbar >

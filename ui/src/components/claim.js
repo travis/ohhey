@@ -4,14 +4,14 @@ import { withStyles, styled } from '@material-ui/core/styles';
 import { withRouter } from "react-router-dom";
 
 import { ExpandMoreIcon } from './icons'
-import * as goto from '../goto';
+import * as urls from '../urls';
 import { withAuth } from '../authentication'
 
 import {
   Box, Typography, Button, Drawer, List, ListItem, ListItemText, IconButton, Toolbar,
-  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails
+  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Link
 } from './ui'
-import { Chat, Close, Info, Person } from './icons'
+import { Chat, Close, Info, Person, People } from './icons'
 
 import Comments from './Comments'
 
@@ -40,28 +40,47 @@ function ClaimScore({claim}) {
 
 const ClaimToolbarButton = styled(Button)({})
 
-export const ClaimToolbar = compose(
-  withRouter,
-  withAuth
-)(({history, currentUser, claim}) => {
+const ViewToggleLink = withAuth(({authData: {currentUser}, claim, ...props}) => {
+  if (claim) {
+    if (claim.userMeta) {
+      return (
+        <Link to={urls.claim(claim)} {...props}>
+          <People fontSize="inherit"/>
+        </Link>
+      )
+    } else if (currentUser) {
+      return (
+        <Link to={urls.userView(currentUser, claim)} {...props}>
+          <Person fontSize="inherit"/>
+        </Link>
+      )
+    } else {
+      return ""
+    }
+  } else {
+    return ""
+  }
+})
+
+export const ClaimToolbar = ({currentUser, claim}) => {
   const [commentsShown, setShowComments] = useState(false)
   const [infoShown, setShowInfo] = useState(false)
   const { body, creator } = claim
   return (
     <Fragment>
-      <Toolbar position="absolute" mt={-3} left={0} right={0} minHeight={18} px={0.75} justifyContent="flex-end">
-        <Typography variant="caption" align="center" marginRight={1}>{claim.score}</Typography>
-        {claim && currentUser && (
-          <ClaimToolbarButton onClick={() => goto.userView(history, currentUser, claim, 'push')}>
-            <Person fontSize="inherit"/>
+      <Toolbar position="absolute" mt={-3} left={0} right={0} minHeight={18} px={0.75} justifyContent="space-between">
+        <Box>
+          <ClaimToolbarButton onClick={() => setShowInfo(true)}>
+            <Info fontSize="inherit"/>
           </ClaimToolbarButton>
-        )}
-        <ClaimToolbarButton onClick={() => setShowComments(true)}>
-          <Chat fontSize="inherit"/>
-        </ClaimToolbarButton>
-        <ClaimToolbarButton onClick={() => setShowInfo(true)}>
-          <Info fontSize="inherit"/>
-        </ClaimToolbarButton>
+          <Typography variant="caption" align="center" marginRight={1}>{claim.score}</Typography>
+        </Box>
+        <Box>
+          <ViewToggleLink claim={claim} fontSize="button"/>
+          <ClaimToolbarButton onClick={() => setShowComments(true)}>
+            <Chat fontSize="inherit"/>
+          </ClaimToolbarButton>
+        </Box>
       </Toolbar>
       <Drawer open={commentsShown} anchor="right" onClose={() => setShowComments(false)}>
         <IconButton onClick={() => setShowComments(false)}><Close/></IconButton>
@@ -80,7 +99,7 @@ export const ClaimToolbar = compose(
       </Drawer>
     </Fragment>
   )
-})
+}
 
 export const EvidenceExpansionPanel = styled(
   (props) => (<ExpansionPanel elevation={0} {...props}/>)

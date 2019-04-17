@@ -29,7 +29,9 @@ import SpinkitSpinner from 'react-spinkit'
 import { styled } from '@material-ui/styles';
 import { compose, css, positions, palette, spacing, typography, flexbox, sizing } from "@material-ui/system"
 
-export const Link = (props) => <MuiLink color="inherit" component={RouterLink} {...props}/>
+export const Link = styled(
+  (props) => <MuiLink color="inherit" component={RouterLink} {...props}/>
+)(compose(flexbox, typography, spacing))
 
 export const PopoverButton = styled(({ariaID="popover", children, popoverContent, ...buttonProps}) => {
   const [buttonEl, setShowPopover] = useState(null)
@@ -111,7 +113,7 @@ export const Spinner = (props) => (
 
 const Typography = styled(MuiTypography)(css(compose(typography, flexbox, spacing)))
 const Grid = styled(MuiGrid)(compose(spacing))
-const Button = styled(MuiButton)(compose(typography))
+const Button = styled(MuiButton)(compose(typography, flexbox))
 const List = styled(MuiList)(compose(spacing))
 const ListItem = styled(MuiListItem)(compose(spacing))
 const ListItemText = styled(MuiListItemText)(compose(spacing))

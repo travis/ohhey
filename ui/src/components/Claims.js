@@ -105,7 +105,7 @@ export const Claim = compose(
   withRouter,
   withStyles(theme => ({
   }))
-)(({currentUser, claim, history, classes}) => {
+)(({authData: {currentUser}, claim, history, classes}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
   const { myAgreement} = claim
 

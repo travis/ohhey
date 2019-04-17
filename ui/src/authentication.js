@@ -42,6 +42,6 @@ export const AuthenticationProvider = compose(
 
 export const withAuth = (Authable) => (props) => (
   <Consumer>
-    { (authProps) => (<Authable {...authProps} {...props}/>) }
+    { (authData) => (<Authable authData={authData} {...props}/>) }
   </Consumer>
 )

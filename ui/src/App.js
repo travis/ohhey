@@ -35,7 +35,7 @@ const TeaserVideo = withStyles(theme => ({
 
 const Content = (props) => <Box m={1} {...props}/>
 
-const UI = withAuth(({currentUser, userLoading, logIn, logOut}) => (
+const UI = withAuth(({authData: {currentUser, userLoading, logIn, logOut}}) => (
   <Fragment>
     <CssBaseline/>
     {!userLoading && <Header/>}
