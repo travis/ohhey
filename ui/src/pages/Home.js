@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import {Spinner} from '../components/ui'
 import {Form } from '../components/form'
-import {Paper, Typography, Button, Divider} from '../components/ui'
+import {Paper, Typography, Button, Divider, ClaimPaper} from '../components/ui'
 import AutosuggestClaimTextInput from '../components/AutosuggestClaimTextInput'
 import {AgreeButton, DisagreeButton} from '../components/Claims'
 import { claimBodyFont } from '../theme'
@@ -53,9 +53,6 @@ export default compose(
     bodyInput: {
       fontSize: "50px", padding: "0em 0.5em"
     },
-    question: {
-      fontFamily: claimBodyFont
-    },
     spinner: {
       margin: "auto"
     }
@@ -79,8 +76,8 @@ export default compose(
   }
 
   return (
-    <Paper>
-      <Typography align="center" variant="h2" className={classes.question}>what do you believe?</Typography>
+    <ClaimPaper>
+      <Typography align="center" variant="h2" color="textPrimary" fontFamily="claimBody">what do you believe?</Typography>
       {errors.map((error, i) => (
         <div key={i}>{messageForError(error)}</div>
       ))}
@@ -132,6 +129,6 @@ export default compose(
           </Fragment>
         )}
       </Form>
-    </Paper>
+    </ClaimPaper>
   )
 })
