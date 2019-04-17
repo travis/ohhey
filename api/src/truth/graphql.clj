@@ -166,7 +166,7 @@
               new-evidence (t/get-evidence-as (d/db conn)
                                               (-> result :tempids (get "new-evidence"))
                                               (:db/id current-user))]
-          (when (not id) (search/upload-claims search-client [claim]))
+          (when (not id) (search/upload-claims search-client [(:evidence/claim new-evidence)]))
           new-evidence))
 
       :voteOnClaim
