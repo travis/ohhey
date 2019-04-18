@@ -12,21 +12,14 @@ import {StopPropagation} from './util'
 
 import * as queries from '../queries';
 
-const claimStyles = theme => ({
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular
-  }
-})
-
-const Claim = withStyles(claimStyles)(({claim, classes, actions}) => (
+const Claim = ({claim, classes, actions}) => (
   <StopPropagation>
-    <Typography className={classes.heading}>
+    <Typography variant="h6" fontFamily="claimBody">
       <ClaimBodyLink claim={claim}/>
     </Typography>
     {actions && actions(claim)}
   </StopPropagation>
-))
+)
 
 const doSuggestionsInclude = (suggestions, query) =>
       suggestions && suggestions.map(suggestion => suggestion.result.body).find(body => body === query)
@@ -37,7 +30,6 @@ const autosuggestStyles = theme => ({
     paddingLeft: 0
   },
   suggestionHighlighted: {
-    border: "1px solid black"
   }
 })
 

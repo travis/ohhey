@@ -55,6 +55,7 @@ const agreementButton = (voteValue, text) => withVote(
   ({vote, claim: {myAgreement}, onSuccess, ...props}) => (
     <Button color={(myAgreement === voteValue) ? 'primary' : 'default'}
             fontWeight={400}
+            fontSize="0.75rem"
             onClick={() => vote(voteValue).then(
               ({data: {voteOnClaim: claim}}) => onSuccess && onSuccess(claim)
             )}
@@ -195,14 +196,16 @@ export const Evidence = compose(
             </PopoverButton>
           </StopPropagation>
         </RelevanceBox>
-        <EvidenceClaimBodyType>
-          <ClaimBodyLink claim={claim}/>
-        </EvidenceClaimBodyType>
-        <StopPropagation>
-          {(myAgreement !== 100) && (<AgreeButton claim={claim}/>)}
-          {(myAgreement !== 0) && (<NotSureButton claim={claim}/>)}
-          {(myAgreement !== -100) && (<DisagreeButton claim={claim}/>)}
-        </StopPropagation>
+        <Box>
+          <EvidenceClaimBodyType>
+            <ClaimBodyLink claim={claim}/>
+          </EvidenceClaimBodyType>
+          <StopPropagation>
+            {(myAgreement !== 100) && (<AgreeButton claim={claim}/>)}
+            {(myAgreement !== 0) && (<NotSureButton claim={claim}/>)}
+            {(myAgreement !== -100) && (<DisagreeButton claim={claim}/>)}
+          </StopPropagation>
+        </Box>
       </EvidenceExpansionPanelSummary>
       <EvidenceExpansionPanelDetails>
           {expanded && (

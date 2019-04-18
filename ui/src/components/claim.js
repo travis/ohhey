@@ -4,6 +4,8 @@ import { withStyles, styled } from '@material-ui/core/styles';
 import { ExpandMoreIcon } from './icons'
 import * as urls from '../urls';
 import { withAuth } from '../authentication'
+import { withTheme } from '@material-ui/styles';
+
 
 import {
   Box, Typography, Button, Drawer, List, ListItem, ListItemText, IconButton, Toolbar,
@@ -130,7 +132,9 @@ export const EvidenceClaimBodyType = (props) => (
   <Typography variant="h6" fontFamily="claimBody" {...props}/>
 )
 
-export const RelevanceBox = (props) => (
-  <Box width={36} position="absolute" left={-16} fontWeight={200} fontSize={12}
+export const RelevanceBox = withTheme(({theme, ...props}) => (
+  <Box width={36} position="absolute"
+       left={theme.spacing(-2)} top={theme.spacing(1.5)}
+       fontWeight={200} fontSize="0.75rem"
        {...props}/>
-)
+))
