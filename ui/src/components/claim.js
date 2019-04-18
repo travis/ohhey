@@ -62,31 +62,31 @@ const ViewToggleLink = withAuth(({authData: {currentUser}, claim, ...props}) => 
   }
 })
 
-export const ClaimToolbar = ({currentUser, claim}) => {
+const CommentToolbarButton = ({claim}) => {
   const [commentsShown, setShowComments] = useState(false)
-  const [infoShown, setShowInfo] = useState(false)
-  const { body, creator } = claim
+  const {body} = claim
   return (
     <Fragment>
-      <Toolbar position="absolute" mt={-3} left={0} right={0} minHeight={18} px={0.75} justifyContent="space-between">
-        <Box>
-          <ClaimToolbarButton onClick={() => setShowInfo(true)}>
-            <Info fontSize="inherit"/>
-          </ClaimToolbarButton>
-          <Typography variant="caption" align="center" marginRight={1}>{claim.score}</Typography>
-        </Box>
-        <Box>
-          <ViewToggleLink claim={claim} fontSize="button"/>
-          <ClaimToolbarButton onClick={() => setShowComments(true)}>
-            <Chat fontSize="inherit"/>
-          </ClaimToolbarButton>
-        </Box>
-      </Toolbar>
+      <ClaimToolbarButton onClick={() => setShowComments(true)}>
+        <Chat fontSize="inherit"/>
+      </ClaimToolbarButton>
       <Drawer open={commentsShown} anchor="right" onClose={() => setShowComments(false)}>
         <IconButton onClick={() => setShowComments(false)}><Close/></IconButton>
         <h3>Comments on {body}</h3>
         <Comments claim={claim}/>
       </Drawer>
+    </Fragment>
+  )
+}
+
+const InfoToolbarButton = ({claim}) => {
+  const [infoShown, setShowInfo] = useState(false)
+  const { creator } = claim
+  return (
+    <Fragment>
+      <ClaimToolbarButton onClick={() => setShowInfo(true)}>
+        <Info fontSize="inherit"/>
+      </ClaimToolbarButton>
       <Drawer open={infoShown} anchor="left" onClose={() => setShowInfo(false)}>
         <IconButton onClick={() => setShowInfo(false)}><Close/></IconButton>
         {creator && (
@@ -97,6 +97,24 @@ export const ClaimToolbar = ({currentUser, claim}) => {
         <ClaimScore claim={claim}/>
         <p>Created at {new Date(claim.createdAt).toString()}</p>
       </Drawer>
+    </Fragment>
+  )
+}
+
+export const ClaimToolbar = ({currentUser, claim}) => {
+  const { body, creator } = claim
+  return (
+    <Fragment>
+      <Toolbar position="absolute" mt={-3} left={0} right={0} minHeight={18} px={0.75} justifyContent="space-between">
+        <Box>
+          <InfoToolbarButton claim={claim}/>
+          <Typography variant="caption" align="center" marginRight={1}>{claim.score}</Typography>
+        </Box>
+        <Box>
+          <ViewToggleLink claim={claim} fontSize="button"/>
+          <CommentToolbarButton claim={claim}/>
+        </Box>
+      </Toolbar>
     </Fragment>
   )
 }
