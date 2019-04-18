@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, createRef } from 'react'
 
 import Box from '@material-ui/core/Box';
 import MuiPaper from '@material-ui/core/Paper';
@@ -67,12 +67,14 @@ export const PopoverButton = styled(({ariaID="popover", children, popoverContent
 export const MenuButton = ({ariaID="menu", children, menuItems, ...props}) => {
   const [buttonEl, setShowMenu] = useState(null)
   const menuShown = Boolean(buttonEl);
+  const buttonRef = createRef();
   return (
     <Fragment>
       <Button
         aria-owns={menuShown ? ariaID : undefined}
         aria-haspopup="true"
-        onClick={(e) => setShowMenu(e.target)}
+        onClick={(e) => setShowMenu(buttonRef.current)}
+        ref={buttonRef}
         {...props}>
         {children}
       </Button>
