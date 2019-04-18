@@ -1,19 +1,25 @@
 import React, {Fragment, useState} from 'react';
 import { withStyles, styled } from '@material-ui/core/styles';
+import { withTheme } from '@material-ui/styles';
+import { Twitter, Facebook, Reddit } from 'react-social-sharing'
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import { ExpandMoreIcon } from './icons'
 import * as urls from '../urls';
 import { withAuth } from '../authentication'
-import { withTheme } from '@material-ui/styles';
+import { useSnackbar } from 'notistack';
+import { baseURL } from '../config'
+import { compose } from '../util'
+
 
 
 import {
   Box, Typography, Button, Drawer, List, ListItem, ListItemText, IconButton, Toolbar,
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Link
 } from './ui'
-import { Chat, Close, Info, Person, People } from './icons'
+import { Close, Info, Share, Person, People, Link as LinkIcon } from './icons'
 
-import Comments from './Comments'
+//import Comments from './Comments'
 
 function ClaimScore({claim}) {
   const {agreement, agreementCount, supportCount, opposeCount, score} = claim
@@ -62,6 +68,7 @@ const ViewToggleLink = withAuth(({authData: {currentUser}, claim, ...props}) => 
   }
 })
 
+/*
 const CommentToolbarButton = ({claim}) => {
   const [commentsShown, setShowComments] = useState(false)
   const {body} = claim
@@ -78,6 +85,7 @@ const CommentToolbarButton = ({claim}) => {
     </Fragment>
   )
 }
+*/
 
 const InfoToolbarButton = ({claim}) => {
   const [infoShown, setShowInfo] = useState(false)
@@ -101,8 +109,50 @@ const InfoToolbarButton = ({claim}) => {
   )
 }
 
-export const ClaimToolbar = ({currentUser, claim}) => {
-  const { body, creator } = claim
+const ShareToolbarButton = compose(
+  withAuth
+)(({claim, isUserClaim, authData: {currentUser}}) => {
+  const [shareShown, setShowShare] = useState(false)
+  const link = `${baseURL}${isUserClaim ? urls.userView(claim) : urls.claim(claim)}`
+  const {enqueueSnackbar} = useSnackbar()
+  return (
+    <Fragment>
+      <ClaimToolbarButton onClick={() => setShowShare(true)}>
+        <Share fontSize="inherit"/>
+      </ClaimToolbarButton>
+      <Drawer open={shareShown} anchor="right" onClose={() => setShowShare(false)}>
+        <Box display="flex" justifyContent="flex-end">
+          <IconButton onClick={() => setShowShare(false)}><Close/></IconButton>
+        </Box>
+        <Box p={3} textAlign="center" display="flex" flexDirection="column">
+          <h4>Share</h4>
+          <Typography fontFamily="claimBody" p={2}>{claim.body}</Typography>
+          <Box display="flex" justifyContent="space-evenly">
+            <Twitter simple link={link}/>
+            <Facebook simple link={link}/>
+            <Reddit simple link={link}/>
+          </Box>
+          <CopyToClipboard text={link} onCopy={() => enqueueSnackbar("Copied!")}>
+            <Button>
+              <LinkIcon/><Typography variant="subtitle2" marginLeft={1}>Copy Link</Typography>
+            </Button>
+          </CopyToClipboard>
+          {currentUser && (
+            <CopyToClipboard text={`${baseURL}${urls.currentUserView(currentUser, claim)}`}
+                             onCopy={() => enqueueSnackbar("Copied!")}>
+              <Button>
+                <LinkIcon/><Typography variant="subtitle2" marginLeft={1}>Copy Link to My View</Typography>
+              </Button>
+            </CopyToClipboard>
+          )}
+        </Box>
+      </Drawer>
+    </Fragment>
+  )
+})
+
+
+export const ClaimToolbar = ({currentUser, claim, isUserClaim}) => {
   return (
     <Fragment>
       <Toolbar position="absolute" mt={-3} left={0} right={0} minHeight={18} px={0.75} justifyContent="space-between">
@@ -112,7 +162,9 @@ export const ClaimToolbar = ({currentUser, claim}) => {
         </Box>
         <Box>
           <ViewToggleLink claim={claim} fontSize="button"/>
-          <CommentToolbarButton claim={claim}/>
+          {/*<CommentToolbarButton claim={claim}/>*/}
+          <ShareToolbarButton claim={claim} isUserClaim={isUserClaim}/>
+
         </Box>
       </Toolbar>
     </Fragment>

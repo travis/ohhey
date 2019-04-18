@@ -2,6 +2,7 @@ import React, {Fragment} from 'react';
 
 import { ApolloProvider } from "react-apollo";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { SnackbarProvider } from 'notistack';
 
 import { withStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box'
@@ -17,6 +18,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from './components/Header'
 import { withAuth } from './authentication'
 import {ThemeProvider} from './theme'
+
 
 const TeaserVideo = withStyles(theme => ({
   teaserVideo: {
@@ -62,11 +64,13 @@ const UI = withAuth(({authData: {currentUser, userLoading, logIn, logOut}}) => (
 const App = () => (
   <ThemeProvider>
     <ApolloProvider client={client}>
-      <AuthenticationProvider>
-        <BrowserRouter>
-          <UI/>
-        </BrowserRouter>
-      </AuthenticationProvider>
+      <SnackbarProvider>
+        <AuthenticationProvider>
+          <BrowserRouter>
+            <UI/>
+          </BrowserRouter>
+        </AuthenticationProvider>
+      </SnackbarProvider>
     </ApolloProvider>
   </ThemeProvider>
 );

@@ -5,6 +5,7 @@ import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
 import StoryRouter from 'storybook-react-router';
 import { ApolloProvider } from 'react-apollo';
+import { SnackbarProvider } from 'notistack';
 
 import { client } from './apollo'
 import { Spinner, ClaimPaper, ClaimBody } from '../components/ui'
@@ -16,9 +17,11 @@ import { claim, longClaim } from './data'
 
 addDecorator(storyFn => (
   <ThemeProvider>
-    <ApolloProvider client={client}>
-      {storyFn()}
-    </ApolloProvider>
+    <SnackbarProvider>
+      <ApolloProvider client={client}>
+        {storyFn()}
+      </ApolloProvider>
+    </SnackbarProvider>
   </ThemeProvider>
 ))
 

@@ -8,5 +8,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Info from '@material-ui/icons/InfoOutlined';
 import Person from '@material-ui/icons/Person';
 import People from '@material-ui/icons/People';
+import Share from '@material-ui/icons/Share';
+import Link from '@material-ui/icons/Link';
 
-export {Chat, Close, Create, Add, Remove, ExpandMoreIcon, AccountCircle, Info, Person, People}
+export {Chat, Close, Create, Add, Remove, ExpandMoreIcon, AccountCircle, Info, Person, People, Share, Link}
