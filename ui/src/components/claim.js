@@ -195,7 +195,7 @@ export const EvidenceExpansionPanelSummary = withStyles({
 export const EvidenceExpansionPanelDetails = ExpansionPanelDetails
 
 export const ClaimIntroType = (props) => (
-  <Typography variant="subtitle1" align="center" {...props} />
+  <Typography variant="subtitle1" align="center" color="textPrimary" {...props} />
 )
 
 export const EvidenceClaimBodyType = (props) => (

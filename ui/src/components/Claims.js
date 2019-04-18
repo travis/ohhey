@@ -72,22 +72,23 @@ export const NotSureButton = agreementButton(0, "I'm not sure")
 const SentimentMenuButton = styled(MenuButton)({
   textTransform: "inherit",
   fontWeight: "inherit",
-  fontSize: "inherit"
+  fontSize: "inherit",
+  color: "inherit"
 })
 
 const SentimentPicker = withRouter(
   ({ history, match: {params: {slug}}}) => (
     <SentimentMenuButton menuItems={[
       <MenuItem key="ibelieve"
-                onClick={() => goto.iBelieve(history, {slug})}>
+                onClick={() => goto.iBelieve(history, {slug}, 'replace')}>
         I believe
       </MenuItem>,
       <MenuItem key="idontbelieve"
-                onClick={() => goto.iDontBelieve(history, {slug})}>
+                onClick={() => goto.iDontBelieve(history, {slug}, 'replace')}>
         I don't believe
       </MenuItem>,
       <MenuItem key="somesay"
-                onClick={() => goto.someSay(history, {slug})}>
+                onClick={() => goto.someSay(history, {slug}, 'replace')}>
         some people say
       </MenuItem>
     ]
@@ -124,9 +125,9 @@ export const Claim = compose(
         <ClaimBodyLink claim={claim}/>
       </ClaimBody>
       <Typography align="center">
-        {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim)}/>)}
-        {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim)}/>)}
-        {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim)}/>)}
+        {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'replace')}/>)}
+        {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim, 'replace')}/>)}
+        {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'replace')}/>)}
       </Typography>
       <Typography align="center">
         {!evidenceShown && (
