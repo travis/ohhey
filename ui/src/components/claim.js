@@ -137,7 +137,7 @@ const ShareToolbarButton = compose(
               <LinkIcon/><Typography variant="subtitle2" marginLeft={1}>Copy Link</Typography>
             </Button>
           </CopyToClipboard>
-          {currentUser && (
+          {currentUser && !isUserClaim && (
             <CopyToClipboard text={`${baseURL}${urls.currentUserView(currentUser, claim)}`}
                              onCopy={() => enqueueSnackbar("Copied!")}>
               <Button>

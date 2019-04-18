@@ -161,7 +161,7 @@ const introText = (claim) => {
 export default ({username, claim}) => {
   return (
     <ClaimPaper>
-      <ClaimToolbar claim={claim} />
+      <ClaimToolbar claim={claim} isUserClaim />
       <ClaimIntroType>
         @{username}
         {introText(claim)}
