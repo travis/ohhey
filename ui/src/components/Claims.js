@@ -61,8 +61,7 @@ const SentimentPicker = withRouter(
                 onClick={() => goto.someSay(history, {slug}, 'replace')}>
         some people say
       </MenuItem>
-    ]
-                          }>
+    ]}>
       <RoutePrefixSwitch
         ibelieve="I believe"
         idontbelieve="I don't believe"

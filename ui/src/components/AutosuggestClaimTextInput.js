@@ -45,6 +45,7 @@ export default compose(
   return (
     <Query
       query={queries.QuickSearchClaims}
+      skip={!term}
       variables={{term}}>
       {({loading, error, data}) => {
         const suggestions = (data && data.suggestClaims && data.suggestClaims.results) || []
