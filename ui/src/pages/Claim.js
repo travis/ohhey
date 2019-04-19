@@ -2,7 +2,6 @@ import React, {Fragment, useEffect} from 'react';
 import { graphql, compose } from "react-apollo";
 import { withRouter } from "react-router-dom";
 
-import {Paper} from '../components/ui';
 import {Claim} from '../components/Claims'
 
 import * as goto from '../goto';
