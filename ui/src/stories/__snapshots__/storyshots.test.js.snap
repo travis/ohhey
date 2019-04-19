@@ -537,7 +537,7 @@ exports[`Storyshots UserClaim default 1`] = `
     </div>
   </div>
   <h6
-    className="MuiTypography-root-643 MuiTypography-subtitle1-654 MuiTypography-alignCenter-659 WithStyles(ForwardRef(Typography))-root-641 WithStyles(ForwardRef(Typography))-root-682"
+    className="MuiTypography-root-643 MuiTypography-subtitle1-654 MuiTypography-colorTextPrimary-668 MuiTypography-alignCenter-659 WithStyles(ForwardRef(Typography))-root-641 WithStyles(ForwardRef(Typography))-root-682"
   >
     @
     toby
