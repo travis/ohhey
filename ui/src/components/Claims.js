@@ -202,7 +202,7 @@ const EvidenceAdder = compose(
             variables: { claimID: claim.id }
           };
           const data = client.readQuery(cacheSpec)
-          data.evidenceForClaim.push(evidence)
+          data.evidenceForClaim.unshift(evidence)
           client.writeQuery({...cacheSpec, data})
         }
       })

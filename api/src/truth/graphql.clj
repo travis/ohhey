@@ -123,9 +123,12 @@
 
       :evidenceForClaim
       (fn [{db :db current-user :current-user} {claim-id :claimID username :username} parent]
-        (if username
-          (t/get-claim-evidence-for db [:claim/id claim-id] [:user/username username])
-          (t/get-claim-evidence-as db [:claim/id claim-id] (:db/id current-user))))
+        (->>
+         (if username
+           (t/get-claim-evidence-for db [:claim/id claim-id] [:user/username username])
+           (t/get-claim-evidence-as db [:claim/id claim-id] (:db/id current-user)))
+         (sort-by #(get-in % [:evidence/claim :claim/created-at]))
+         reverse))
       }
      :Mutation
      {:logIn
