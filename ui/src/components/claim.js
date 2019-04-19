@@ -1,4 +1,5 @@
 import React, {Fragment, useState} from 'react';
+import { graphql } from "react-apollo";
 import { withStyles, styled } from '@material-ui/core/styles';
 import { withTheme } from '@material-ui/styles';
 import { Twitter, Facebook, Reddit } from 'react-social-sharing'
@@ -11,7 +12,7 @@ import { useSnackbar } from 'notistack';
 import { baseURL } from '../config'
 import { compose } from '../util'
 
-
+import * as queries from '../queries';
 
 import {
   Box, Typography, Button, Drawer, List, ListItem, ListItemText, IconButton, Toolbar,
@@ -208,3 +209,34 @@ export const RelevanceBox = withTheme(({theme, ...props}) => (
        fontWeight={200} fontSize="0.75rem"
        {...props}/>
 ))
+
+const withVote = (Component) => graphql(
+  queries.VoteOnClaim, {
+    props: ({ ownProps: {claim}, mutate }) => ({
+      vote: (agreement) => mutate({
+        variables: {
+          claimID: claim.id,
+          agreement
+        }
+      })
+    })
+  }
+)(Component)
+
+const agreementButton = (voteValue, text) => withVote(
+  ({vote, claim: {myAgreement}, onSuccess, ...props}) => (
+    <Button color={(myAgreement === voteValue) ? 'primary' : 'default'}
+            fontWeight={400}
+            fontSize="0.75rem"
+            onClick={() => vote(voteValue).then(
+              ({data: {voteOnClaim: claim}}) => onSuccess && onSuccess(claim)
+            )}
+            {...props}>
+      {text}
+    </Button>
+  )
+)
+
+export const AgreeButton = agreementButton(100, "I agree")
+export const DisagreeButton = agreementButton(-100, "I disagree")
+export const NotSureButton = agreementButton(0, "I'm not sure")

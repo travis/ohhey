@@ -211,5 +211,11 @@
                [?vote :claim-vote/voter ?user]
                [?vote :claim-vote/agreement ?agreement]
                (nil-my-rating ?rating)))]
-    [(claim-for [?claim ?user] ?uniqueness ?agreement)
-     (agreement-for ?claim ?user ?uniqueness ?agreement)]])
+    [(claim-for [?claim ?user ?current-user] ?uniqueness ?agreement ?my-agreement)
+     (or
+      (and (agreement-for ?claim ?user ?uniqueness ?agreement)
+           (nil-my-agreement ?my-agreement)
+           [?current-user])
+      (and (my-agreement ?claim ?current-user ?uniqueness ?my-agreement)
+           (zero-agreement ?agreement _)
+           [?user]))]])

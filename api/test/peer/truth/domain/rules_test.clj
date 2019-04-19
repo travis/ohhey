@@ -40,27 +40,29 @@
 
 (deftest claim-for
   (let [claim-for
-        (fn [slug username]
-          (d/q '[:find (sum ?agreement)
-                 :in $ % ?claim ?user
+        (fn [slug username current-username]
+          (d/q '[:find (sum ?agreement) (max ?my-agreement)
+                 :in $ % ?claim ?user ?current-user
                  :with ?uniqueness
                  :where
-                 (claim-for ?claim ?user ?uniqueness ?agreement)]
-               fresh-db rules [:claim/slug slug] [:user/username username]))]
-    (is (= [[100]]
-           (claim-for "dogs-are-great" "travis")))
-    (is (= [[0]]
-           (claim-for "cats-are-great" "travis")))
-    (is (= [[100]]
-           (claim-for "cats-are-great" "chuchu")))
-    (is (= [[-100]]
-           (claim-for "cats-are-great" "toby")))
-    (is (= [[0]]
-           (claim-for "animals-are-awesome" "travis")))
-    (is (= [[0]]
-           (claim-for "a-cat-was-mean-to-me" "travis")))
-    (is (= [[0]]
-           (claim-for "they-dont-like-people" "travis")))))
+                 (claim-for ?claim ?user ?current-user ?uniqueness ?agreement ?my-agreement)]
+               fresh-db rules
+               [:claim/slug slug]
+               [:user/username username] [:user/username current-username]))]
+    (is (= [[100 100]]
+           (claim-for "dogs-are-great" "travis" "toby")))
+    (is (= [[0 -101]]
+           (claim-for "cats-are-great" "travis" "travis")))
+    (is (= [[100 -100]]
+           (claim-for "cats-are-great" "chuchu" "toby")))
+    (is (= [[-100 100]]
+           (claim-for "cats-are-great" "toby" "chuchu")))
+    (is (= [[0 -101]]
+           (claim-for "animals-are-awesome" "travis" "james")))
+    (is (= [[0 -101]]
+           (claim-for "a-cat-was-mean-to-me" "travis" "james")))
+    (is (= [[0 -101]]
+           (claim-for "they-dont-like-people" "travis" "chuchu")))))
 
 (deftest agreement-for
   (let [agreement-for

@@ -153,22 +153,23 @@
 
 
 (defn get-claim-for
-  ([db claim-ref user-ref]
-   (get-claim-for db claim-ref user-ref default-claim-spec))
-  ([db claim-ref user-ref claim-spec]
-   (let [[[claim agreement]]
+  ([db claim-ref user-ref current-user-ref]
+   (get-claim-for db claim-ref user-ref current-user-ref default-claim-spec))
+  ([db claim-ref user-ref current-user-ref claim-spec]
+   (let [[[claim agreement my-agreement]]
          (d/q
           (apply
            conj
            '[:find]
            (list 'pull '?claim claim-spec)
            '(sum ?agreement)
-           '[:in $ % ?claim ?user
+           '(max ?my-agreement)
+           '[:in $ % ?claim ?user ?current-user
              :with ?uniqueness
              :where
-             (claim-for ?claim ?user ?uniqueness ?agreement)])
-          db rules claim-ref (or user-ref anon-user-ref))]
-     (assoc claim :user-agreement agreement))))
+             (claim-for ?claim ?user ?current-user ?uniqueness ?agreement ?my-agreement)])
+          db rules claim-ref (or user-ref anon-user-ref) (or current-user-ref anon-user-ref))]
+     (assoc claim :user-agreement agreement :my-agreement my-agreement))))
 
 (defn get-claim-as
   ([db claim-ref user-ref]

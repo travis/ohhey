@@ -6,7 +6,7 @@ import { Spinner, ClaimPaper } from './ui'
 import {
   ClaimToolbar, EvidenceExpansionPanel, EvidenceExpansionPanelSummary,
   EvidenceExpansionPanelDetails, EvidenceClaimBodyType,
-  ClaimIntroType, RelevanceBox
+  ClaimIntroType, RelevanceBox, AgreeButton, DisagreeButton, NotSureButton
 } from './claim'
 import {
   Typography, Button, PopoverButton, Link, Divider, MenuButton, MenuItem, Grid,
@@ -38,36 +38,6 @@ export const ClaimBodyLink = ({claim: {slug, body}}) => (
   />
 )
 
-const withVote = (Component) => graphql(
-  queries.VoteOnClaim, {
-    props: ({ ownProps: {claim}, mutate }) => ({
-      vote: (agreement) => mutate({
-        variables: {
-          claimID: claim.id,
-          agreement
-        }
-      })
-    })
-  }
-)(Component)
-
-const agreementButton = (voteValue, text) => withVote(
-  ({vote, claim: {myAgreement}, onSuccess, ...props}) => (
-    <Button color={(myAgreement === voteValue) ? 'primary' : 'default'}
-            fontWeight={400}
-            fontSize="0.75rem"
-            onClick={() => vote(voteValue).then(
-              ({data: {voteOnClaim: claim}}) => onSuccess && onSuccess(claim)
-            )}
-            {...props}>
-      {text}
-    </Button>
-  )
-)
-
-export const AgreeButton = agreementButton(100, "I agree")
-export const DisagreeButton = agreementButton(-100, "I disagree")
-export const NotSureButton = agreementButton(0, "I'm not sure")
 
 const SentimentMenuButton = styled(MenuButton)({
   textTransform: "inherit",
@@ -125,9 +95,9 @@ export const Claim = compose(
         <ClaimBodyLink claim={claim}/>
       </ClaimBody>
       <Typography align="center">
-        {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'replace')}/>)}
-        {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim, 'replace')}/>)}
-        {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'replace')}/>)}
+        {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'push')}/>)}
+        {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim, 'push')}/>)}
+        {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'push')}/>)}
       </Typography>
       <Typography align="center">
         {!evidenceShown && (

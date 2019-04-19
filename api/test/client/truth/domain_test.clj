@@ -103,12 +103,30 @@
 
 (deftest test-get-claim-for
   (testing "Dogs are great"
-    (is (= 0
-           (:user-agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "anon"] claim-spec))))
-    (is (= 0
-           (:user-agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "james"] claim-spec))))
-    (is (= 100
-           (:user-agreement (t/get-claim-for fresh-db [:claim/slug "dogs-are-great"] [:user/username "travis"] claim-spec))))))
+    (is (= {:user-agreement 0
+            :my-agreement 100
+            :claim/body "Dogs are great",
+            :claim/contributors [],
+            :claim/creator {:user/username "travis"}}
+           (t/get-claim-for fresh-db
+                            [:claim/slug "dogs-are-great"] [:user/username "anon"]
+                            [:user/username "travis"] claim-spec)))
+    (is (= {:user-agreement 0
+            :my-agreement -101
+            :claim/body "Dogs are great",
+            :claim/contributors [],
+            :claim/creator {:user/username "travis"}}
+           (t/get-claim-for fresh-db
+                            [:claim/slug "dogs-are-great"] [:user/username "james"]
+                            [:user/username "chuchu"] claim-spec)))
+    (is (= {:user-agreement 100
+            :my-agreement 100
+            :claim/body "Dogs are great",
+            :claim/contributors [],
+            :claim/creator {:user/username "travis"}}
+           (t/get-claim-for fresh-db
+                            [:claim/slug "dogs-are-great"] [:user/username "travis"]
+                            [:user/username "toby"] claim-spec)))))
 
 (deftest test-get-claim-evidence
   (testing "Cats are great"

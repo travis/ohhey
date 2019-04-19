@@ -115,7 +115,10 @@
       :claim
       (fn [{db :db current-user :current-user :as context} {slug :slug} parent]
         (if (selects-field? context :Claim/userMeta)
-          (t/get-claim-for db [:claim/slug slug] [:user/username (-> (selections-tree context) :Claim/userMeta :args :username)])
+          (t/get-claim-for db
+                           [:claim/slug slug]
+                           [:user/username (-> (selections-tree context) :Claim/userMeta :args :username)]
+                           (:db/id current-user))
           (t/get-claim-as db [:claim/slug slug] (:db/id current-user))))
 
       :evidenceForClaim

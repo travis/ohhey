@@ -1,14 +1,17 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
 import { withStyles } from '@material-ui/core/styles';
+import { withRouter } from "react-router-dom";
 import {
   ClaimToolbar, EvidenceExpansionPanel, EvidenceExpansionPanelSummary, EvidenceExpansionPanelDetails,
-  ClaimIntroType, EvidenceClaimBodyType, RelevanceBox
+  ClaimIntroType, EvidenceClaimBodyType, RelevanceBox, AgreeButton, DisagreeButton, NotSureButton
 } from './claim'
 import {
   ClaimPaper, ClaimBody, Typography, Box, Link
 } from './ui'
 import { ExpandMoreIcon } from './icons'
+
+import * as goto from '../goto';
 import * as queries from '../queries';
 
 export const ClaimBodyLink = ({username, claim: {slug, body}}) => (
@@ -158,7 +161,8 @@ const introText = (claim) => {
   }
 }
 
-export default ({username, claim}) => {
+export default withRouter(({history, username, claim}) => {
+  const {myAgreement} = claim;
   return (
     <ClaimPaper>
       <ClaimToolbar claim={claim} isUserClaim />
@@ -169,7 +173,12 @@ export default ({username, claim}) => {
       <ClaimBody>
         <ClaimBodyLink username={username} claim={claim}/>
       </ClaimBody>
+      <Typography align="center">
+        {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'replace')}/>)}
+        {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim, 'replace')}/>)}
+        {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'replace')}/>)}
+      </Typography>
       <EvidenceLists username={username} claim={claim}/>
     </ClaimPaper>
   )
-}
+})

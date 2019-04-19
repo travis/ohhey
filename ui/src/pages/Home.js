@@ -7,7 +7,7 @@ import {Spinner} from '../components/ui'
 import {Form } from '../components/form'
 import {Typography, Button, Divider, ClaimPaper} from '../components/ui'
 import AutosuggestClaimTextInput from '../components/AutosuggestClaimTextInput'
-import {AgreeButton, DisagreeButton} from '../components/Claims'
+import {AgreeButton, DisagreeButton} from '../components/claim'
 import * as queries from '../queries';
 import * as goto from '../goto';
 import * as validations from '../validations';

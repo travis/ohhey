@@ -554,6 +554,79 @@ exports[`Storyshots UserClaim default 1`] = `
       This is a claim
     </a>
   </h5>
+  <p
+    className="MuiTypography-root-643 MuiTypography-body1-645 MuiTypography-alignCenter-659 WithStyles(ForwardRef(Typography))-root-641 WithStyles(ForwardRef(Typography))-root-685"
+  >
+    <button
+      className="MuiButtonBase-root-615 MuiButton-root-598 MuiButton-text-600 WithStyles(ForwardRef(Button))-root-596 WithStyles(ForwardRef(Button))-root-686"
+      disabled={false}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex="0"
+      type="button"
+    >
+      <span
+        className="MuiButton-label-599"
+      >
+        I agree
+      </span>
+    </button>
+    <button
+      className="MuiButtonBase-root-615 MuiButton-root-598 MuiButton-text-600 WithStyles(ForwardRef(Button))-root-596 WithStyles(ForwardRef(Button))-root-687"
+      disabled={false}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex="0"
+      type="button"
+    >
+      <span
+        className="MuiButton-label-599"
+      >
+        I'm not sure
+      </span>
+    </button>
+    <button
+      className="MuiButtonBase-root-615 MuiButton-root-598 MuiButton-text-600 WithStyles(ForwardRef(Button))-root-596 WithStyles(ForwardRef(Button))-root-688"
+      disabled={false}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      onMouseDown={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex="0"
+      type="button"
+    >
+      <span
+        className="MuiButton-label-599"
+      >
+        I disagree
+      </span>
+    </button>
+  </p>
   <div>
     
     
