@@ -30,7 +30,7 @@ export default compose(
         goto.someSay(history, claim, 'replace')
       }
     }
-  }, [claim])
+  }, [claim, history])
   return (
     <Fragment>
       {claim && <Claim claim={claim} />}

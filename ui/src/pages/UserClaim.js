@@ -25,7 +25,7 @@ export default compose(
     if (claim) {
       history.replace(urls.userView(claim))
     }
-  }, [claim])
+  }, [claim, history])
   return (
     <Paper>
       {claim && <UserClaim username={username} claim={claim} />}
