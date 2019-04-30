@@ -1,0 +1,2 @@
+#!/bin/bash
+AWS_REGION=us-east-1 AWS_PROFILE=ohhey clojure -R:cider-clj:test -A:run-server
