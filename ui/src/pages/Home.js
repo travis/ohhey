@@ -7,7 +7,9 @@ import {Spinner} from '../components/ui'
 import {Form } from '../components/form'
 import {Typography, Button, Divider, ClaimPaper} from '../components/ui'
 import AutosuggestClaimTextInput from '../components/AutosuggestClaimTextInput'
+import Claims from '../components/Claims'
 import {AgreeButton, DisagreeButton} from '../components/claim'
+import {withAuth} from '../authentication'
 import * as queries from '../queries';
 import * as goto from '../goto';
 import * as validations from '../validations';
@@ -32,7 +34,7 @@ const messageForError = ({message, extensions}) => {
 }
 
 
-export default compose(
+const LoggedInHome = compose(
   withRouter,
   graphql(
     queries.AddClaim, {
@@ -115,19 +117,15 @@ export default compose(
                 </Fragment>
               }
             />
-            {/*<QuickClaimSearch
-            create={
-              <Fragment>
-                <Divider />
-                {submitting ?
-                   <Spinner className={classes.spinner}/> :
-                   <Button type="submit">Tell the World!</Button>
-                }
-              </Fragment>
-              }/>*/}
           </Fragment>
         )}
       </Form>
     </ClaimPaper>
   )
 })
+
+export default withAuth(({authData: {currentUser}, ...props}) => currentUser ? (
+  <LoggedInHome {...props}/>
+) : (
+  <Claims {...props}/>
+))

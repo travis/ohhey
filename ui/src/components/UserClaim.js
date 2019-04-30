@@ -10,6 +10,7 @@ import {
   ClaimPaper, ClaimBody, Typography, Box, Link
 } from './ui'
 import { ExpandMoreIcon } from './icons'
+import { withAuth } from '../authentication'
 
 import * as goto from '../goto';
 import * as queries from '../queries';
@@ -19,6 +20,7 @@ export const ClaimBodyLink = ({username, claim: {slug, body}}) => (
 )
 
 const Evidence = compose(
+  withAuth,
   graphql(
     queries.VoteOnEvidence, {
       props: ({ ownProps: {evidence}, mutate }) => ({
@@ -37,6 +39,7 @@ const Evidence = compose(
     }
   }))
 )(({classes, relevanceVote, username,
+    authData: {currentUser},
     evidence: {id, supports, claim,  myRelevanceRating, userMeta}}) => {
   const [expanded, setExpanded] = useState(false)
   const relevance = userMeta && userMeta.relevance
@@ -44,9 +47,11 @@ const Evidence = compose(
     <div key={id}>
       <EvidenceExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
         <EvidenceExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <RelevanceBox>
-            {relevance && (<Fragment>{relevance}%</Fragment>)}
-          </RelevanceBox>
+          {currentUser && (
+            <RelevanceBox>
+              {relevance && (<Fragment>{relevance}%</Fragment>)}
+            </RelevanceBox>
+          )}
           <EvidenceClaimBodyType>
             <ClaimBodyLink claim={claim}/>
           </EvidenceClaimBodyType>
@@ -63,7 +68,7 @@ const Evidence = compose(
 
 const Evidences = ({list, username, support}) => (
   <Fragment>
-    {list && list.filter((evidence) => (evidence.supports === support)).map((evidence) => (
+    {list.map((evidence) => (
       <Evidence evidence={evidence} username={username} key={evidence.id}/>
     ))}
   </Fragment>
@@ -86,18 +91,18 @@ const evidenceIntroText = (claim, sentimentMap) => {
   }
 }
 
-const EvidenceList = ({claim, username, evidence, support,
-                       placeholder, sentimentMap, nested}) => {
-  return (
+const EvidenceList = ({claim, username, evidence, support, placeholder, sentimentMap, nested}) => {
+  const myEvidence = evidence && evidence.filter(e => e.supports === support)
+  return (myEvidence && (myEvidence.length > 0)) ? (
     <Box mt={2}>
       <Box display="flex">
         <Typography variant={nested? "h6" : "h5"} fontFamily="claimBody">
           {evidenceIntroText(claim, sentimentMap)}
         </Typography>
       </Box>
-      <Evidences claim={claim} list={evidence} support={support} username={username}/>
+      <Evidences claim={claim} list={myEvidence} support={support} username={username}/>
     </Box>
-  )
+  ) : ""
 }
 
 const SupportList = (props) => (
@@ -161,7 +166,10 @@ const introText = (claim) => {
   }
 }
 
-export default withRouter(({history, username, claim}) => {
+export default compose(
+  withRouter,
+  withAuth
+)(({authData: {currentUser}, history, username, claim}) => {
   const {myAgreement} = claim;
   return (
     <ClaimPaper>
@@ -173,11 +181,13 @@ export default withRouter(({history, username, claim}) => {
       <ClaimBody>
         <ClaimBodyLink username={username} claim={claim}/>
       </ClaimBody>
-      <Typography align="center">
-        {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'replace')}/>)}
-        {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim, 'replace')}/>)}
-        {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'replace')}/>)}
-      </Typography>
+      {currentUser && (
+        <Typography align="center">
+          {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'replace')}/>)}
+          {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim, 'replace')}/>)}
+          {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'replace')}/>)}
+        </Typography>
+      )}
       <EvidenceLists username={username} claim={claim}/>
     </ClaimPaper>
   )

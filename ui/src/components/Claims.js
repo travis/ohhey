@@ -93,15 +93,17 @@ export const Claim = compose(
       <ClaimBody>
         <ClaimBodyLink claim={claim}/>
       </ClaimBody>
-      <Typography align="center">
-        {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'push')}/>)}
-        {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim, 'push')}/>)}
-        {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'push')}/>)}
-      </Typography>
+      {currentUser && (
+        <Typography align="center">
+          {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'push')}/>)}
+          {(myAgreement !== 0) && (<NotSureButton claim={claim} onSuccess={(claim) => goto.someSay(history, claim, 'push')}/>)}
+          {(myAgreement !== -100) && (<DisagreeButton claim={claim} onSuccess={(claim) => goto.iDontBelieve(history, claim, 'push')}/>)}
+        </Typography>
+      )}
       <Typography align="center">
         {!evidenceShown && (
           <Button onClick={() => setShowEvidence(!evidenceShown)}>
-            {evidenceShown ? "oh I see" : "but why?"}
+            but why?
           </Button>
         )}
       </Typography>
@@ -120,6 +122,7 @@ export const RelevanceButton = ({relevance, myRelevanceRating, relevanceVote}) =
 
 
 export const Evidence = compose(
+  withAuth,
   graphql(
     queries.VoteOnEvidence, {
       props: ({ ownProps: {evidence}, mutate }) => ({
@@ -143,38 +146,44 @@ export const Evidence = compose(
       }
     }
   }))
-)(({classes, relevanceVote, claim: parentClaim, evidence: {id, supports, claim, myAgreement, relevance, myRelevanceRating}}) => {
+)(({classes, relevanceVote, claim: parentClaim,
+    authData: {currentUser},
+    evidence: {id, supports, claim, myAgreement, relevance, myRelevanceRating}}) => {
   const [expanded, setExpanded] = useState(false)
   return (
     <EvidenceExpansionPanel onChange={(e, expanded) => setExpanded(expanded)}>
       <EvidenceExpansionPanelSummary>
-        <RelevanceBox>
-          <StopPropagation>
-            <PopoverButton
-              px={0} mr={1} minWidth={36} fontWeight="inherit" fontSize="inherit"
-              popoverContent={
-                <Box m={2}>
-                  <Typography>How relevant is this to "{parentClaim.body}" ?</Typography>
-                  <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                  <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                  <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                  <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
-                  {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
-                </Box>
-              }>
-              {relevance}%
-            </PopoverButton>
-          </StopPropagation>
-        </RelevanceBox>
+        {currentUser && (
+          <RelevanceBox>
+            <StopPropagation>
+              <PopoverButton
+                px={0} mr={1} minWidth={36} fontWeight="inherit" fontSize="inherit"
+                popoverContent={
+                  <Box m={2}>
+                    <Typography>How relevant is this to "{parentClaim.body}" ?</Typography>
+                    <RelevanceButton relevance={0} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                    <RelevanceButton relevance={33} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                    <RelevanceButton relevance={66} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                    <RelevanceButton relevance={100} myRelevanceRating={myRelevanceRating} relevanceVote={relevanceVote}/>
+                    {(myRelevanceRating !== null) && (<p>my vote: {myRelevanceRating}</p>)}
+                  </Box>
+                }>
+                {relevance}%
+              </PopoverButton>
+            </StopPropagation>
+          </RelevanceBox>
+        )}
         <Box>
           <EvidenceClaimBodyType>
             <ClaimBodyLink claim={claim}/>
           </EvidenceClaimBodyType>
-          <StopPropagation>
-            {(myAgreement !== 100) && (<AgreeButton claim={claim}/>)}
-            {(myAgreement !== 0) && (<NotSureButton claim={claim}/>)}
-            {(myAgreement !== -100) && (<DisagreeButton claim={claim}/>)}
-          </StopPropagation>
+          {currentUser && (
+            <StopPropagation>
+              {(myAgreement !== 100) && (<AgreeButton claim={claim}/>)}
+              {(myAgreement !== 0) && (<NotSureButton claim={claim}/>)}
+              {(myAgreement !== -100) && (<DisagreeButton claim={claim}/>)}
+            </StopPropagation>
+          )}
         </Box>
       </EvidenceExpansionPanelSummary>
       <EvidenceExpansionPanelDetails>
@@ -240,26 +249,32 @@ const EvidenceAdder = compose(
 
 const Evidences = ({claim, list, support}) => (
   <Fragment>
-    {list && list.filter((evidence) => (evidence.supports === support)).map((evidence) => (
+    {list.map((evidence) => (
       <Evidence claim={claim} evidence={evidence} key={evidence.id}/>
     ))}
   </Fragment>)
 
-export const EvidenceList = ({claim, evidence, support, placeholder, sentimentMap, nested}) => {
-  return (
-    <Box mt={2}>
-      <Box display="flex">
-        <Typography variant={nested? "h6" : "h5"} fontFamily="claimBody">
-          <RoutePrefixSwitch {...sentimentMap} />
-        </Typography>
-        <Box ml={2} flexGrow={2}>
-          <EvidenceAdder supports={support} claim={claim} placeholder={placeholder} />
+export const EvidenceList = withAuth(({
+  authData: {currentUser},
+  claim, evidence, support, placeholder, sentimentMap, nested}) => {
+    const myEvidence = evidence && evidence.filter(e => e.supports === support)
+    return (myEvidence && (myEvidence.length > 0)) ? (
+      <Box mt={2}>
+        <Box display="flex">
+          <Typography variant={nested? "h6" : "h5"} fontFamily="claimBody">
+            <RoutePrefixSwitch {...sentimentMap} />
+          </Typography>
+          {currentUser && (
+            <Box ml={2} flexGrow={2}>
+              <EvidenceAdder supports={support} claim={claim} placeholder={placeholder} />
+            </Box>
+          )}
         </Box>
+        <Evidences claim={claim} list={myEvidence} support={support}/>
       </Box>
-      <Evidences claim={claim} list={evidence} support={support}/>
-    </Box>
-  )
-}
+    ) : ""
+  })
+
 
 export const SupportList = ({claim, evidence, ...props}) => (
   <EvidenceList claim={claim} support={true} placeholder="why?"

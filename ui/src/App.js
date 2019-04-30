@@ -35,29 +35,32 @@ const TeaserVideo = withStyles(theme => ({
 
 ))
 
-const Content = (props) => <Box m={1} {...props}/>
+const Content = (props) => (<Box m={1} {...props}/>)
+
+const teaseAnon = (Component) => withAuth(({authData: {currentUser}}, ...props) => currentUser ? (
+  <Component {...props}/>
+) : (
+  <TeaserVideo/>
+))
 
 const UI = withAuth(({authData: {currentUser, userLoading, logIn, logOut}}) => (
   <Fragment>
     <CssBaseline/>
-    {!userLoading && <Header/>}
-    {currentUser ? (
-      <Content>
-        <Switch>
-          <Route exact path="/" component={HomePage}/>
-          <Route path="/all" component={Claims}/>
-          <Route path="/search" component={SearchPage}/>
-          <Route path="/ibelieve/:slug" component={ClaimPage}/>
-          <Route path="/idontbelieve/:slug" component={ClaimPage}/>
-          <Route path="/somesay/:slug" component={ClaimPage}/>
-          <Route path="/someonenamed/:username/believes/:slug" component={UserClaimPage}/>
-          <Route path="/someonenamed/:username/doesntbelieve/:slug" component={UserClaimPage}/>
-          <Route path="/someonenamed/:username/isntsureif/:slug" component={UserClaimPage}/>
-        </Switch>
-      </Content>
-    ) : (
-      <TeaserVideo/>
-    )}
+    {currentUser && <Header/>}
+    <Content>
+      <Switch>
+        <Route exact path="/" component={HomePage}/>
+        <Route path="/login" component={Header}/>
+        <Route path="/all" component={teaseAnon(Claims)}/>
+        <Route path="/search" component={teaseAnon(SearchPage)}/>
+        <Route path="/ibelieve/:slug" component={ClaimPage}/>
+        <Route path="/idontbelieve/:slug" component={ClaimPage}/>
+        <Route path="/somesay/:slug" component={ClaimPage}/>
+        <Route path="/someonenamed/:username/believes/:slug" component={UserClaimPage}/>
+        <Route path="/someonenamed/:username/doesntbelieve/:slug" component={UserClaimPage}/>
+        <Route path="/someonenamed/:username/isntsureif/:slug" component={UserClaimPage}/>
+      </Switch>
+    </Content>
   </Fragment>
 ))
 

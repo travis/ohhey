@@ -158,8 +158,8 @@ export const ClaimToolbar = ({currentUser, claim, isUserClaim}) => {
     <Fragment>
       <Toolbar position="absolute" mt={-3} left={0} right={0} minHeight={18} px={0.75} justifyContent="space-between">
         <Box>
-          <InfoToolbarButton claim={claim}/>
-          <Typography variant="caption" align="center" marginRight={1}>{claim.score}</Typography>
+          {currentUser && (<InfoToolbarButton claim={claim}/>)}
+          {currentUser && (<Typography variant="caption" align="center" marginRight={1}>{claim.score}</Typography>)}
         </Box>
         <Box>
           <ViewToggleLink claim={claim} fontSize="button"/>

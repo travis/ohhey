@@ -2,7 +2,7 @@ import React, {createContext} from 'react';
 import { graphql, compose, withApollo } from 'react-apollo'
 import * as queries from './queries'
 
-const {Consumer, Provider} = createContext({
+export const {Consumer, Provider} = createContext({
   currentUser: null
 });
 

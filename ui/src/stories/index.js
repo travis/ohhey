@@ -13,13 +13,16 @@ import Claims, { SupportList, Evidence } from '../components/Claims'
 import UserClaim from '../components/UserClaim'
 import Header from '../components/Header'
 import { ThemeProvider, fonts } from '../theme'
-import { claim, longClaim } from './data'
+import { travis, claim, longClaim } from './data'
+import { Provider as AuthProvider } from '../authentication'
 
 addDecorator(storyFn => (
   <ThemeProvider>
     <SnackbarProvider>
       <ApolloProvider client={client}>
-        {storyFn()}
+        <AuthProvider value={{currentUser: travis}}>
+          {storyFn()}
+        </AuthProvider>
       </ApolloProvider>
     </SnackbarProvider>
   </ThemeProvider>
