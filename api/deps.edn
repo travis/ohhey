@@ -9,8 +9,6 @@
         ring {:mvn/version "1.7.0"}
         software.amazon.awssdk/cloudsearch {:mvn/version "2.5.20"}
         software.amazon.awssdk/cloudsearchdomain {:mvn/version "2.5.20"}
-;;        buddy/buddy-core {:mvn/version "1.5.0"}
-;;        buddy/buddy-auth {:mvn/version "2.1.0"}
         }
  :mvn/repos {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}
              "my.datomic.com" {:url "https://my.datomic.com/repo"}}
