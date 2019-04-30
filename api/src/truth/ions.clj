@@ -126,6 +126,8 @@
 (comment
   (use 'org.httpkit.server)
 
+  (d/transact (get-conn) {:tx-data [(last data/users)]})
+
   (def stop-server (run-server #'graphql* {:port 3002}))
   (stop-server)
 

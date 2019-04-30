@@ -33,7 +33,10 @@
      :password "lisp"}
     {:username "danny"
      :email "danny@truth.com"
-     :password "twc"}]))
+     :password "twc"}
+    {:username "nikkia"
+     :email "nikkia@truth.com"
+     :password "nickles"}]))
 
 (def james [:user/username "james"])
 (def travis [:user/username "travis"])
