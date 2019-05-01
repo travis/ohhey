@@ -13,7 +13,7 @@
                 db-spec {:db-name (str "domain-test-" (t/uuid))}]
 
             (d/create-database client db-spec)
-            (Thread/sleep 1000)
+            (Thread/sleep 5000)
             (let [conn (d/connect client db-spec)]
               (schema/client-load conn)
               (data/client-load conn)
