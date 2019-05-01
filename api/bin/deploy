@@ -1,2 +1,2 @@
 #!/bin/bash
-AWS_REGION=us-east-1 AWS_PROFILE=ohhey clojure -Adev -m datomic.ion.dev "{:op :deploy, :group production-Compute-6CLX4NZZCEQ4, :rev \"$1\", :creds-profile \"ohhey\"}"
+AWS_REGION=us-east-1 AWS_PROFILE=ohhey clojure -Adev -m datomic.ion.dev "{:op :deploy, :group prod-Compute-66M3X6RTEG3I, :rev \"$1\", :creds-profile \"ohhey\"}"
