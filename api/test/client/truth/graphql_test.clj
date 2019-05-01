@@ -12,30 +12,23 @@
 
 (use-fixtures
   :once (fn [run-tests]
-          (let [client (d/client cloud/cfg)
-                db-spec {:db-name (str "graphql-test-" (t/uuid))}]
-
-            (d/create-database client db-spec)
-            (Thread/sleep 5000)
-            (let [schema (load-schema)
-                  conn (d/connect client db-spec)
-                  search-client (search/mock-search-domain-client)]
-              (schema/client-load conn)
-              (data/client-load conn)
-              (defn execute
-                ([query variables] (execute query variables "travis"))
-                ([query variables current-username]
-                 (gql/execute schema query variables
-                              (do
-                                (def db (d/db conn))
-                                (let [current-user (t/get-user-by-username db current-username)]
-                                  {:db db
-                                   :conn conn
-                                   :current-user current-user
-                                   :search-client search-client})))))
-              (run-tests)
-              (d/delete-database client db-spec)))
-          ))
+          (def schema (load-schema))
+          (def client (d/client cloud/cfg))
+          (def db-spec {:db-name "test"})
+          (def conn (d/connect client db-spec))
+          (def search-client (search/mock-search-domain-client))
+          (defn execute
+            ([query variables] (execute query variables "travis"))
+            ([query variables current-username]
+             (gql/execute schema query variables
+                          (do
+                            (def db (d/db conn))
+                            (let [current-user (t/get-user-by-username db current-username)]
+                              {:db db
+                               :conn conn
+                               :current-user current-user
+                               :search-client search-client})))))
+          (run-tests)))
 
 (deftest test-currentUser
   (testing "currentUser"

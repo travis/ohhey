@@ -9,4 +9,5 @@
    {:request request
     :conn conn
     :db db
+    :transact #(d/transact conn %)
     :current-user (t/get-user-by-email db "travis@truth.com")}))

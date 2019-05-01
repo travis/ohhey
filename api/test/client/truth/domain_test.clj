@@ -9,18 +9,11 @@
 
 (use-fixtures
   :once (fn [run-tests]
-          (let [client (d/client cloud/cfg)
-                db-spec {:db-name (str "domain-test-" (t/uuid))}]
-
-            (d/create-database client db-spec)
-            (Thread/sleep 5000)
-            (let [conn (d/connect client db-spec)]
-              (schema/client-load conn)
-              (data/client-load conn)
-              (def fresh-db (d/db conn)))
-            (run-tests)
-            (d/delete-database client db-spec))
-          ))
+          (def client (d/client cloud/cfg))
+          (def db-spec {:db-name "test"})
+          (def conn (d/connect client db-spec))
+          (def fresh-db (d/db conn))
+          (run-tests)))
 
 (def claim-spec
   '[:claim/body

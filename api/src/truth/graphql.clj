@@ -132,7 +132,7 @@
       }
      :Mutation
      {:logIn
-      (fn [{session :session conn :conn db :db current-user :current-user}
+      (fn [{session :session db :db current-user :current-user}
            {username :username password :password} parent]
         (let [user (t/get-user-by-username db username)]
           (if (= (:user/password user) password)
@@ -147,51 +147,51 @@
         (var-set session (assoc @session :identity nil))
         true)
       :addClaim
-      (fn addClaim [{conn :conn db :db current-user :current-user  search-client :search-client}
+      (fn addClaim [{current-user :current-user
+                     search-client :search-client transact :transact}
                     {claim-input :claim} parent]
         (let [result
-              (d/transact conn {:tx-data [`(truth.domain/create-claim!
-                                            ~(assoc claim-input :db/id "new-claim")
-                                            [:user/username ~(:user/username current-user)])]})
-              new-claim (t/get-claim-as (d/db conn)
+              (transact {:tx-data [`(truth.domain/create-claim!
+                                     ~(assoc claim-input :db/id "new-claim")
+                                     [:user/username ~(:user/username current-user)])]})
+              new-claim (t/get-claim-as (:db-after result)
                                         (-> result :tempids (get "new-claim"))
                                         (:db/id current-user))]
           (search/upload-claims search-client [new-claim])
           new-claim))
 
       :addEvidence
-      (fn [{conn :conn db :db current-user :current-user search-client :search-client}
+      (fn [{current-user :current-user search-client :search-client transact :transact}
            {claim-id :claimID {id :id :as claim} :claim supports :supports} parent]
         (let [result
-              (d/transact
-               conn
+              (transact
                {:tx-data
                 [`(truth.domain/add-evidence!
                    ~claim-id ~{:claim claim :supports supports :db/id "new-evidence"}
                    ~[:user/username (:user/username current-user)])]})
-              new-evidence (t/get-evidence-as (d/db conn)
+              new-evidence (t/get-evidence-as (:db-after result)
                                               (-> result :tempids (get "new-evidence"))
                                               (:db/id current-user))]
           (when (not id) (search/upload-claims search-client [(:evidence/claim new-evidence)]))
           new-evidence))
 
       :voteOnClaim
-      (fn [{conn :conn db :db current-user :current-user}
+      (fn [{current-user :current-user transact :transact}
            {claim-id :claimID agreement :agreement} parent]
-        (d/transact
-         conn
-         {:tx-data
-          [`(truth.domain/vote-on-claim! ~claim-id ~current-user ~agreement)]})
-        (t/get-claim-as (d/db conn) [:claim/id claim-id] (:db/id current-user)))
+        (let [result
+              (transact
+               {:tx-data
+                [`(truth.domain/vote-on-claim! ~claim-id ~current-user ~agreement)]})]
+          (t/get-claim-as (:db-after result) [:claim/id claim-id] (:db/id current-user))))
 
       :voteOnEvidence
-      (fn [{conn :conn db :db current-user :current-user}
+      (fn [{current-user :current-user transact :transact}
            {evidence-id :evidenceID rating :rating} parent]
-        (d/transact
-         conn
-         {:tx-data
-          [`(truth.domain/vote-on-evidence! ~evidence-id ~current-user ~rating)]})
-        (let [db (d/db conn)
+        (let [result
+              (transact
+               {:tx-data
+                [`(truth.domain/vote-on-evidence! ~evidence-id ~current-user ~rating)]})
+              db (:db-after result)
               evidence [:evidence/id evidence-id]
               user (:db/id current-user)]
           (assoc (t/get-evidence-as db evidence user)
@@ -239,7 +239,6 @@
       :parentClaim
       (fn [{conn :conn db :db current-user :current-user}
            {} {evidence-id :evidence/id}]
-
         (t/get-parent-claim-as (d/db conn) [:evidence/id evidence-id] (:db/id current-user)))
 
       :userMeta
