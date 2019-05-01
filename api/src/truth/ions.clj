@@ -7,6 +7,7 @@
 
    [datomic.ion.lambda.api-gateway :as apigw]
    [datomic.client.api :as d]
+   [datomic.ion :refer [get-env]]
 
    [truth.graphql :as graphql]
    [truth.cloud :as cloud]
@@ -45,8 +46,12 @@
   (-> (lacinia/execute schema query-string nil nil)
       simplify))
 
-(def db-spec {:db-name (str "ohhey-dev")})
-(def search-domain "ohhey-dev")
+(defn db-name []
+  (let [env (or (get (get-env) :env) "dev")]
+    (str "ohhey-" env)))
+
+(def db-spec {:db-name (db-name)})
+(def search-domain (db-name))
 
 (defn make-client [] (d/client cloud/cfg))
 (def client (memoize make-client))

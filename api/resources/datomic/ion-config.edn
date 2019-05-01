@@ -20,4 +20,4 @@
            {:fn truth.ions/graphql
             :integration :api-gateway/proxy
             :description "graphql endpoint for querying the db"}}
- :app-name "dev"}
+ :app-name "prod"}
