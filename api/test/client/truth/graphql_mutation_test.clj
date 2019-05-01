@@ -16,6 +16,7 @@
                 db-spec {:db-name (str "graphql-test-" (t/uuid))}]
 
             (d/create-database client db-spec)
+            (Thread/sleep 1000)
             (let [schema (load-schema)
                   conn (d/connect client db-spec)
                   search-client (search/mock-search-domain-client)]
