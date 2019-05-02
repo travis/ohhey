@@ -81,6 +81,7 @@
                                            (t/get-user-by-username db username))]
                         {:db db
                          :conn conn
+                         :transact #(d/transact conn %)
                          :session request-session
                          :current-user current-user
                          :search-client (search-client)
