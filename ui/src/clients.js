@@ -3,11 +3,14 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { ApolloLink } from 'apollo-link';
+import { RetryLink } from "apollo-link-retry";
+
 
 //import {createRtdbLink} from 'apollo-link-firebase';
 //import * as firebase from 'firebase';
 
 export const makeLinkFrom = (networkLink) => ApolloLink.from([
+  new RetryLink(),
   onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>
@@ -18,17 +21,6 @@ export const makeLinkFrom = (networkLink) => ApolloLink.from([
     if (networkError) console.log(`[Network error]: ${networkError}`);
   }),
   networkLink
-])
-ApolloLink.from([
-  onError(({ graphQLErrors, networkError }) => {
-    if (graphQLErrors)
-      graphQLErrors.map(({ message, locations, path }) =>
-                        console.log(
-                          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-                        ),
-                       );
-    if (networkError) console.log(`[Network error]: ${networkError}`);
-  })
 ])
 
 export const client = new ApolloClient({
