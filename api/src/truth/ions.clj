@@ -26,7 +26,8 @@
 (defn cast-timing-metric [name start]
   (let [time (- (System/currentTimeMillis) start)]
     (println name time "ms")
-    (cast/dev {:msg name ::msec time})
+    (cast/dev {:msg name :msec time})
+    (cast/event {:msg name :msec time})
     (cast/metric {:name name :units :msec :value time})))
 
 (def schema (graphql/load-schema))
