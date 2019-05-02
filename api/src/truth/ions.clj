@@ -2,6 +2,7 @@
   (:require
    [clojure.data.json :as json]
    [com.walmartlabs.lacinia :as lacinia]
+   [com.walmartlabs.lacinia.util :as lacinia-util]
    [clojure.walk :as walk]
    [clojure.tools.logging :as log]
 
@@ -120,13 +121,17 @@
             :MakeRingResult
             {:status 200
              :headers {"Content-Type" "application/json"}
-             :body (json/write-str (dissoc result :truth/session))
+             :body (json/write-str result)
              :session @request-session})))
        (catch Throwable t
          (println "error processing graphql request:")
          (println t)
          (cast/alert {:msg "GraphQLHandlerFailed" :ex t})
-         (log/error t "error processing graphql request"))))))
+         (log/error t "error processing graphql request")
+         {:status 500
+          :headers {"Content-Type" "application/json"}
+          :body (json/write-str {:errors [(lacinia-util/as-error-map t)]})
+          })))))
 
 (defn wrap-fix-set-cookie [handler]
   (fn [request]
