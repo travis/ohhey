@@ -47,7 +47,7 @@
       simplify))
 
 (defn db-name []
-  (let [env (or (get (get-env) :env) "dev")]
+  (let [env (name (or (get (get-env) :env) "dev"))]
     (str "ohhey-" env)))
 
 (def db-spec {:db-name (db-name)})
@@ -123,7 +123,7 @@
 
   (d/create-database (client) db-spec)
   (schema/client-load (get-conn))
-
+  (name :foo)
   (data/load-and-index-default-dataset (get-conn) (search-client))
   (data/clear-and-delete-database (get-conn) (search-client) (client) db-spec)
 
