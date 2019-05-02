@@ -16,7 +16,6 @@
           (def client (d/client cloud/cfg))
           (def db-spec {:db-name "test"})
           (def conn (d/connect client db-spec))
-          (def search-client (search/mock-search-domain-client))
           (defn execute
             ([query variables] (execute query variables "travis"))
             ([query variables current-username]
@@ -27,7 +26,7 @@
                               {:db db
                                :conn conn
                                :current-user current-user
-                               :search-client search-client})))))
+                               :search-client search/mock-search-domain-client})))))
           (run-tests)))
 
 (deftest test-currentUser

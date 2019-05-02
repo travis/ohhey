@@ -93,9 +93,6 @@
              conn (cast-timing
                    :GetConn
                    (get-conn))
-             ;;               s-client (cast-timing
-             ;;                         :SearchClient
-             ;;                         (search-client))
              db (cast-timing
                  :GetDB
                  (d/db conn))
@@ -112,7 +109,7 @@
                        :transact #(d/transact conn %)
                        :session request-session
                        :current-user current-user
-                       ;;                         :search-client s-client
+                       :search-client s-client
                        }))
              ]
          (cast-timing

@@ -16,7 +16,6 @@
           (def client (d/client cloud/cfg))
           (def db-spec {:db-name "test"})
           (def conn (d/connect client db-spec))
-          (def search-client (search/mock-search-domain-client))
           (def fresh-db (d/with-db conn))
           (defn execute
             ([query variables] (execute query variables fresh-db "travis"))
@@ -33,7 +32,7 @@
                                               (var-set latest-db (:db-after result))
                                               result))
                                 :current-user current-user
-                                :search-client search-client}))
+                                :search-client search/mock-search-domain-client}))
                 (assoc :latest-db @latest-db)))))
           (run-tests)))
 

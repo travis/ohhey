@@ -101,14 +101,14 @@
       :searchClaims
       (fn [{db :db search-client :search-client current-user :current-user} {term :term} parent]
         (if term
-          (->> (t/search-claims-as db search-client (:db/id current-user) term)
+          (->> (t/search-claims-as db (search-client) (:db/id current-user) term)
                (search-results-of-type :Claim))
           []))
 
       :suggestClaims
       (fn [{db :db search-client :search-client current-user :current-user} {term :term} parent]
         (if term
-          (->> (t/suggest-claims-as db search-client (:db/id current-user) term)
+          (->> (t/suggest-claims-as db (search-client) (:db/id current-user) term)
                (search-results-of-type :Claim))
           []))
 
@@ -157,7 +157,7 @@
               new-claim (t/get-claim-as (:db-after result)
                                         (-> result :tempids (get "new-claim"))
                                         (:db/id current-user))]
-          (search/upload-claims search-client [new-claim])
+          (search/upload-claims (search-client) [new-claim])
           new-claim))
 
       :addEvidence
@@ -172,7 +172,7 @@
               new-evidence (t/get-evidence-as (:db-after result)
                                               (-> result :tempids (get "new-evidence"))
                                               (:db/id current-user))]
-          (when (not id) (search/upload-claims search-client [(:evidence/claim new-evidence)]))
+          (when (not id) (search/upload-claims (search-client) [(:evidence/claim new-evidence)]))
           new-evidence))
 
       :voteOnClaim

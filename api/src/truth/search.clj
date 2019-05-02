@@ -20,8 +20,8 @@
           (.status "success")
           .build))))
 
-(defn search-domains []
-  (.domainStatusList (.describeDomains (CloudSearchClient/create))))
+(def search-domains
+  (memoize #(.domainStatusList (.describeDomains (CloudSearchClient/create)))))
 
 (defn search-domain-named [name]
   (some (fn [domain] (when (= (.domainName domain) name) domain)) (search-domains)))
