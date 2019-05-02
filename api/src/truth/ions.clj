@@ -8,6 +8,7 @@
    [datomic.ion.lambda.api-gateway :as apigw]
    [datomic.client.api :as d]
    [datomic.ion :refer [get-env]]
+   [datomic.ion.cast :as cast]
 
    [truth.graphql :as graphql]
    [truth.cloud :as cloud]
@@ -21,6 +22,12 @@
 ;;   [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
    )
   (:import (clojure.lang IPersistentMap)))
+
+(defn cast-timing-metric [name start]
+  (let [time (- (System/currentTimeMillis) start)]
+    (println name time "ms")
+    (cast/dev {:msg name ::msec time})
+    (cast/metric {:name name :units :msec :value time})))
 
 (def schema (graphql/load-schema))
 
@@ -60,40 +67,63 @@
 (defn make-search-client [] (search/client-for-domain search-domain))
 (def search-client (memoize make-search-client))
 
+(defmacro cast-timing [name form]
+  `(let [start# (System/currentTimeMillis)]
+     (try
+       ~form
+       (finally
+         (cast-timing-metric ~name start#)))))
+
 (defn handle-graphql*
   "Lambda ion that executes a graphql query"
   [{:keys [request-method headers body session] :as request}]
   (if (= :options request-method)
     {:status 200
      :headers {"Content-Type" "application/json"}}
-    (try
-      (with-local-vars [request-session session]
-        (let [body-str (slurp body)
-              body-json (json/read-str body-str
-                                       :key-fn keyword)
-              variables (:variables body-json)
-              query (:query body-json)
-              conn (get-conn)
-              result (lacinia/execute
-                      schema query variables
-                      (let [db (d/db conn)
-                            current-user (when-let [username (:identity session)]
-                                           (t/get-user-by-username db username))]
+    (cast-timing
+     :GraphQLHandler
+     (try
+       (with-local-vars [request-session session]
+         (let [body-str (slurp body)
+               body-json (json/read-str body-str
+                                        :key-fn keyword)
+               variables (:variables body-json)
+               query (:query body-json)
+               conn (cast-timing
+                     :GetConn
+                     (get-conn))
+               s-client (cast-timing
+                         :SearchClient
+                         (search-client))
+               db (cast-timing
+                   :GetDB
+                   (d/db conn))
+               current-user (cast-timing
+                             :GetCurrentUser
+                             (when-let [username (:identity session)]
+                               (t/get-user-by-username db username)))
+               result (cast-timing
+                       :LaciniaExecute
+                       (lacinia/execute
+                        schema query variables
                         {:db db
                          :conn conn
                          :transact #(d/transact conn %)
                          :session request-session
                          :current-user current-user
-                         :search-client (search-client)
-                         }))]
-          {:status 200
-           :headers {"Content-Type" "application/json"}
-           :body (json/write-str (dissoc result :truth/session))
-           :session @request-session}))
-      (catch Throwable t
-        (println "error processing graphql request:")
-        (println t)
-        (log/error t "error processing graphql request")))))
+                         :search-client s-client
+                         }))
+               ]
+           (cast-timing
+            :MakeRingResult
+            {:status 200
+             :headers {"Content-Type" "application/json"}
+             :body (json/write-str (dissoc result :truth/session))
+             :session @request-session})))
+       (catch Throwable t
+         (println "error processing graphql request:")
+         (println t)
+         (log/error t "error processing graphql request"))))))
 
 (defn wrap-fix-set-cookie [handler]
   (fn [request]
@@ -115,14 +145,18 @@
   (use 'org.httpkit.server)
 
   (d/transact (get-conn) {:tx-data [(last data/users)]})
+  (def stop-server
+    (do
+      (client)
+      (run-server #'graphql* {:port 3002})))
 
-  (def stop-server (run-server #'graphql* {:port 3002}))
   (stop-server)
 
   (clojure.core.memoize/memo-clear! client)
   (clojure.core.memoize/memo-clear! search-client)
 
   (d/create-database (client) db-spec)
+
   (schema/client-load (get-conn))
   (name :foo)
   (data/load-and-index-default-dataset (get-conn) (search-client))
@@ -141,4 +175,9 @@
       (get "test"))
   (log/error 1)
 
+  (let [start (System/currentTimeMillis)
+        result (println "HI")]
+    (println (- (System/currentTimeMillis) start))
+    result)
+1
   )
