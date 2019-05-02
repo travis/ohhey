@@ -26,11 +26,13 @@ jobs:
           paths:
             - ohhey
             - .aws
+            - .m2
 
       - save_cache: # generate and store cache in the .m2 directory using a key template
           paths:
             - ~/.m2
             - api/.cpcache
+            - ui/node_modules
           key: ohhey-deps-{{ checksum "api/deps.edn" }}-{{ checksum "ui/package-lock.json" }}
 
   test:
