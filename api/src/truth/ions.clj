@@ -78,6 +78,7 @@
 (defn handle-graphql*
   "Lambda ion that executes a graphql query"
   [{:keys [request-method headers body session] :as request}]
+  (cast/event {:msg "headers" :headers (str headers)})
   (if (= :options request-method)
     {:status 200
      :headers {"Content-Type" "application/json"}}
