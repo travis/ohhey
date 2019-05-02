@@ -79,59 +79,49 @@
 (defn handle-graphql*
   "Lambda ion that executes a graphql query"
   [{:keys [request-method headers body session] :as request}]
-  (cast/event {:msg "headers" :headers (str headers)})
   (if (= :options request-method)
     {:status 200
      :headers {"Content-Type" "application/json"}}
     (cast-timing
      :GraphQLHandler
-     (try
-       (with-local-vars [request-session session]
-         (let [body-str (slurp body)
-               body-json (json/read-str body-str
-                                        :key-fn keyword)
-               variables (:variables body-json)
-               query (:query body-json)
-               conn (cast-timing
-                     :GetConn
-                     (get-conn))
-;;               s-client (cast-timing
-;;                         :SearchClient
-;;                         (search-client))
-               db (cast-timing
-                   :GetDB
-                   (d/db conn))
-               current-user (cast-timing
-                             :GetCurrentUser
-                             (when-let [username (:identity session)]
-                               (t/get-user-by-username db username)))
-               result (cast-timing
-                       :LaciniaExecute
-                       (lacinia/execute
-                        schema query variables
-                        {:db db
-                         :conn conn
-                         :transact #(d/transact conn %)
-                         :session request-session
-                         :current-user current-user
-;;                         :search-client s-client
-                         }))
-               ]
-           (cast-timing
-            :MakeRingResult
-            {:status 200
-             :headers {"Content-Type" "application/json"}
-             :body (json/write-str result)
-             :session @request-session})))
-       (catch Throwable t
-         (println "error processing graphql request:")
-         (println t)
-         (cast/alert {:msg "GraphQLHandlerFailed" :ex t})
-         (log/error t "error processing graphql request")
-         {:status 500
-          :headers {"Content-Type" "application/json"}
-          :body (json/write-str {:errors [(lacinia-util/as-error-map t)]})
-          })))))
+     (with-local-vars [request-session session]
+       (let [body-str (slurp body)
+             body-json (json/read-str body-str
+                                      :key-fn keyword)
+             variables (:variables body-json)
+             query (:query body-json)
+             conn (cast-timing
+                   :GetConn
+                   (get-conn))
+             ;;               s-client (cast-timing
+             ;;                         :SearchClient
+             ;;                         (search-client))
+             db (cast-timing
+                 :GetDB
+                 (d/db conn))
+             current-user (cast-timing
+                           :GetCurrentUser
+                           (when-let [username (:identity session)]
+                             (t/get-user-by-username db username)))
+             result (cast-timing
+                     :LaciniaExecute
+                     (lacinia/execute
+                      schema query variables
+                      {:db db
+                       :conn conn
+                       :transact #(d/transact conn %)
+                       :session request-session
+                       :current-user current-user
+                       ;;                         :search-client s-client
+                       }))
+             ]
+         (cast-timing
+          :MakeRingResult
+          {:status 200
+           :headers {"Content-Type" "application/json"}
+           :body (json/write-str result)
+           :session @request-session})))
+     )))
 
 (defn wrap-fix-set-cookie [handler]
   (fn [request]
@@ -140,10 +130,24 @@
              :headers
              (assoc headers "Set-Cookie" (first (get headers "Set-Cookie")))))))
 
+(defn wrap-catch-errors [handler]
+  (fn [request]
+    (try
+      (handler request)
+      (catch Throwable t
+        (println "error processing graphql request:")
+        (println t)
+        (cast/alert {:msg "GraphQLHandlerFailed" :ex t})
+        (log/error t "error processing graphql request")
+        {:status 500
+         :headers {"Content-Type" "application/json"}
+         :body (json/write-str {:errors [(lacinia-util/as-error-map t)]})}))))
+
 (def graphql*
   (-> handle-graphql*
       wrap-session
-      wrap-fix-set-cookie))
+      wrap-fix-set-cookie
+      wrap-catch-errors))
 
 (def graphql
   "API Gateway GraphQL web service ion"
@@ -156,7 +160,7 @@
   (def stop-server
     (do
       (client)
-      (run-server #'graphql* {:port 3002})))
+      (run-server graphql* {:port 3002})))
 
   (stop-server)
 
