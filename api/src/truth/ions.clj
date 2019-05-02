@@ -125,6 +125,7 @@
        (catch Throwable t
          (println "error processing graphql request:")
          (println t)
+         (cast/alert {:msg "GraphQLHandlerFailed" :ex t})
          (log/error t "error processing graphql request"))))))
 
 (defn wrap-fix-set-cookie [handler]
