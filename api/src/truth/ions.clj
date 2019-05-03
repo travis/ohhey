@@ -167,7 +167,12 @@
   (d/create-database (client) db-spec)
 
   (schema/client-load (get-conn))
-  (name :foo)
+
+  ;; without search
+  (data/client-load (get-conn))
+  (d/delete-database (client) db-spec)
+
+  ;; with search
   (data/load-and-index-default-dataset (get-conn) (search-client))
   (data/clear-and-delete-database (get-conn) (search-client) (client) db-spec)
 
