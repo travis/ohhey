@@ -154,7 +154,7 @@
                     {claim-input :claim} parent]
         (let [result
               (transact {:tx-data [`(truth.domain/create-claim!
-                                     ~(assoc claim-input :db/id "new-claim")
+                                     ~(assoc claim-input :db/id "new-claim" :standalone true)
                                      [:user/username ~(:user/username current-user)])]})
               new-claim (t/get-claim-as (:db-after result)
                                         (-> result :tempids (get "new-claim"))

@@ -22,8 +22,9 @@
                   body :body creator :creator
                   contributors :contributors evidence :evidence
                   votes :votes created-at :created-at
+                  standalone :standalone
                   :or {contributors [] evidence [] votes []
-                       created-at (java.util.Date.)}}]
+                       created-at (java.util.Date.) standalone false}}]
   {:db/id (or db-id (uuid))
    :claim/id (or id (uuid))
    :claim/body body
@@ -33,6 +34,7 @@
    :claim/contributors contributors
    :claim/evidence  evidence
    :claim/votes votes
+   :claim/standalone standalone
    })
 
 (defn new-claim-vote [{db-id :db/id id :id
@@ -243,6 +245,7 @@
             :with ?uniqueness
             :where
             [?claim :claim/id _]
+            [?claim :claim/standalone true]
             (claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
                             ?support ?oppose ?my-agreement
                             ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)])

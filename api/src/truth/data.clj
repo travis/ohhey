@@ -50,6 +50,7 @@
     new-claim
     [{:id "dogs-are-great"
       :body "Dogs are great"
+      :standalone true
       :created-at #inst "2018-02-02T12:00:00Z"
       :creator travis
       :votes (map
@@ -64,6 +65,7 @@
                            {:id "animals-are-awesome"
                             :db/id "animals-are-awesome"
                             :body "Animals are awesome"
+                            :standalone true
                             :created-at #inst "2018-02-02T12:01:00Z"
                             :creator travis
                             :votes (map
@@ -77,6 +79,7 @@
                             {:voter travis :rating 100}])}])}
 
      {:body "Cats are great"
+      :standalone true
       :created-at #inst "2018-02-02T12:02:00Z"
       :creator james
       :contributors [travis]
