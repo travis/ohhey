@@ -10,7 +10,7 @@
 
 
 (defn db-name []
-  "test")
+  "ohhey-prod")
 
 (def db-spec {:db-name (db-name)})
 (def search-domain (db-name))
