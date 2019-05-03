@@ -109,7 +109,7 @@
                        :transact #(d/transact conn %)
                        :session request-session
                        :current-user current-user
-                       :search-client s-client
+                       :search-client search-client
                        }))
              ]
          (cast-timing
