@@ -3,7 +3,7 @@
    [datomic.client.api :as d]
 
    [truth.cloud :as cloud]
-   [truth.data :as data]
+   [truth.prod.data :as data]
    [truth.schema :as schema]
    [truth.search :as search]
    ))
@@ -22,6 +22,10 @@
 (defn make-search-client [] (search/client-for-domain search-domain))
 (def search-client (memoize make-search-client))
 
+(defn client-load [conn]
+  (d/transact conn {:tx-data data/users})
+  (d/transact conn {:tx-data data/claims}))
+
 (comment
   (clojure.core.memoize/memo-clear! client)
 
@@ -29,14 +33,8 @@
 
   (schema/client-load (get-conn))
 
-
-  ;; without search
-  (data/client-load (get-conn))
+  (client-load (get-conn))
   (d/delete-database (client) db-spec)
 
-
-  ;; with search
-  (data/load-and-index-default-dataset (get-conn) (search-client))
-  (data/clear-and-delete-database (get-conn) (search-client) (client) db-spec)
 
   )
