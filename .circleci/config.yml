@@ -49,7 +49,7 @@ jobs:
       - attach_workspace:
           at: ~/
       - run: mkdir ~/.ssh
-      - run: echo "18.205.2.182 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBKbAYmaMuyqzZ6yShShSMbygTQLVCFwH4wxW9/b5M12Af8Hc7G6i4a6nFa4enBOzg5SftTtyqfl20UmFGKYJVy0=" > ~/.ssh/known_hosts
+      - run: echo "3.80.121.161 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJ572s9UB0Dv2XK0iRONX5sJyzOnbJzal7bR/8Whue3zSbXDdKJt4iUW1YojbA/AeZKWPiPZXi7+GrZqljbjKao=" > ~/.ssh/known_hosts
       - run:
           command: cd api && ./bin/datomic-socks-proxy -p ohhey -r us-east-1 prod
           background: true
