@@ -72,6 +72,7 @@ type SearchResults {
 }
 
 type Query {
+  healthy: Boolean
   currentUser: User
   claims: [Claim]
   searchClaims(term: String): SearchResults

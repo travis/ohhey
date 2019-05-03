@@ -90,7 +90,9 @@
                        nil)))}}
     :resolvers
     {:Query
-     {:currentUser
+     {:healthy
+      (fn [context arguments parent] true)
+      :currentUser
       (fn [{db :db current-user :current-user} arguments parent]
         current-user)
 
