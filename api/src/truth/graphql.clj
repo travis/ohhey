@@ -11,6 +11,7 @@
             [truth.domain :as t
              :refer [get-user-by-email get-all-claims get-contributors get-claim-evidence]]
             [truth.search :as search]
+            [truth.features :as features]
             [datomic.client.api :as d]))
 
 (defn dkey
@@ -159,7 +160,8 @@
               new-claim (t/get-claim-as (:db-after result)
                                         (-> result :tempids (get "new-claim"))
                                         (:db/id current-user))]
-          (search/upload-claims (search-client) [new-claim])
+          (when (features/search-enabled?)
+            (search/upload-claims (search-client) [new-claim]))
           new-claim))
 
       :addEvidence
@@ -174,7 +176,8 @@
               new-evidence (t/get-evidence-as (:db-after result)
                                               (-> result :tempids (get "new-evidence"))
                                               (:db/id current-user))]
-          (when (not id) (search/upload-claims (search-client) [(:evidence/claim new-evidence)]))
+          (when (and (features/search-enabled?) (not id))
+            (search/upload-claims (search-client) [(:evidence/claim new-evidence)]))
           new-evidence))
 
       :voteOnClaim

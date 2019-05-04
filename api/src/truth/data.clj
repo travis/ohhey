@@ -2,6 +2,7 @@
   (:require [datomic.api :as d]
             [datomic.client.api :as cd]
             [truth.search :as search]
+            [truth.features :as features]
             [truth.domain
              :refer [new-user new-claim new-claim-vote
                      new-evidence new-relevance-vote]
@@ -133,11 +134,13 @@
 
 (defn load-and-index-default-dataset [conn search-doc-creds]
   {:db (client-load conn)
-   :search (add-all-claims-to-search-index conn search-doc-creds)})
+   :search (when (features/search-enabled?)
+               (add-all-claims-to-search-index conn search-doc-creds))})
 
 (defn delete-claims-from-search-index [conn search-doc-creds]
   (search/delete-claims search-doc-creds (t/get-all-claims (cd/db conn))))
 
 (defn clear-and-delete-database [conn search-client client db-spec]
-  {:search (delete-claims-from-search-index conn search-client)
+  {:search (when (features/search-enabled?)
+             (delete-claims-from-search-index conn search-client))
    :db (cd/delete-database client db-spec)})
