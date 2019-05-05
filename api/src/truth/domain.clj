@@ -18,12 +18,24 @@
 
 (def char-limit 255)
 
+
+(defn new-source [{db-id :db/id id :id
+                   url :url title :title
+                   lccn :lccn page :page}]
+  (-> {:db/id (or db-id (uuid))
+       :source/id (or id (uuid))}
+      (cond->
+          url (assoc :source/url url)
+          title (assoc :source/title title)
+          lccn (assoc :source/lccn lccn)
+          page (assoc :source/page page))))
+
 (defn new-claim [{db-id :db/id id :id
-                  body :body creator :creator
+                  body :body creator :creator sources :sources
                   contributors :contributors evidence :evidence
                   votes :votes created-at :created-at
                   standalone :standalone
-                  :or {contributors [] evidence [] votes []
+                  :or {contributors [] evidence [] votes [] sources []
                        created-at (java.util.Date.) standalone false}}]
   {:db/id (or db-id (uuid))
    :claim/id (or id (uuid))
@@ -32,10 +44,10 @@
    :claim/slug (->slug body)
    :claim/creator creator
    :claim/contributors contributors
+   :claim/sources sources
    :claim/evidence  evidence
    :claim/votes votes
-   :claim/standalone standalone
-   })
+   :claim/standalone standalone})
 
 (defn new-claim-vote [{db-id :db/id id :id
                        claim :claim voter :voter agreement :agreement}]

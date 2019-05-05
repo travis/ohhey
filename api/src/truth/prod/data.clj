@@ -2,7 +2,7 @@
   (:require
    [truth.domain
     :refer [new-user new-claim new-claim-vote
-            new-evidence new-relevance-vote]
+            new-source new-evidence new-relevance-vote]
     :as t]))
 
 (def users
@@ -68,6 +68,7 @@
      :standalone true
      :created-at #inst "2019-05-04T12:00:00Z"
      :creator toby
+     :sources (map new-source [{:url "https://en.wikipedia.org/wiki/Cogito,_ergo_sum"}])
      :evidence (map
                 new-evidence
                 [{:creator toby

@@ -24,6 +24,29 @@
     :db/doc "The user's email"}
    ])
 
+(def source
+  [{:db/ident :source/id
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/unique :db.unique/identity
+    :db/doc "The source's id"}
+   {:db/ident :source/url
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/doc "The url of the source"}
+   {:db/ident :source/title
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/doc "The title of the source"}
+   {:db/ident :source/lccn
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/doc "The url of the source"}
+   {:db/ident :source/page
+    :db/valueType :db.type/long
+    :db/cardinality :db.cardinality/one
+    :db/doc "The page number of the source"}])
+
 (def claim
   [{:db/ident :claim/body
     :db/valueType :db.type/string
@@ -51,6 +74,10 @@
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many
     :db/doc "Users who have contributed this claim"}
+   {:db/ident :claim/sources
+    :db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/many
+    :db/doc "Sources for this claim"}
    {:db/ident :claim/evidence
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many
@@ -125,6 +152,7 @@
 
 (defn load [conn]
   @(d/transact conn user)
+  @(d/transact conn source)
   @(d/transact conn claim)
   @(d/transact conn claim-vote)
   @(d/transact conn evidence)
@@ -134,4 +162,4 @@
   (cd/transact
    conn
    {:tx-data
-    (concat user claim claim-vote evidence relevance-vote)}))
+    (concat user source claim claim-vote evidence relevance-vote)}))
