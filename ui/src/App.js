@@ -16,7 +16,6 @@ import SearchPage from './pages/Search'
 import {AuthenticationProvider } from './authentication'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from './components/Header'
-import Footer from './components/Footer'
 import { withAuth } from './authentication'
 import {ThemeProvider} from './theme'
 
@@ -62,7 +61,6 @@ const UI = withAuth(({authData: {currentUser, userLoading, logIn, logOut}}) => (
         <Route path="/someonenamed/:username/isntsureif/:slug" component={UserClaimPage}/>
       </Switch>
     </Content>
-    <Footer/>
   </Fragment>
 ))
 

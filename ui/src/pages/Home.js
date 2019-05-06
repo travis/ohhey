@@ -3,11 +3,12 @@ import { graphql, compose } from "react-apollo";
 import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 
-import {Spinner} from '../components/ui'
+import {Box, Spinner} from '../components/ui'
 import {Form } from '../components/form'
 import {Typography, Button, Divider, ClaimPaper} from '../components/ui'
 import AutosuggestClaimTextInput from '../components/AutosuggestClaimTextInput'
 import Claims from '../components/Claims'
+import Footer from '../components/Footer'
 import {AgreeButton, DisagreeButton} from '../components/claim'
 import {withAuth} from '../authentication'
 import * as queries from '../queries';
@@ -127,5 +128,8 @@ const LoggedInHome = compose(
 export default withAuth(({authData: {currentUser}, ...props}) => currentUser ? (
   <LoggedInHome {...props}/>
 ) : (
-  <Claims {...props}/>
+  <Box>
+    <Claims {...props}/>
+    <Footer/>
+  </Box>
 ))
