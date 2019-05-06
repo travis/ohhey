@@ -62,13 +62,26 @@ jobs:
           at: ~/
       - run: cd api && git status && git reset --hard HEAD && bin/push
 
-  deploy:
+  deploy_both:
     <<: *defaults
     steps:
       - attach_workspace:
           at: ~/
       - run: cd api && bin/deploy $CIRCLE_SHA1
       - run: cd ui && npm run deploy
+  deploy_ui:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: cd ui && npm run deploy
+
+  deploy_api:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: cd api && bin/deploy $CIRCLE_SHA1
 
 workflows:
   version: 2
@@ -91,10 +104,24 @@ workflows:
           filters:
             branches:
               only: master
-      - hold:
-          type: approval # requires that an in-app button be clicked by an appropriate member of the project to continue.
+      - hold_deploy_ui:
+          type: approval
           requires:
            - push
-      - deploy:
+      - deploy_ui:
           requires:
-            - hold
+            - hold_deploy_ui
+      - hold_deploy_api:
+          type: approval
+          requires:
+           - push
+      - deploy_api:
+          requires:
+            - hold_deploy_api
+      - hold_both:
+          type: approval
+          requires:
+           - push
+      - deploy_both:
+          requires:
+            - hold_both
