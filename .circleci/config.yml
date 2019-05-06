@@ -40,8 +40,13 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: cd api && bin/kaocha peer
+      - run: mkdir ~/.ssh
+      - run: echo "3.80.121.161 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJ572s9UB0Dv2XK0iRONX5sJyzOnbJzal7bR/8Whue3zSbXDdKJt4iUW1YojbA/AeZKWPiPZXi7+GrZqljbjKao=" > ~/.ssh/known_hosts
+      - run:
+          command: cd api && ./bin/datomic-socks-proxy -p ohhey -r us-east-1 prod
+          background: true
       - run: cd ui && npm test
+      - run: cd api && bin/kaocha peer
 
   integration_test:
     <<: *defaults
@@ -69,6 +74,7 @@ jobs:
           at: ~/
       - run: cd api && bin/deploy $CIRCLE_SHA1
       - run: cd ui && npm run deploy
+
   deploy_ui:
     <<: *defaults
     steps:
@@ -91,16 +97,16 @@ workflows:
       - test:
           requires:
             - build
-      - integration_test:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
+#      - integration_test:
+#          requires:
+#            - build
+#          filters:
+#            branches:
+#              only: master
       - push:
           requires:
             - test
-            - integration_test
+#            - integration_test
           filters:
             branches:
               only: master
@@ -118,10 +124,10 @@ workflows:
       - deploy_api:
           requires:
             - hold_deploy_api
-      - hold_both:
+      - hold_deploy_both:
           type: approval
           requires:
            - push
       - deploy_both:
           requires:
-            - hold_both
+            - hold_deploy_both
