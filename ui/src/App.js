@@ -16,6 +16,7 @@ import SearchPage from './pages/Search'
 import {AuthenticationProvider } from './authentication'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from './components/Header'
+import Footer from './components/Footer'
 import { withAuth } from './authentication'
 import {ThemeProvider} from './theme'
 
@@ -35,7 +36,7 @@ const TeaserVideo = withStyles(theme => ({
 
 ))
 
-const Content = (props) => (<Box m={1} {...props}/>)
+const Content = (props) => (<Box m={1} marginBottom={7} {...props}/>)
 
 const teaseAnon = (Component) => withAuth(({authData: {currentUser}}, ...props) => currentUser ? (
   <Component {...props}/>
@@ -61,6 +62,7 @@ const UI = withAuth(({authData: {currentUser, userLoading, logIn, logOut}}) => (
         <Route path="/someonenamed/:username/isntsureif/:slug" component={UserClaimPage}/>
       </Switch>
     </Content>
+    <Footer/>
   </Fragment>
 ))
 

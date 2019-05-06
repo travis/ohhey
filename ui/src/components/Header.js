@@ -5,7 +5,7 @@ import {Form, TextInput} from './form'
 import {Link, Button, AppBar, Toolbar, MenuButton, MenuItem, Typography} from '../components/ui'
 import {AccountCircle} from '../components/icons'
 import { withAuth } from '../authentication'
-import logo from '../logo.svg';
+import logo from '../images/logo.svg';
 
 const HeaderLogo = withStyles(theme => ({
   logo: {

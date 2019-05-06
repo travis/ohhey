@@ -1,6 +1,9 @@
 import React, { Fragment, useState, createRef } from 'react'
 
 import Box from '@material-ui/core/Box';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import Dialog from '@material-ui/core/Dialog';
 import MuiPaper from '@material-ui/core/Paper';
 import MuiTypography from '@material-ui/core/Typography';
 import MuiButton from '@material-ui/core/Button';
@@ -125,8 +128,8 @@ const IconButton = styled(MuiIconButton)(css(compose(spacing, positions)))
 
 
 export {
-  Box, Grid, Button, IconButton, Drawer, Typography,
-  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
+  Box, BottomNavigation, BottomNavigationAction, Grid, Button, IconButton, Drawer,
+  Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   Popover, Divider, List, ListItem, ListItemText, ListItemIcon, Tooltip,
-  Menu, MenuItem, AppBar, Toolbar
+  Menu, MenuItem, AppBar, Toolbar, Dialog
 }
