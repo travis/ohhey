@@ -1,4 +1,4 @@
-(ns truth.ions
+(ns truth.prod
   (:require
    [datomic.client.api :as d]
 
