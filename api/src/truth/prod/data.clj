@@ -58,12 +58,43 @@
               {:voter toby :agree true :agreement 100}])
      :evidence (map
                 new-evidence
-                [{:creator travis
+                [{:creator toby
                   :claim "animals-are-awesome"
                   :supports true
                   :votes (map
                           new-relevance-vote
-                          [{:voter toby :rating 100}])}])}
+                          [{:voter toby :rating 100}])}
+                 {:creator toby
+                  :supports true
+                  :claim (new-claim
+                          {:body "It feels nice to pet a cat."
+                           :created-at #inst "2019-05-01T12:02:00Z"
+                           :creator toby})}
+                 {:creator toby
+                  :supports true
+                  :claim (new-claim
+                          {:body "Cats are very cute."
+                           :created-at #inst "2019-05-01T12:03:00Z"
+                           :creator toby})}
+                 {:creator toby
+                  :supports true
+                  :claim (new-claim
+                          {:body "Cats are very interesting."
+                           :created-at #inst "2019-05-01T12:04:00Z"
+                           :creator toby})}
+                 {:creator toby
+                  :supports false
+                  :claim (new-claim
+                          {:body "Cats can be jerks."
+                           :created-at #inst "2019-05-01T12:05:00Z"
+                           :creator toby})}
+                 {:creator toby
+                  :supports false
+                  :claim (new-claim
+                          {:body "Cats sometimes destroy furniture."
+                           :created-at #inst "2019-05-01T12:06:00Z"
+                           :creator toby})}
+                 ])}
     {:body "The only thing I know for certain is that I exist."
      :standalone true
      :created-at #inst "2019-05-04T12:00:00Z"

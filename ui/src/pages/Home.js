@@ -7,7 +7,7 @@ import {Box, Spinner} from '../components/ui'
 import {Form } from '../components/form'
 import {Typography, Button, Divider, ClaimPaper} from '../components/ui'
 import AutosuggestClaimTextInput from '../components/AutosuggestClaimTextInput'
-import Claims from '../components/Claims'
+import {Claim} from '../components/Claims'
 import Footer from '../components/Footer'
 import {AgreeButton, DisagreeButton} from '../components/claim'
 import {withAuth} from '../authentication'
@@ -125,11 +125,22 @@ const LoggedInHome = compose(
   )
 })
 
+const FeaturedClaim =   graphql(
+  queries.Claim, {
+    props: ({data: {claim}}) => ({claim}),
+  }
+)(({claim}) => (
+  <Fragment>
+    {claim && <Claim claim={claim} />}
+  </Fragment>
+))
+
+
 export default withAuth(({authData: {currentUser}, ...props}) => currentUser ? (
   <LoggedInHome {...props}/>
 ) : (
   <Box>
-    <Claims {...props}/>
+    <FeaturedClaim slug="cats-are-great"/>
     <Footer/>
   </Box>
 ))
