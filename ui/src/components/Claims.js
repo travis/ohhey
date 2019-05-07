@@ -270,7 +270,7 @@ export const EvidenceList = withAuth(({
             </Box>
           )}
         </Box>
-        <Evidences claim={claim} list={myEvidence} support={support}/>
+        <Evidences claim={claim} list={myEvidence.sort((a, b) => (a.claim.createdAt - b.claim.createdAt))} support={support}/>
       </Box>
     ) : ""
   })
