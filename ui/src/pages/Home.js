@@ -140,6 +140,7 @@ export default withAuth(({authData: {currentUser}, ...props}) => currentUser ? (
   <LoggedInHome {...props}/>
 ) : (
   <Box>
+    <FeaturedClaim slug="the-only-thing-i-know-for-certain-is-that-i-exist"/>
     <FeaturedClaim slug="cats-are-great"/>
     <Footer/>
   </Box>
