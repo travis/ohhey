@@ -28,6 +28,8 @@ addDecorator(storyFn => (
   </ThemeProvider>
 ))
 
+addDecorator(StoryRouter())
+
 storiesOf('UI components', module)
   .add('Spinner', () => <Spinner/>)
   .add('ClaimPaper', () => <ClaimPaper>This is some paper on which to write a claim.</ClaimPaper>)
@@ -45,11 +47,9 @@ storiesOf('ClaimPaper', module)
       )
 
 storiesOf('Claims', module)
-  .addDecorator(StoryRouter())
   .add('default', () => <Claims />)
   .add("SupportList", () => <SupportList claim={claim}/>)
   .add("Evidence", () => <Evidence claim={claim} evidence={{claim: longClaim, relevance: 66}}/>)
 
 storiesOf('UserClaim', module)
-  .addDecorator(StoryRouter())
   .add('default', () => <UserClaim username={"toby"} claim={claim} />)

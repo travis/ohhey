@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
-import {Form, TextInput} from './form'
+//import {Form, TextInput} from './form'
 import {Link, Button, AppBar, Toolbar, MenuButton, MenuItem, Typography} from '../components/ui'
 import {AccountCircle} from '../components/icons'
 import { withAuth } from '../authentication'
