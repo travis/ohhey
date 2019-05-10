@@ -1,4 +1,4 @@
-(ns truth.prod.data
+(ns truth.env.prod.data
   (:require
    [truth.domain
     :refer [new-user new-claim new-claim-vote
@@ -106,13 +106,38 @@
                   :claim (new-claim
                           {:body "It is possible that everything I experience is a simulation."
                            :created-at #inst "2019-05-04T12:01:00Z"
-                           :creator toby})
+                           :creator toby
+                           :sources (map new-source [{:title "The Matrix"
+                                                      :url "https://www.imdb.com/title/tt0133093/"}])})
                   :supports true}
                  {:creator toby
                   :claim (new-claim
                           {:body "Even if everything I experience is a simulation, I am still experiencing it, therefore I must exist."
                            :created-at #inst "2019-05-04T12:02:00Z"
-                           :creator toby})
+                           :creator toby
+                           :sources (map new-source [{:url "https://en.wikipedia.org/wiki/Cogito,_ergo_sum"}])})
                   :supports true
                   }])
-     }]))
+     }
+    {:body "God exists."
+     :standalone true
+     :created-at #inst "2019-05-09T17:25:00Z"
+     :creator toby
+     :sources (map new-source [{:url "https://en.wikipedia.org/wiki/Existence_of_God"}])
+     :evidence (map
+                new-evidence
+                [{:creator toby
+                  :supports true
+                  :claim (new-claim
+                          {:body "It is impossible for an entity to cause itself to be created, and it is impossible for there to be an infinite chain of causes. Therefore, there must be a first cause, itself uncaused."
+                           :creator toby
+                           :sources (map new-source [{:url "https://en.wikipedia.org/wiki/Unmoved_mover#First_cause"}])
+                           :created-at #inst "2019-05-09T17:30:00Z"})}
+                 {:creator toby
+                  :supports false
+                  :claim (new-claim
+                          {:body "It is possible to explain the creation of the universe purely within the realm of science, so the idea of a divine being is unnecessary. "
+                           :creator toby
+                           :sources (map new-source [{:url "https://en.wikipedia.org/wiki/The_Grand_Design_(book)"}])
+                           :created-at #inst "2019-05-09T17:31:00Z"})}])}
+    ]))
