@@ -301,6 +301,21 @@ exports[`Storyshots Header default 1`] = `
 </header>
 `;
 
+exports[`Storyshots Sources default 1`] = `
+<sup
+  className="Component-sup-618"
+  onClick={[Function]}
+>
+  [
+  <span
+    className="Component-note-619"
+  >
+    *
+  </span>
+  ]
+</sup>
+`;
+
 exports[`Storyshots UI components ClaimPaper 1`] = `
 <div
   className="MuiPaper-root-6 MuiPaper-elevation1-9 MuiPaper-rounded-7 Component-root-4 Component-root-5 Component-root-3"

@@ -226,6 +226,7 @@
       :myAgreement (dkey :my-agreement)
       :agreementCount (dkey :agreement-count)
       :creator (dkey :claim/creator)
+      :sources (dkey :claim/sources)
       :contributors
       (fn [{db :db} arguments {id :db/id contributors :claim/contributors}]
         (or contributors (get-contributors db id)))
@@ -236,6 +237,11 @@
       (fn [{db :db} {username :username} {claim-id :claim/id agreement :user-agreement :as claim}]
         {:id (str claim-id ":" username) :agreement agreement :user {:user/username username}})
       }
+     :Source
+     {:url (dkey :source/url)
+      :title (dkey :source/title)
+      :lccn (dkey :source/lccn)
+      :page (dkey :source/page)}
      :Evidence
      {:id (dkey :evidence/id)
       :supports (dkey :evidence/supports)

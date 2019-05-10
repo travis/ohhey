@@ -161,6 +161,7 @@
                           :claim/body
                           :claim/created-at
                           :claim/slug
+                          {:claim/sources [:source/url :source/title :source/lccn :source/page]}
                           {:claim/creator [:user/username]}])
 
 (def anon-user-ref [:user/username "anon"])

@@ -77,6 +77,7 @@
    {:db/ident :claim/sources
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many
+    :db/isComponent true
     :db/doc "Sources for this claim"}
    {:db/ident :claim/evidence
     :db/valueType :db.type/ref

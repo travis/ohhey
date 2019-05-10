@@ -36,6 +36,14 @@ type Claim implements Node {
   myAgreement: Int
   score: Int,
   userMeta(username: String!): UserClaimMeta
+  sources: [Source]
+}
+
+type Source {
+  url: String
+  title: String
+  lccn: String
+  page: String
 }
 
 type EvidenceConnection {

@@ -14,6 +14,7 @@ import {
 } from './ui'
 import { Form } from './form'
 import AutosuggestClaimTextInput from './AutosuggestClaimTextInput'
+import Sources from './Sources'
 import { StopPropagation } from './util'
 import { withAuth } from '../authentication'
 
@@ -78,7 +79,7 @@ export const Claim = compose(
   }))
 )(({authData: {currentUser}, claim, history, classes}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
-  const { myAgreement} = claim
+  const { myAgreement, sources} = claim
 
   return (
     <ClaimPaper>
@@ -92,6 +93,7 @@ export const Claim = compose(
       </ClaimIntroType>
       <ClaimBody>
         <ClaimBodyLink claim={claim}/>
+        {sources && <Sources sources={sources}/>}
       </ClaimBody>
       {currentUser && (
         <Typography align="center">

@@ -13,6 +13,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Popover from '@material-ui/core/Popover';
+import Popper from '@material-ui/core/Popper';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
@@ -131,5 +132,5 @@ export {
   Box, BottomNavigation, BottomNavigationAction, Grid, Button, IconButton, Drawer,
   Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   Popover, Divider, List, ListItem, ListItemText, ListItemIcon, Tooltip,
-  Menu, MenuItem, AppBar, Toolbar, Dialog
+  Menu, MenuItem, AppBar, Toolbar, Dialog, Popper
 }

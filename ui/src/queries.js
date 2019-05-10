@@ -22,6 +22,7 @@ fragment fullClaimFields on Claim {
   agreementCount
   myAgreement
   score
+  sources { url, title, lccn, page }
 }
 `
 

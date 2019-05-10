@@ -110,8 +110,8 @@
       (is (= [["Animals are awesome" -1 100]]
              (evidence-for "dogs-are-great" "toby"))))
     (testing "cats are great"
-      (is (= [["They don't like people" -1 -101]
-              ["Animals are awesome" 66 -101]]
+      (is (= [["Animals are awesome" 66 -101]
+              ["They don't like people" -1 -101]]
              (evidence-for "cats-are-great" "travis")))
       (is (= [["Animals are awesome" -1 100]]
              (evidence-for "cats-are-great" "chuchu")))

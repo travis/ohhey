@@ -5,7 +5,7 @@
             [truth.features :as features]
             [truth.domain
              :refer [new-user new-claim new-claim-vote
-                     new-evidence new-relevance-vote]
+                     new-evidence new-relevance-vote new-source]
              :as t]))
 
 (def users
@@ -84,6 +84,10 @@
       :created-at #inst "2018-02-02T12:02:00Z"
       :creator james
       :contributors [travis]
+      :sources (map new-source [{:title "Wikipedia Cat"
+                                 :url "https://en.wikipedia.org/wiki/Cat"}
+                                {:title "Catster Magazine"
+                                 :url "http://subscribe.catster.com/Catster/Magazine"}])
       :votes (map
               new-claim-vote
               [{:voter toby :agree false :agreement -100}

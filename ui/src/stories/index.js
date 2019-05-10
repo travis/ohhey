@@ -12,6 +12,7 @@ import { Spinner, ClaimPaper, ClaimBody } from '../components/ui'
 import Claims, { SupportList, Evidence } from '../components/Claims'
 import UserClaim from '../components/UserClaim'
 import Header from '../components/Header'
+import Sources from '../components/Sources'
 import { ThemeProvider, fonts } from '../theme'
 import { travis, claim, longClaim } from './data'
 import { Provider as AuthProvider } from '../authentication'
@@ -53,3 +54,6 @@ storiesOf('Claims', module)
 
 storiesOf('UserClaim', module)
   .add('default', () => <UserClaim username={"toby"} claim={claim} />)
+
+storiesOf('Sources', module)
+  .add('default', () => <Sources sources={claim.sources} />)
