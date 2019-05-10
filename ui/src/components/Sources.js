@@ -5,10 +5,10 @@ import {Popper, Paper, List, ListItem} from '../components/ui'
 
 export default withStyles(theme => ({
   sup: {
+    cursor: "pointer",
     fontSize: "0.67em",
   },
   note: {
-    cursor: "pointer",
     "&:hover": {
       textDecoration: "underline"
     }
