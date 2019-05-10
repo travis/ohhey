@@ -3,6 +3,7 @@ import React, { Fragment, useState, createRef } from 'react'
 import Box from '@material-ui/core/Box';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Dialog from '@material-ui/core/Dialog';
 import MuiPaper from '@material-ui/core/Paper';
 import MuiTypography from '@material-ui/core/Typography';
@@ -132,5 +133,5 @@ export {
   Box, BottomNavigation, BottomNavigationAction, Grid, Button, IconButton, Drawer,
   Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
   Popover, Divider, List, ListItem, ListItemText, ListItemIcon, Tooltip,
-  Menu, MenuItem, AppBar, Toolbar, Dialog, Popper
+  Menu, MenuItem, AppBar, Toolbar, Dialog, Popper, ClickAwayListener
 }

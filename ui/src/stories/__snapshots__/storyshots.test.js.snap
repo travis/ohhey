@@ -302,18 +302,22 @@ exports[`Storyshots Header default 1`] = `
 `;
 
 exports[`Storyshots Sources default 1`] = `
-<sup
-  className="Component-sup-618"
-  onClick={[Function]}
+<div
+  className="MuiBox-root-620 MuiBox-root-621"
 >
-  [
-  <span
-    className="Component-note-619"
+  <sup
+    className="Component-sup-618"
+    onClick={[Function]}
   >
-    *
-  </span>
-  ]
-</sup>
+    [
+    <span
+      className="Component-note-619"
+    >
+      *
+    </span>
+    ]
+  </sup>
+</div>
 `;
 
 exports[`Storyshots UI components ClaimPaper 1`] = `
