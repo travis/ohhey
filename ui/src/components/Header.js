@@ -27,20 +27,21 @@ export default withStyles({
   <header>
     <AppBar color="default" position="static">
       <Toolbar >
-        <MenuButton menuItems={[
-          <MenuItem key="/">
-            <Link to="/">What?</Link>
-          </MenuItem>,
-          <MenuItem key="/all">
-            <Link to="/all">All</Link>
-          </MenuItem>
-        ]}>
-          <HeaderLogo/>
-        </MenuButton>
+        <Link to="/"><HeaderLogo/></Link>
+        {/*<MenuButton menuItems={[
+           <MenuItem key="/">
+           <Link to="/">What?</Link>
+           </MenuItem>,
+           <MenuItem key="/all">
+           <Link to="/all">All</Link>
+           </MenuItem>
+           ]}>
+           <HeaderLogo/>
+           </MenuButton>*/}
         <Typography variant="h6" className={classes.ohhey}>
           oh hey!
         </Typography>
-      {currentUser ? (
+      {currentUser && (
         <MenuButton menuItems={[
           <MenuItem key="welcome">
             welcome, {currentUser.username}
@@ -51,13 +52,13 @@ export default withStyles({
         ]}>
           <AccountCircle color="primary"/>
         </MenuButton>
-      ) : (
+      )/* : (
         <Form onSubmit={logIn}>
           <TextInput field="username"/>
           <TextInput field="password" type="password"/>
           <Button type="submit">log in</Button>
         </Form>
-      )}
+      )*/}
       </Toolbar>
     </AppBar>
   </header>

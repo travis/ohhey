@@ -46,7 +46,7 @@ const teaseAnon = (Component) => withAuth(({authData: {currentUser}}, ...props) 
 const UI = withAuth(({authData: {currentUser, userLoading, logIn, logOut}}) => (
   <Fragment>
     <CssBaseline/>
-    {currentUser && <Header/>}
+    {!userLoading && <Header/>}
     <Content>
       <Switch>
         <Route exact path="/" component={HomePage}/>
