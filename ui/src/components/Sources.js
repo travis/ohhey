@@ -27,7 +27,7 @@ export default withStyles(theme => ({
           <List>
             {sources && sources.map(({url, title}, i) => (
               <ListItem key={url}>
-                <a href={url}>{title}</a>
+                <a href={url} target="_blank">{title}</a>
               </ListItem>
             ))}
           </List>
