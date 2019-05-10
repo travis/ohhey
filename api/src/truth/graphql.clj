@@ -35,19 +35,19 @@
               (log/error e (str "caught clojure.lang.ExceptionInfo while resolving "resolver-path))
               (resolve-as nil {:message "unknown clojure.lang.ExceptionInfo - please contact the administrator"
                                :data {:truth.error/type :truth.error/unknown-exception-info
-                                      :truth.error/error e}})))))
+                                      :truth.error/error exception-map}})))))
       (catch java.util.concurrent.ExecutionException e
         (println e (str "caught execution exception while resolving "resolver-path))
         (log/error e (str "caught execution exception while resolving "resolver-path))
         (resolve-as nil {:message "unknown execution exception - please contact the administrator"
                          :data {:truth.error/type :truth.error/unknown-execution-exception
-                                :truth.error/error e}}))
+                                :truth.error/error (Throwable->map e)}}))
       (catch Throwable t
         (println t (class t) (str "caught error while resolving "resolver-path))
         (log/error t (class t) (str "caught error while resolving "resolver-path))
         (resolve-as nil {:message "unknown error - please contact the administrator"
                          :data {:truth.error/type :truth.error/unknown-error
-                                :truth.error/error t}})))))
+                                :truth.error/error (Throwable->map t)}})))))
 
 (defn apply-middleware [resolvers middlewares]
  (update-in resolvers [:resolvers]
