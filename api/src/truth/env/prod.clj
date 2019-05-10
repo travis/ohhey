@@ -3,7 +3,7 @@
    [datomic.client.api :as d]
 
    [truth.cloud :as cloud]
-   [truth.prod.data :as data]
+   [truth.env.prod.data :as data]
    [truth.schema :as schema]
    [truth.search :as search]
    ))
