@@ -30,13 +30,16 @@ const RoutePrefixSwitch = ({ibelieve, idontbelieve, somesay, fallback}) => (
   </Switch>
 )
 
-export const ClaimBodyLink = ({claim: {slug, body}}) => (
-  <RoutePrefixSwitch
-    ibelieve={<Link to={`/ibelieve/${slug}`}>{body}</Link>}
-    idontbelieve={<Link to={`/idontbelieve/${slug}`}>{body}</Link>}
-    somesay={<Link to={`/somesay/${slug}`}>{body}</Link>}
-    fallback={<Link to={`/somesay/${slug}`}>{body}</Link>}
-  />
+export const ClaimBodyLink = ({claim: {slug, body, sources}}) => (
+  <Fragment>
+    <RoutePrefixSwitch
+      ibelieve={<Link to={`/ibelieve/${slug}`}>{body}</Link>}
+      idontbelieve={<Link to={`/idontbelieve/${slug}`}>{body}</Link>}
+      somesay={<Link to={`/somesay/${slug}`}>{body}</Link>}
+      fallback={<Link to={`/somesay/${slug}`}>{body}</Link>}
+    />
+    {sources && <Sources sources={sources}/>}
+  </Fragment>
 )
 
 
@@ -79,7 +82,7 @@ export const Claim = compose(
   }))
 )(({authData: {currentUser}, claim, history, classes}) => {
   const [evidenceShown, setShowEvidence] = useState(false)
-  const { myAgreement, sources} = claim
+  const { myAgreement } = claim
 
   return (
     <ClaimPaper>
@@ -93,7 +96,6 @@ export const Claim = compose(
       </ClaimIntroType>
       <ClaimBody>
         <ClaimBodyLink claim={claim}/>
-        {sources && <Sources sources={sources}/>}
       </ClaimBody>
       {currentUser && (
         <Typography align="center">

@@ -11,12 +11,16 @@ import {
 } from './ui'
 import { ExpandMoreIcon } from './icons'
 import { withAuth } from '../authentication'
+import Sources from './Sources'
 
 import * as goto from '../goto';
 import * as queries from '../queries';
 
-export const ClaimBodyLink = ({username, claim: {slug, body}}) => (
-  <Link to={`/somesay/${slug}`}>{body}</Link>
+export const ClaimBodyLink = ({username, claim: {slug, body, sources}}) => (
+  <Fragment>
+    <Link to={`/somesay/${slug}`}>{body}</Link>
+    {sources && <Sources sources={sources}/>}
+  </Fragment>
 )
 
 const Evidence = compose(
@@ -180,7 +184,7 @@ export default compose(
       </ClaimIntroType>
       <ClaimBody>
         <ClaimBodyLink username={username} claim={claim}/>
-      </ClaimBody>
+    </ClaimBody>
       {currentUser && (
         <Typography align="center">
           {(myAgreement !== 100) && (<AgreeButton claim={claim} onSuccess={(claim) => goto.iBelieve(history, claim, 'replace')}/>)}

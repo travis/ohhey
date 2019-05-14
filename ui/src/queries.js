@@ -46,6 +46,7 @@ fragment fullUserClaimFields on Claim {
   slug
   creator { username }
   myAgreement
+  sources { url, title, lccn, page }
   userMeta(username: $username) {
     id
     agreement
