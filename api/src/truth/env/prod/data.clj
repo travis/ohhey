@@ -180,7 +180,7 @@
                  {:creator toby
                   :supports true
                   :claim (new-claim
-                          {:body "Illegal immigrant conviction rates for homicide, larceny, and sex crimes in Texas are below those of native-born Americans."
+                          {:body "Undocumented immigrants in Texas are convicted of homicide, larceny, and sex crimes at lower rates than native-born Americans."
                            :creator toby
                            :created-at #inst "2019-05-14T13:12:00Z"
                            :sources (map new-source [{:title "Illegal Immigrants and Crime – Assessing the Evidence"
@@ -204,7 +204,7 @@
                                       [{:creator toby
                                         :supports false
                                         :claim (new-claim
-                                                {:body "The Federation for American Immigration Reform report on illegal immigrant incarceration rates that poorly contrived and terribly executed."
+                                                {:body "The Federation for American Immigration Reform report on undocumented immigrant incarceration rates is poorly contrived and terribly executed."
                                                  :creator toby
                                                  :created-at #inst "2019-05-14T13:14:00Z"
                                                  :sources (map new-source [{:title "FAIR SCAAP Crime Report Has Many Serious Problems"
@@ -214,7 +214,7 @@
                                                             [{:creator toby
                                                               :supports true
                                                               :claim (new-claim
-                                                                      {:body "The Federation for American Immigration Reform report on illegal immigrant incarceration rates does not state the year or period of years it is analyzing."
+                                                                      {:body "The Federation for American Immigration Reform report on undocumented immigrant incarceration rates does not state the year or period of years it is analyzing."
                                                                        :creator toby
                                                                        :created-at #inst "2019-05-14T13:14:00Z"
                                                                        :sources (map new-source [{:title "FAIR SCAAP Crime Report Has Many Serious Problems"
@@ -222,7 +222,7 @@
                                                              {:creator toby
                                                               :supports true
                                                               :claim (new-claim
-                                                                      {:body "The Federation for American Immigration Reform report on illegal immigrant incarceration rates uses SCAAP data incorrectly when calculating incarceration rates."
+                                                                      {:body "The Federation for American Immigration Reform report on undocumented immigrant incarceration rates uses SCAAP data incorrectly when calculating incarceration rates."
                                                                        :creator toby
                                                                        :created-at #inst "2019-05-14T13:14:00Z"
                                                                        :sources (map new-source [{:title "FAIR SCAAP Crime Report Has Many Serious Problems"
