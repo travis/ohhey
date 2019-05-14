@@ -21,7 +21,7 @@
 (def travis [:user/username "travis"])
 (def toby [:user/username "toby"])
 
-(def claims
+(def longform-claims
   (map
    new-claim
    [{:body "Dogs are great."
@@ -229,3 +229,45 @@
                                                                                                   :url "https://www.cato.org/blog/fair-scaap-crime-report-has-many-serious-problems"}])})}])})}])})
                   }])}
     ]))
+
+(def toby-claim)
+
+(defn toby-relevance-vote [vote]
+  (new-relevance-vote (merge {:voter toby} vote)))
+
+(defn toby-evidence [{claim :claim votes :votes
+                      :as evidence
+                      :or {votes []}}]
+  (new-evidence (-> evidence
+                    (assoc :creator toby)
+                    (assoc :claim (toby-claim claim))
+                    (assoc :votes (map toby-relevance-vote votes)))))
+
+(defn toby-claim-vote [vote]
+  (new-claim-vote (merge {:voter toby} vote)))
+
+(defn toby-claim [{sources :sources evidence :evidence votes :votes
+                   :as claim
+                   :or {sources [] evidence [] votes []}}]
+  (new-claim (-> claim
+                 (assoc :creator toby)
+                 (assoc :sources (map new-source sources))
+                 (assoc :evidence (map toby-evidence evidence))
+                 (assoc :votes (map toby-claim-vote votes)))))
+
+(def shorthand-claims
+  (map
+   toby-claim
+   [{:body "Objective reality does not exist."
+     :created-at #inst "2019-05-14T15:33:00Z"
+     :sources [{:title "A quantum experiment suggests there’s no such thing as objective reality"
+                :url "https://www.technologyreview.com/s/613092/a-quantum-experiment-suggests-theres-no-such-thing-as-objective-reality/"}]
+     :votes [{:agreement 100}]
+     :evidence [{:supports true
+                 :claim {:body "Two observers of a quantum physics experiment experienced different, conflicting realities."
+                         :created-at #inst "2019-05-14T15:36:00Z"
+                         :sources [{:title "Experimental rejection of observer-independence in the quantum world"
+                                    :url "https://arxiv.org/abs/1902.05080"}]}
+                 :votes {:rating 100}}]}]))
+
+(def claims (concat longform-claims shorthand-claims))
