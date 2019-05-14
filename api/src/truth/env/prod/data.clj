@@ -105,6 +105,12 @@
                 new-evidence
                 [{:creator toby
                   :claim (new-claim
+                          {:body "The real world seems very real."
+                           :created-at #inst "2019-05-10T12:01:00Z"
+                           :creator toby})
+                  :supports false}
+                 {:creator toby
+                  :claim (new-claim
                           {:body "It is possible that everything I experience is a simulation."
                            :created-at #inst "2019-05-04T12:01:00Z"
                            :creator toby
@@ -145,4 +151,81 @@
                            :sources (map new-source [{:title "The Grand Design"
                                                       :url "https://en.wikipedia.org/wiki/The_Grand_Design_(book)"}])
                            :created-at #inst "2019-05-09T17:31:00Z"})}])}
+    {:body "Illegal immigration does not increase crime."
+     :standalone true
+     :created-at #inst "2019-05-14T13:09:00Z"
+     :creator toby
+     :sources (map new-source [{:title "Is There a Connection Between Undocumented Immigrants and Crime?"
+                               :url "https://www.nytimes.com/2019/05/13/upshot/illegal-immigration-crime-rates-research.html"}])
+     :evidence (map
+                new-evidence
+                [{:creator toby
+                  :supports true
+                  :claim (new-claim
+                          {:body "There is no sign of a strong link between undocumented immigrants and crime."
+                           :creator toby
+                           :created-at #inst "2019-05-14T13:10:00Z"
+                           :sources (map new-source [{:title "Is There a Connection Between Undocumented Immigrants and Crime?"
+                                                      :url "https://www.nytimes.com/2019/05/13/upshot/illegal-immigration-crime-rates-research.html"}])
+                           })}
+
+                 {:creator toby
+                  :supports true
+                  :claim (new-claim
+                          {:body "A 2018 study published in the journal \"Criminology\" found that \"undocumented immigration does not increase violence. Rather, the relationship between undocumented immigration and violent crime is generally negative.\""
+                           :creator toby
+                           :created-at #inst "2019-05-14T13:11:00Z"
+                           :sources (map new-source [{:title "Does Undocumented Immigration Increase Violent Crime?"
+                                                      :url "https://onlinelibrary.wiley.com/doi/full/10.1111/1745-9125.12175?fbclid=IwAR05w2ks-G8TSlg6F1tKJghcogd-jkweNHgSFtDLE_oZMzceveUyr2NBCCo"}])})}
+                 {:creator toby
+                  :supports true
+                  :claim (new-claim
+                          {:body "Illegal immigrant conviction rates for homicide, larceny, and sex crimes in Texas are below those of native-born Americans."
+                           :creator toby
+                           :created-at #inst "2019-05-14T13:12:00Z"
+                           :sources (map new-source [{:title "Illegal Immigrants and Crime – Assessing the Evidence"
+                                                      :url "https://www.cato.org/blog/illegal-immigrants-crime-assessing-evidence"}])})}
+                 {:creator toby
+                  :supports true
+                  :claim (new-claim
+                          {:body "Undocumented immigrants have far more to lose from being arrested than citizens or legal immigrants, and are therefore less likely to break the law once they are in the country."
+                           :creator toby
+                           :created-at #inst "2019-05-14T13:12:00Z"})}
+                 {:creator toby
+                  :supports false
+                  :claim (new-claim
+                          {:body "The US federal government's State Criminal Alien Assistence Program data suggest undocumented immigrants commit crime at a higher rate than citizens and documented immigrants."
+                           :creator toby
+                           :created-at #inst "2019-05-14T13:13:00Z"
+                           :sources (map new-source [{:title "SCAAP Data Suggest Illegal Aliens Commit Crime at a Much Higher Rate Than Citizens and Lawful Immigrants"
+                                                      :url "https://www.fairus.org/issue/illegal-immigration/scaap-data-suggest-illegal-aliens-commit-crime-much-higher-rate-citizens"}])
+                           :evidence (map
+                                      new-evidence
+                                      [{:creator toby
+                                        :supports false
+                                        :claim (new-claim
+                                                {:body "The Federation for American Immigration Reform report on illegal immigrant incarceration rates that poorly contrived and terribly executed."
+                                                 :creator toby
+                                                 :created-at #inst "2019-05-14T13:14:00Z"
+                                                 :sources (map new-source [{:title "FAIR SCAAP Crime Report Has Many Serious Problems"
+                                                                            :url "https://www.cato.org/blog/fair-scaap-crime-report-has-many-serious-problems"}])
+                                                 :evidence (map
+                                                            new-evidence
+                                                            [{:creator toby
+                                                              :supports true
+                                                              :claim (new-claim
+                                                                      {:body "The Federation for American Immigration Reform report on illegal immigrant incarceration rates does not state the year or period of years it is analyzing."
+                                                                       :creator toby
+                                                                       :created-at #inst "2019-05-14T13:14:00Z"
+                                                                       :sources (map new-source [{:title "FAIR SCAAP Crime Report Has Many Serious Problems"
+                                                                                                  :url "https://www.cato.org/blog/fair-scaap-crime-report-has-many-serious-problems"}])})}
+                                                             {:creator toby
+                                                              :supports true
+                                                              :claim (new-claim
+                                                                      {:body "The Federation for American Immigration Reform report on illegal immigrant incarceration rates uses SCAAP data incorrectly when calculating incarceration rates."
+                                                                       :creator toby
+                                                                       :created-at #inst "2019-05-14T13:14:00Z"
+                                                                       :sources (map new-source [{:title "FAIR SCAAP Crime Report Has Many Serious Problems"
+                                                                                                  :url "https://www.cato.org/blog/fair-scaap-crime-report-has-many-serious-problems"}])})}])})}])})
+                  }])}
     ]))

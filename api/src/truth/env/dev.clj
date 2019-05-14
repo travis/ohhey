@@ -10,7 +10,7 @@
 
 
 (defn db-name []
-  "staging")
+  "ohhey-dev")
 
 (def db-spec {:db-name (db-name)})
 (def search-domain (db-name))
@@ -21,10 +21,6 @@
 
 (defn make-search-client [] (search/client-for-domain search-domain))
 (def search-client (memoize make-search-client))
-
-(defn with-load [conn]
-  (d/with conn {:tx-data data/users})
-  (d/with conn {:tx-data data/claims}))
 
 (defn client-load [conn]
   (d/transact conn {:tx-data data/users})
@@ -37,10 +33,7 @@
 
   (schema/client-load (get-conn))
 
-  (with-load (d/with-db (get-conn)))
-
   (client-load (get-conn))
-
   (d/delete-database (client) db-spec)
 
 
