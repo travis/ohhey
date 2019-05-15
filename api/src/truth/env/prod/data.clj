@@ -131,6 +131,7 @@
      }
     {:body "God exists."
      :standalone true
+     :featured true
      :created-at #inst "2019-05-09T17:25:00Z"
      :creator toby
      :sources (map new-source [{:title "Existence of God"

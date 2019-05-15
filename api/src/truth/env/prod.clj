@@ -27,6 +27,11 @@
   (d/transact conn {:tx-data data/claims}))
 
 (comment
+
+  (d/transact (get-conn)
+              {:tx-data [{:db/id [:claim/slug "god-exists"]
+                          :claim/featured true}]})
+
   (clojure.core.memoize/memo-clear! client)
 
   (d/create-database (client) db-spec)
