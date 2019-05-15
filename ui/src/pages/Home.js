@@ -125,22 +125,11 @@ const LoggedInHome = compose(
   )
 })
 
-/*const FeaturedClaim =   graphql(
-  queries.Claim, {
-    props: ({data: {claim}}) => ({claim}),
-  }
-)(({claim}) => (
-  <Fragment>
-    {claim && <Claim claim={claim} />}
-  </Fragment>
-  <FeaturedClaim slug="the-only-thing-i-know-for-certain-is-that-i-exist"/>
-  <FeaturedClaim slug="cats-are-great"/>
-))*/
-
 export default withAuth(({authData: {currentUser}, ...props}) => currentUser ? (
   <LoggedInHome {...props}/>
 ) : (
   <Box>
+    <Typography variant="h4" margin={2} textAlign="center">some people say...</Typography>
     <Claims featured {...props}/>
     <Footer/>
   </Box>
