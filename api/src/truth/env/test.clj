@@ -1,16 +1,16 @@
-(ns truth.env.dev
+(ns truth.env.test
   (:require
    [datomic.client.api :as d]
 
    [truth.cloud :as cloud]
-   [truth.env.prod.data :as data]
+   [truth.data :as data]
    [truth.schema :as schema]
    [truth.search :as search]
    ))
 
 
 (defn db-name []
-  "ohhey-dev")
+  "test")
 
 (def db-spec {:db-name (db-name)})
 (def search-domain (db-name))
