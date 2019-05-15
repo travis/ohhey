@@ -33,10 +33,11 @@
 (defn new-claim [{db-id :db/id id :id
                   body :body creator :creator sources :sources
                   contributors :contributors evidence :evidence
-                  votes :votes created-at :created-at
+                  votes :votes created-at :created-at featured :featured
                   standalone :standalone
                   :or {contributors [] evidence [] votes [] sources []
-                       created-at (java.util.Date.) standalone false}}]
+                       created-at (java.util.Date.)
+                       standalone false featured false}}]
   {:db/id (or db-id (uuid))
    :claim/id (or id (uuid))
    :claim/body body
@@ -47,7 +48,8 @@
    :claim/sources sources
    :claim/evidence  evidence
    :claim/votes votes
-   :claim/standalone standalone})
+   :claim/standalone standalone
+   :claim/featured featured})
 
 (defn new-claim-vote [{db-id :db/id id :id
                        claim :claim voter :voter agreement :agreement}]
@@ -239,6 +241,32 @@
    (get-claim db claim-ref default-claim-spec))
   ([db claim-ref claim-spec]
    (get-claim-as db claim-ref nil claim-spec)))
+
+(defn get-featured-claims-as
+  ([db user-ref]
+   (get-featured-claims-as db user-ref default-claim-spec))
+  ([db user-ref claim-spec]
+   (->> (d/q
+         (apply
+          conj
+          '[:find]
+          (list 'pull '?claim claim-spec)
+          '[(sum ?support) (sum ?oppose)
+            (sum ?agreement) (sum ?agreement-count)
+            (max ?my-agreement)
+            (sum ?agree-disagree-score)
+            (sum ?support-oppose-score) (sum ?support-oppose-score-component-count)
+            :in $ % ?user
+            :with ?uniqueness
+            :where
+            [?claim :claim/id _]
+            [?claim :claim/featured true]
+            (claim-stats-as ?claim ?user ?uniqueness ?agreement ?agreement-count
+                            ?support ?oppose ?my-agreement
+                            ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)])
+         db rules (or user-ref anon-user-ref))
+        (map (fn [result] (apply assoc-claim-stats result)))
+        (sort-by :claim/created-at))))
 
 (defn get-all-claims-as
   ([db user-ref]

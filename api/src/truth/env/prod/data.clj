@@ -50,6 +50,7 @@
              [{:voter toby :agree true :agreement 100}])}
     {:body "Cats are great."
      :standalone true
+     :featured true
      :created-at #inst "2019-05-01T12:00:00Z"
      :creator toby
      :votes (map
@@ -97,6 +98,7 @@
                  ])}
     {:body "The only thing I know for certain is that I exist."
      :standalone true
+     :featured true
      :created-at #inst "2019-05-04T12:00:00Z"
      :creator toby
      :sources (map new-source [{:title "Cogito, ergo sum"

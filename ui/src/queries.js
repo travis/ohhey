@@ -71,8 +71,8 @@ fragment fullUserEvidenceFields on Evidence {
 
 export const Claims = gql`
 ${fullClaimFieldsFragment}
-query Claims {
-  claims {
+query Claims($featured: Boolean) {
+  claims(featured: $featured) {
     ...fullClaimFields
   }
 }

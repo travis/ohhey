@@ -92,7 +92,11 @@
    {:db/ident :claim/standalone
     :db/valueType :db.type/boolean
     :db/cardinality :db.cardinality/one
-    :db/doc "Should this claim be presented as a standlone claim?"}])
+    :db/doc "Should this claim be presented as a standlone claim?"}
+   {:db/ident :claim/featured
+    :db/valueType :db.type/boolean
+    :db/cardinality :db.cardinality/one
+    :db/doc "Should this claim be presented as a featured claim?"}])
 
 (def claim-vote
   [{:db/ident :claim-vote/id

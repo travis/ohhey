@@ -76,7 +76,11 @@
                          {:claim {:body "They don't like people"} :supports true}
                          )},
                :contributors '({:username "travis"})}]}}
-           (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil)))))
+           (execute "{claims {body, contributors {username}, evidence {edges {supports, claim {body}}} } }" nil)))
+    (is (= {:data
+            {:claims
+             [{:body "Dogs are great"}]}}
+           (execute "{claims(featured: true) { body } }" nil)))))
 
 (deftest test-evidenceForClaim
   (testing "evidenceForClaims {supports, claim {body}}"

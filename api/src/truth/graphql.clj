@@ -98,8 +98,10 @@
         current-user)
 
       :claims
-      (fn [{db :db current-user :current-user} arguments parent]
-        (t/get-all-claims-as db (:db/id current-user)))
+      (fn [{db :db current-user :current-user} {featured :featured} parent]
+        (if featured
+          (t/get-featured-claims-as db (:db/id current-user))
+          (t/get-all-claims-as db (:db/id current-user))))
 
       :searchClaims
       (fn [{db :db search-client :search-client current-user :current-user} {term :term} parent]

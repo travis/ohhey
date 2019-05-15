@@ -52,6 +52,7 @@
     [{:id "dogs-are-great"
       :body "Dogs are great"
       :standalone true
+      :featured true
       :created-at #inst "2018-02-02T12:00:00Z"
       :creator travis
       :votes (map
@@ -124,6 +125,8 @@
                   {:creator tani
                    :claim "dont-like-people"
                    :supports true}])}])))
+
+(def claims pet-claims)
 
 (defn load [conn]
   @(d/transact conn users)
