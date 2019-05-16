@@ -127,11 +127,11 @@
           (t/get-claim-as db [:claim/slug slug] (:db/id current-user))))
 
       :evidenceForClaim
-      (fn [{db :db current-user :current-user} {claim-id :claimID username :username} parent]
+      (fn [{db :db current-user :current-user} {claim-id-str :claimID username :username} parent]
         (->>
          (if username
-           (t/get-claim-evidence-for db [:claim/id claim-id] [:user/username username])
-           (t/get-claim-evidence-as db [:claim/id claim-id] (:db/id current-user)))
+           (t/get-claim-evidence-for db [:claim/id (java.util.UUID/fromString claim-id-str)] [:user/username username])
+           (t/get-claim-evidence-as db [:claim/id (java.util.UUID/fromString claim-id-str)] (:db/id current-user)))
          (sort-by #(get-in % [:evidence/claim :claim/created-at]))
          reverse))
       }
@@ -168,24 +168,30 @@
 
       :addEvidence
       (fn [{current-user :current-user search-client :search-client transact :transact}
-           {claim-id :claimID {id :id :as claim} :claim supports :supports} parent]
-        (let [result
+           {claim-id-str :claimID {evidence-claim-id-str :id :as claim} :claim supports :supports} parent]
+        (let [claim-id (java.util.UUID/fromString claim-id-str)
+              result
               (transact
                {:tx-data
                 [`(truth.domain/add-evidence!
-                   ~claim-id ~{:claim claim :supports supports :db/id "new-evidence"}
+                   ~claim-id ~{:claim (if evidence-claim-id-str
+                                        (assoc claim :id (java.util.UUID/fromString evidence-claim-id-str))
+                                        claim)
+                               :supports supports
+                               :db/id "new-evidence"}
                    ~[:user/username (:user/username current-user)])]})
               new-evidence (t/get-evidence-as (:db-after result)
                                               (-> result :tempids (get "new-evidence"))
                                               (:db/id current-user))]
-          (when (and (features/search-enabled?) (not id))
+          (when (and (features/search-enabled?) (not evidence-claim-id-str))
             (search/upload-claims (search-client) [(:evidence/claim new-evidence)]))
           new-evidence))
 
       :voteOnClaim
       (fn [{current-user :current-user transact :transact}
-           {claim-id :claimID agreement :agreement} parent]
-        (let [result
+           {claim-id-str :claimID agreement :agreement} parent]
+        (let [claim-id (java.util.UUID/fromString claim-id-str)
+              result
               (transact
                {:tx-data
                 [`(truth.domain/vote-on-claim! ~claim-id ~current-user ~agreement)]})]
@@ -193,8 +199,9 @@
 
       :voteOnEvidence
       (fn [{current-user :current-user transact :transact}
-           {evidence-id :evidenceID rating :rating} parent]
-        (let [result
+           {evidence-id-str :evidenceID rating :rating} parent]
+        (let [evidence-id (java.util.UUID/fromString evidence-id-str)
+              result
               (transact
                {:tx-data
                 [`(truth.domain/vote-on-evidence! ~evidence-id ~current-user ~rating)]})

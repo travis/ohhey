@@ -85,7 +85,7 @@
 (deftest test-evidenceForClaim
   (testing "evidenceForClaims {supports, claim {body}}"
     (is (= {:data {:evidenceForClaim [{:supports true :claim {:body "Animals are awesome" :supportCount 0}}]}}
-           (execute "query EvidenceForClaim($claimID: ID!) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID "dogs-are-great"}))))
+           (execute "query EvidenceForClaim($claimID: ID!) {evidenceForClaim(claimID: $claimID) {supports, claim {body, supportCount}}}" {:claimID (data/ids :dogs-are-great)}))))
   (testing "evidenceForClaim(username: \"travis\")"
     (is (= {:data
             {:evidenceForClaim
@@ -99,7 +99,7 @@ query UserEvidenceForClaim($username: String!, $claimID: ID!) {
     userMeta(username: $username) { relevance }
   }
 }"
-                    {:username "travis" :claimID "dogs-are-great"})))))
+                    {:username "travis" :claimID (data/ids :dogs-are-great)})))))
 
 (def search-query "
 query SearchClaims($term: String!) {

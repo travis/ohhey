@@ -52,13 +52,14 @@ mutation($claimID: ID!, $supports: Boolean!, $claim: ClaimInput!) {
          {:addEvidence
           {:supports true, :claim {:body "SO FRIENDLY!!", :supportCount 0, :creator {:username "travis"}}}}
          (:data (execute add-evidence-mutation
-                         {:claimID "dogs-are-great", :supports true, :claim {:body "SO FRIENDLY!!"}})))))
+                         {:claimID (str (data/ids :dogs-are-great)), :supports true, :claim {:body "SO FRIENDLY!!"}})))))
   (testing "adding an existing claim"
     (is (=
          {:addEvidence
           {:supports false, :claim {:body "They don't like people", :supportCount 1, :creator {:username "travis"}}}}
          (:data (execute add-evidence-mutation
-                         {:claimID "dogs-are-great", :supports false, :claim {:id "dont-like-people"}}))))))
+                         {:claimID (str (data/ids :dogs-are-great)), :supports false,
+                          :claim {:id (str (data/ids :dont-like-people))}}))))))
 
 (def vote-query "
 mutation VoteOnClaim($claimID: ID!, $agreement: Int!) {
@@ -72,15 +73,15 @@ mutation VoteOnClaim($claimID: ID!, $agreement: Int!) {
     (is (=
          {:voteOnClaim
           {:myAgreement 100}}
-         (:data (execute vote-query {:claimID "dogs-are-great", :agreement 100}))))
+         (:data (execute vote-query {:claimID (str (data/ids :dogs-are-great)), :agreement 100}))))
     (is (=
          {:voteOnClaim
           {:myAgreement -100}}
-         (:data (execute vote-query {:claimID "dogs-are-great", :agreement -100}))))
+         (:data (execute vote-query {:claimID (str (data/ids :dogs-are-great)), :agreement -100}))))
     (is (=
          {:voteOnClaim
           {:myAgreement 100}}
-         (:data (execute vote-query {:claimID "animals-are-awesome", :agreement 100}))))))
+         (:data (execute vote-query {:claimID (str (data/ids :animals-are-awesome)), :agreement 100}))))))
 
 (def evidence-vote-query "
   mutation VoteOnEvidence($evidenceID: ID!, $rating: Int!) {
@@ -95,15 +96,15 @@ mutation VoteOnClaim($claimID: ID!, $agreement: Int!) {
     (is (=
          {:voteOnEvidence
           {:myRelevanceRating 66, :relevance 49.5}}
-         (:data (execute evidence-vote-query { :rating 66, :evidenceID "ara-supports-dag"}))))
+         (:data (execute evidence-vote-query { :rating 66, :evidenceID (str (data/ids :ara-supports-dag))}))))
     (is (=
          {:voteOnEvidence
           {:myRelevanceRating 33, :relevance 33.0}}
-         (:data (execute evidence-vote-query {:rating 33, :evidenceID "ara-supports-dag"}))))
+         (:data (execute evidence-vote-query {:rating 33, :evidenceID (str (data/ids :ara-supports-dag))}))))
     (is (=
          {:voteOnEvidence
           {:myRelevanceRating 66, :relevance 66.33333333333333}}
-         (:data (execute evidence-vote-query {:rating 66, :evidenceID "ara-supports-dag"}
+         (:data (execute evidence-vote-query {:rating 66, :evidenceID (str (data/ids :ara-supports-dag))}
                          fresh-db "toby"))))))
 
 (def add-claim-mutation "

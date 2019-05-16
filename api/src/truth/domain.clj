@@ -4,13 +4,14 @@
             [truth.search :as search]
             [slugger.core :as slugger]))
 
-(defn uuid [] (str (java.util.UUID/randomUUID)))
+(defn uuid [] (java.util.UUID/randomUUID))
+(defn default-db-id [] (str (uuid)))
 (def ->slug slugger/->slug)
 
 (defn new-user [{db-id :db/id id :id
                  username :username email :email
                  password :password}]
-  {:db/id (or db-id (uuid))
+  {:db/id (or db-id (default-db-id))
    :user/id (or id (uuid))
    :user/username username
    :user/email email
@@ -22,7 +23,7 @@
 (defn new-source [{db-id :db/id id :id
                    url :url title :title
                    lccn :lccn page :page}]
-  (-> {:db/id (or db-id (uuid))
+  (-> {:db/id (or db-id (default-db-id))
        :source/id (or id (uuid))}
       (cond->
           url (assoc :source/url url)
@@ -38,7 +39,7 @@
                   :or {contributors [] evidence [] votes [] sources []
                        created-at (java.util.Date.)
                        standalone false featured false}}]
-  {:db/id (or db-id (uuid))
+  {:db/id (or db-id (default-db-id))
    :claim/id (or id (uuid))
    :claim/body body
    :claim/created-at created-at
@@ -53,7 +54,7 @@
 
 (defn new-claim-vote [{db-id :db/id id :id
                        claim :claim voter :voter agreement :agreement}]
-  {:db/id (or db-id (uuid))
+  {:db/id (or db-id (default-db-id))
    :claim-vote/id (or id (uuid))
    :claim-vote/voter voter
    :claim-vote/agreement agreement})
@@ -62,7 +63,7 @@
                      creator :creator claim :claim supports :supports
                      votes :votes
                      :or {votes []}}]
-  {:db/id (or db-id (uuid))
+  {:db/id (or db-id (default-db-id))
    :evidence/id (or id (uuid))
    :evidence/creator creator
    :evidence/claim claim
@@ -71,7 +72,7 @@
 
 (defn new-relevance-vote [{db-id :db/id id :id
                            evidence :evidence voter :voter rating :rating}]
-  {:db/id (or db-id (uuid))
+  {:db/id (or db-id (default-db-id))
    :relevance-vote/id (or id (uuid))
    :relevance-vote/voter voter
    :relevance-vote/rating rating})

@@ -5,7 +5,7 @@
             [truth.features :as features]
             [truth.domain
              :refer [new-user new-claim new-claim-vote
-                     new-evidence new-relevance-vote new-source]
+                     new-evidence new-relevance-vote new-source uuid]
              :as t]))
 
 (def users
@@ -45,11 +45,19 @@
 (def chuchu [:user/username "chuchu"])
 (def tani [:user/username "tani"])
 
+(def ids
+  {:dogs-are-great #uuid "0489a7e5-9fc3-46ec-bdbf-ff4c3794e90e"
+   :ara-supports-dag #uuid "31e3b92e-4cb1-450e-be69-ab3326a3ea23"
+   :animals-are-awesome #uuid "2fdddcd7-bf80-45b2-b695-cc2a369736a5"
+   :dlp-opposes-cag #uuid "7e8907be-b366-4f1c-9440-ca87b4e58744"
+   :dont-like-people #uuid "4d574b3e-794b-41b9-b997-2d9fc8909316"
+   :cwm-supports-dlp #uuid "fa65cec0-7d5b-48d3-b8f4-08f2f018ec8f"})
+
 (def pet-claims
   (concat
    (map
     new-claim
-    [{:id "dogs-are-great"
+    [{:id (ids :dogs-are-great)
       :body "Dogs are great"
       :standalone true
       :featured true
@@ -61,10 +69,10 @@
                {:voter toby :agree true :agreement 100}])
       :evidence (map
                  new-evidence
-                 [{:id "ara-supports-dag"
+                 [{:id (ids :ara-supports-dag)
                    :creator travis
                    :claim (new-claim
-                           {:id "animals-are-awesome"
+                           {:id (ids :animals-are-awesome)
                             :db/id "animals-are-awesome"
                             :body "Animals are awesome"
                             :standalone true
@@ -103,18 +111,18 @@
                            new-relevance-vote
                            [{:voter james :rating 100}
                             {:voter travis :rating 66}])}
-                  {:id "dlp-opposes-cag"
+                  {:id (ids :dlp-opposes-cag)
                    :creator travis
                    :supports false
                    :claim (new-claim
                            {:db/id "dont-like-people"
-                            :id "dont-like-people"
+                            :id (ids :dont-like-people)
                             :body "They don't like people"
                             :created-at #inst "2018-02-02T12:03:00Z"
                             :creator travis
                             :evidence (map
                                        new-evidence
-                                       [{:id "cwm-supports-dlp"
+                                       [{:id (ids :cwm-supports-dlp)
                                          :creator travis
                                          :supports true
                                          :claim (new-claim

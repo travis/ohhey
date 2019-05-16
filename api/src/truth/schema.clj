@@ -13,7 +13,7 @@
     :db/cardinality :db.cardinality/one
     :db/doc "The user's password"}
    {:db/ident :user/id
-    :db/valueType :db.type/string
+    :db/valueType :db.type/uuid
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/value
     :db/doc "The user's id"}
@@ -26,7 +26,7 @@
 
 (def source
   [{:db/ident :source/id
-    :db/valueType :db.type/string
+    :db/valueType :db.type/uuid
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The source's id"}
@@ -62,7 +62,7 @@
     :db/unique :db.unique/value
     :db/doc "The url slug of the claim"}
    {:db/ident :claim/id
-    :db/valueType :db.type/string
+    :db/valueType :db.type/uuid
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The claim's id"}
@@ -100,7 +100,7 @@
 
 (def claim-vote
   [{:db/ident :claim-vote/id
-    :db/valueType :db.type/string
+    :db/valueType :db.type/uuid
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The claim vote's id"}
@@ -116,7 +116,7 @@
 
 (def evidence
   [{:db/ident :evidence/id
-    :db/valueType :db.type/string
+    :db/valueType :db.type/uuid
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The evidence's id"}
@@ -141,7 +141,7 @@
 
 (def relevance-vote
   [{:db/ident :relevance-vote/id
-    :db/valueType :db.type/string
+    :db/valueType :db.type/uuid
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The relevance vote's id"}

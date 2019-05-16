@@ -152,13 +152,13 @@
                  :with ?uniqueness
                  :where
                  (evidence-score ?evidence ?uniqueness ?score ?score-component-count)]
-               fresh-db rules [:evidence/id id]))]
+               fresh-db rules [:evidence/id (data/ids id)]))]
     (is (= [[26600 4]]
-           (evidence-score "ara-supports-dag")))
+           (evidence-score :ara-supports-dag)))
     (is (= [[0 0]]
-           (evidence-score "cwm-supports-dlp")))
+           (evidence-score :cwm-supports-dlp)))
     (is (= [[0 0]]
-           (evidence-score "dlp-opposes-cag")))))
+           (evidence-score :dlp-opposes-cag)))))
 
 (deftest test-support-oppose-score
   (testing "support-oppose-score"
