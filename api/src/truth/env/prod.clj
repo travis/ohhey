@@ -23,8 +23,7 @@
 (def search-client (memoize make-search-client))
 
 (defn client-load [conn]
-  (d/transact conn {:tx-data data/users})
-  (d/transact conn {:tx-data data/claims}))
+  (d/transact conn {:tx-data data/data}))
 
 (comment
 

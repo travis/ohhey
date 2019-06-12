@@ -23,12 +23,10 @@
 (def search-client (memoize make-search-client))
 
 (defn with-load [conn]
-  (d/with conn {:tx-data data/users})
-  (d/with conn {:tx-data data/claims}))
+  (d/with conn {:tx-data data/data}))
 
 (defn client-load [conn]
-  (d/transact conn {:tx-data data/users})
-  (d/transact conn {:tx-data data/claims}))
+  (d/transact conn {:tx-data data/data}))
 
 (comment
   (clojure.core.memoize/memo-clear! client)

@@ -22,14 +22,25 @@
 
 (defn new-source [{db-id :db/id id :id
                    url :url title :title
-                   lccn :lccn page :page}]
+                   book :book page :page}]
   (-> {:db/id (or db-id (default-db-id))
        :source/id (or id (uuid))}
       (cond->
+          book (assoc :source/book book)
           url (assoc :source/url url)
           title (assoc :source/title title)
-          lccn (assoc :source/lccn lccn)
           page (assoc :source/page page))))
+
+(defn new-book [{db-id :db/id id :id
+                 url :url title :title
+                 author :author lccn :lccn}]
+  (-> {:db/id (or db-id (default-db-id))
+       :book/id (or id (uuid))}
+      (cond->
+          url (assoc :book/url url)
+          title (assoc :book/title title)
+          author (assoc :book/author author)
+          lccn (assoc :book/lccn lccn))))
 
 (defn new-claim [{db-id :db/id id :id
                   body :body creator :creator sources :sources

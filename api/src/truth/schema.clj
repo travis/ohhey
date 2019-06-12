@@ -24,6 +24,29 @@
     :db/doc "The user's email"}
    ])
 
+(def book
+  [{:db/ident :book/id
+    :db/valueType :db.type/uuid
+    :db/cardinality :db.cardinality/one
+    :db/unique :db.unique/identity
+    :db/doc "The book's id"}
+   {:db/ident :book/url
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/doc "The url of the book"}
+   {:db/ident :book/title
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/doc "The title of the book"}
+   {:db/ident :book/author
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/doc "The author(s) of the book"}
+   {:db/ident :book/lccn
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/doc "The library of congress catalog number of the book"}])
+
 (def source
   [{:db/ident :source/id
     :db/valueType :db.type/uuid
@@ -38,10 +61,10 @@
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one
     :db/doc "The title of the source"}
-   {:db/ident :source/lccn
-    :db/valueType :db.type/string
+   {:db/ident :source/book
+    :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
-    :db/doc "The url of the source"}
+    :db/doc "If the source is a book, a reference to the book."}
    {:db/ident :source/page
     :db/valueType :db.type/long
     :db/cardinality :db.cardinality/one
@@ -157,6 +180,7 @@
 
 (defn load [conn]
   @(d/transact conn user)
+  @(d/transact conn book)
   @(d/transact conn source)
   @(d/transact conn claim)
   @(d/transact conn claim-vote)
@@ -167,4 +191,4 @@
   (cd/transact
    conn
    {:tx-data
-    (concat user source claim claim-vote evidence relevance-vote)}))
+    (concat user book source claim claim-vote evidence relevance-vote)}))
