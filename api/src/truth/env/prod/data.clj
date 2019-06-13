@@ -271,14 +271,14 @@
         ["In 2019, the \"War on Drugs\" is one pillar of a racial caste system similar to Jim Crow."
          [{:book "new-jim-crow"}]
          {:support
-          [[{:body "In 2019, the mass incarceration of African Americans has created a racial caste system similar to Jim Crow."
-             :sources [{:book "new-jim-crow"}]
-             :evidence [[["In 2019, a person who has been convicted of a felony is considered to be part of a social undercaste by the laws of the United States of America."]]
-                        [["In 2019, the social undercaste created by laws disempowering felons shares many characteristics with the social undercaste created by Jim Crow laws."
-                          [{:book "new-jim-crow"}]]]]}]
+          [[["In 2019, the mass incarceration of African Americans has created a racial caste system similar to Jim Crow."
+             [{:book "new-jim-crow"}]
+             {:support
+              [[["In 2019, a person who has been convicted of a felony is considered to be part of a social undercaste by the laws of the United States of America."]]
+               [["In 2019, the social undercaste created by laws disempowering felons shares many characteristics with the social undercaste created by Jim Crow laws."
+                 [{:book "new-jim-crow"}]]]]}]]
            [["In 2019, the \"War on Drugs\" drives the mass incarceration of African Americans."
              [{:book "new-jim-crow"}]]]]}]
-
 
         ])
   )
