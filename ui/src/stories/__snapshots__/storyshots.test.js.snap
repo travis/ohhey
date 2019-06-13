@@ -303,7 +303,7 @@ exports[`Storyshots Header default 1`] = `
 
 exports[`Storyshots Sources default 1`] = `
 <div
-  className="MuiBox-root-620 MuiBox-root-621"
+  className="MuiBox-root-621 MuiBox-root-622"
 >
   <sup
     className="Component-sup-618"
