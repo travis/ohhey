@@ -250,7 +250,13 @@
      {:url (dkey :source/url)
       :title (dkey :source/title)
       :lccn (dkey :source/lccn)
-      :page (dkey :source/page)}
+      :page (dkey :source/page)
+      :book (dkey :source/book)}
+     :Book
+     {:url (dkey :book/url)
+      :title (dkey :book/title)
+      :lccn (dkey :book/lccn)
+      :author (dkey :book/author)}
      :Evidence
      {:id (dkey :evidence/id)
       :supports (dkey :evidence/supports)

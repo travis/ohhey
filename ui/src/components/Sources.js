@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 import {Box, Popper, Paper, List, ListItem} from '../components/ui'
@@ -12,6 +12,10 @@ export default withStyles(theme => ({
     "&:hover": {
       textDecoration: "underline"
     }
+  },
+  author: {
+    display: 'block',
+    fontSize: "0.83em"
   }
 }))(({sources, classes}) => {
   const [buttonEl, setShowSources] = useState(null)
@@ -25,9 +29,16 @@ export default withStyles(theme => ({
       <Popper open={sourcesShown} onClose={close} anchorEl={buttonEl} >
         <Paper onMouseLeave={close}>
           <List>
-            {sources && sources.map(({url, title}, i) => (
-              <ListItem key={url}>
-                <a href={url} target="_blank" rel="noopener noreferrer">{title}</a>
+            {sources && sources.map(({url, title, book}, i) => (
+              <ListItem key={url || (book && book.url)}>
+                {book ?
+                 (
+                   <p>
+                     <a href={book.url} target="_blank" rel="noopener noreferrer">{book.title}</a>
+                     {book.author  && (<i className={classes.author}>by {book.author}</i>)}
+                   </p>
+                 ) :
+                 (<a href={url} target="_blank" rel="noopener noreferrer">{title}</a>)}
               </ListItem>
             ))}
           </List>

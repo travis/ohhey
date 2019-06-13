@@ -39,11 +39,19 @@ type Claim implements Node {
   sources: [Source]
 }
 
+type Book {
+  url: String
+  title: String
+  author: String
+  lccn: String
+}
+
 type Source {
   url: String
   title: String
   lccn: String
-  page: String
+  page: Int
+  book: Book
 }
 
 type EvidenceConnection {

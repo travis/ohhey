@@ -22,7 +22,7 @@ fragment fullClaimFields on Claim {
   agreementCount
   myAgreement
   score
-  sources { url, title, lccn, page }
+  sources { url, title, lccn, page, book { url, title, author, lccn } }
 }
 `
 
@@ -46,7 +46,7 @@ fragment fullUserClaimFields on Claim {
   slug
   creator { username }
   myAgreement
-  sources { url, title, lccn, page }
+  sources { url, title, lccn, page, book { url, title, author, lccn } }
   userMeta(username: $username) {
     id
     agreement
