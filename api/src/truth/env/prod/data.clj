@@ -90,7 +90,7 @@
   (map
    new-book
    [{:db/id "new-jim-crow"
-     :title "The New Jim Crow: Mass Incerceration in the Age of Colorblindness"
+     :title "The New Jim Crow: Mass Incarceration in the Age of Colorblindness"
      :author "Michelle Alexander"
      :url "http://newjimcrow.com/"}]))
 
