@@ -23,47 +23,67 @@
 (def travis "travis")
 (def toby "toby")
 
-(def ->toby-claim)
+(defprotocol Shorthand
+  (->claim [data])
+  (->evidence [data])
+  (->evidence-list [data]))
 
 (defn toby-relevance-vote [vote]
   (new-relevance-vote (merge {:voter toby} vote)))
 
-(defn toby-evidence [{claim :claim votes :votes
+(defn toby-evidence [{claim :claim votes :votes supports :supports
                       :as evidence
-                      :or {votes []}}]
+                      :or {votes [] supports true}}]
   (new-evidence (-> evidence
+                    (assoc :supports supports)
                     (assoc :creator toby)
-                    (assoc :claim (->toby-claim claim))
+                    (assoc :claim (->claim claim))
                     (assoc :votes (map toby-relevance-vote votes)))))
 
 (defn toby-claim-vote [vote]
   (new-claim-vote (merge {:voter toby} vote)))
 
-
-(defn toby-claim [{sources :sources evidence :evidence votes :votes
-                   creator :creator
+(defn toby-claim [{sources :sources votes :votes creator :creator
+                   evidence :evidence supported-by :supported-by countered-by :countered-by
                    :as claim
                    :or {sources [] evidence [] votes [] creator toby}}]
   (new-claim (-> claim
                  (assoc :creator creator)
                  (assoc :sources (map new-source sources))
-                 (assoc :evidence (map toby-evidence evidence))
+                 (assoc :evidence (->evidence-list evidence))
                  (assoc :votes (map toby-claim-vote votes)))))
 
-(defprotocol Toby
-  (->toby-claim [data]))
+(defn map->evidence-list [{supporting-evidence :support opposing-evidence :oppose}]
+  (concat (map (fn [evidence] (assoc (->evidence evidence) :evidence/supports true))
+               supporting-evidence)
+          (map (fn [evidence] (assoc (->evidence evidence) :evidence/supports false))
+               opposing-evidence)))
 
-(extend-protocol Toby
+(extend-protocol Shorthand
   clojure.lang.PersistentArrayMap
-  (->toby-claim [claim] (toby-claim claim))
+  (->claim [claim] (toby-claim claim))
+  (->evidence [evidence] (toby-evidence evidence))
+  (->evidence-list [evidence-map] (map->evidence-list evidence-map))
   clojure.lang.PersistentHashMap
-  (->toby-claim [claim] (toby-claim claim))
+  (->claim [claim] (toby-claim claim))
+  (->evidence [evidence] (toby-evidence evidence))
+  (->evidence-list [evidence-map] (map->evidence-list evidence-map))
   clojure.lang.PersistentVector
-  (->toby-claim [[claim-body & [sources evidence]]]
-    (->toby-claim {:body claim-body :evidence evidence :sources sources}))
+  (->claim [[claim-body & [sources evidence]]]
+    (->claim {:body claim-body :evidence evidence :sources sources}))
+  (->evidence [claim]
+    (->evidence {:claim claim}))
+  (->evidence-list [evidence-list]
+    (map ->evidence evidence-list))
+  clojure.lang.LazySeq
+  (->evidence-list [evidence-list]
+    (map ->evidence-list evidence-list))
   java.lang.String
-  (->toby-claim [tmpid]
-    tmpid))
+  (->claim [tmpid]
+    tmpid)
+  nil
+  (->evidence-list [n]
+    []))
 
 (def books
   (map
@@ -73,8 +93,8 @@
      :author "Michelle Alexander"
      :url "http://newjimcrow.com/"}]))
 
-(def tmp-claims
-  (map ->toby-claim
+(def claims
+  (map ->claim
        [{:db/id "animals-are-awesome"
          :body "Animals are awesome."
          :standalone true
@@ -161,20 +181,18 @@
          :creator toby
          :sources [{:title "Existence of God"
                     :url "https://en.wikipedia.org/wiki/Existence_of_God"}]
-         :evidence [{:creator toby
-                     :supports true
-                     :claim {:body "It is impossible for an entity to cause itself to be created, and it is impossible for there to be an infinite chain of causes. Therefore, there must be a first cause, itself uncaused."
-                             :creator toby
-                             :sources [{:title "First cause"
-                                        :url "https://en.wikipedia.org/wiki/Unmoved_mover#First_cause"}]
-                             :created-at #inst "2019-05-09T17:30:00Z"}}
-                    {:creator toby
-                     :supports false
-                     :claim {:body "It is possible to explain the creation of the universe purely within the realm of science, so the idea of a divine being is unnecessary. "
-                             :creator toby
-                             :sources [{:title "The Grand Design"
-                                        :url "https://en.wikipedia.org/wiki/The_Grand_Design_(book)"}]
-                             :created-at #inst "2019-05-09T17:31:00Z"}}]}
+         :evidence {:support
+                    [{:claim {:body "It is impossible for an entity to cause itself to be created, and it is impossible for there to be an infinite chain of causes. Therefore, there must be a first cause, itself uncaused."
+                              :creator toby
+                              :sources [{:title "First cause"
+                                         :url "https://en.wikipedia.org/wiki/Unmoved_mover#First_cause"}]
+                              :created-at #inst "2019-05-09T17:30:00Z"}}]
+                    :oppose
+                    [{:claim {:body "It is possible to explain the creation of the universe purely within the realm of science, so the idea of a divine being is unnecessary. "
+                              :creator toby
+                              :sources [{:title "The Grand Design"
+                                         :url "https://en.wikipedia.org/wiki/The_Grand_Design_(book)"}]
+                              :created-at #inst "2019-05-09T17:31:00Z"}}]}}
 
         {:body "Illegal immigration does not increase crime."
          :standalone true
@@ -249,17 +267,16 @@
                          :sources [{:title "Experimental rejection of observer-independence in the quantum world"
                                     :url "https://arxiv.org/abs/1902.05080"}]}
                      :votes {:rating 100}}]}
+        ["In 2019, the \"War on Drugs\" is one pillar of a racial caste system similar to Jim Crow."
+         [{:book "new-jim-crow"}]]
         {:body "In 2019, the mass incarceration of African Americans has created a racial caste system similar to Jim Crow."
          :sources [{:book "new-jim-crow"}]
-         :evidence [{:supports true
-                     :claim {:body "In 2019, a person who has been convicted of a felony is considered to be part of a social undercaste by the laws of the United States of America."}}
-                    {:supports true
-                     :claim {:body "In 2019, the social undercaste created by laws disempowering felons shares many characteristics with the social undercaste created by Jim Crow laws."}}]}
+         :evidence [["In 2019, a person who has been convicted of a felony is considered to be part of a social undercaste by the laws of the United States of America."]
+                    ["In 2019, the social undercaste created by laws disempowering felons shares many characteristics with the social undercaste created by Jim Crow laws."
+                     [{:book "new-jim-crow"}]]]}
         ["In 2019, the \"War on Drugs\" drives the mass incarceration of African Americans."
          [{:book "new-jim-crow"}]]
         ])
   )
-
-(def claims tmp-claims)
 
 (def data (concat users books claims))
