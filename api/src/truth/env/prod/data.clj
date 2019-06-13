@@ -279,10 +279,11 @@
                  [{:book "new-jim-crow"}]]]
                [["Jim Crow era segregation laws and modern mass incarceration have similar political origins."
                  [{:book "new-jim-crow" :page 190}]
-                 [[["Jim Crow era segregation laws were proposed as part of a deliberate effort to deflect hostility that had been brewing against the white elite away from them and toward African Americans"
-                    [{:book "new-jim-crow" :page 190}]]
-                   ["American conservatives in the 1970s and 1980s deliberately used racially coded rhetoric on crime and welfare to appeal to racial biases and the economic vulnerabilities of poor and working-class white people."
-                    [{:book "new-jim-crow" :page 190}]]]]]]]}]]
+                 {:support
+                  [[["Jim Crow era segregation laws were proposed as part of a deliberate effort to deflect hostility that had been brewing against the white elite away from them and toward African Americans"
+                     [{:book "new-jim-crow" :page 190}]]]
+                   [["American conservatives in the 1970s and 1980s deliberately used racially coded rhetoric on crime and welfare to appeal to racial biases and the economic vulnerabilities of poor and working-class white people."
+                     [{:book "new-jim-crow" :page 190}]]]]}]]]}]]
            [["In 2019, the \"War on Drugs\" drives the mass incarceration of African Americans."
              [{:book "new-jim-crow"}]]]]}]
 
