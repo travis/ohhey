@@ -68,10 +68,11 @@
   (->claim [claim] (toby-claim claim))
   (->evidence [evidence] (toby-evidence evidence))
   (->evidence-list [evidence-map] (map->evidence-list evidence-map))
+
   clojure.lang.PersistentVector
   (->claim [[claim-body & [sources evidence]]]
     (->claim {:body claim-body :evidence evidence :sources sources}))
-  (->evidence [claim]
+  (->evidence [[claim]]
     (->evidence {:claim claim}))
   (->evidence-list [evidence-list]
     (map ->evidence evidence-list))
@@ -182,17 +183,17 @@
          :sources [{:title "Existence of God"
                     :url "https://en.wikipedia.org/wiki/Existence_of_God"}]
          :evidence {:support
-                    [{:claim {:body "It is impossible for an entity to cause itself to be created, and it is impossible for there to be an infinite chain of causes. Therefore, there must be a first cause, itself uncaused."
-                              :creator toby
-                              :sources [{:title "First cause"
-                                         :url "https://en.wikipedia.org/wiki/Unmoved_mover#First_cause"}]
-                              :created-at #inst "2019-05-09T17:30:00Z"}}]
+                    [[{:body "It is impossible for an entity to cause itself to be created, and it is impossible for there to be an infinite chain of causes. Therefore, there must be a first cause, itself uncaused."
+                       :creator toby
+                       :sources [{:title "First cause"
+                                  :url "https://en.wikipedia.org/wiki/Unmoved_mover#First_cause"}]
+                       :created-at #inst "2019-05-09T17:30:00Z"}]]
                     :oppose
-                    [{:claim {:body "It is possible to explain the creation of the universe purely within the realm of science, so the idea of a divine being is unnecessary. "
-                              :creator toby
-                              :sources [{:title "The Grand Design"
-                                         :url "https://en.wikipedia.org/wiki/The_Grand_Design_(book)"}]
-                              :created-at #inst "2019-05-09T17:31:00Z"}}]}}
+                    [[{:body "It is possible to explain the creation of the universe purely within the realm of science, so the idea of a divine being is unnecessary. "
+                       :creator toby
+                       :sources [{:title "The Grand Design"
+                                  :url "https://en.wikipedia.org/wiki/The_Grand_Design_(book)"}]
+                       :created-at #inst "2019-05-09T17:31:00Z"}]]}}
 
         {:body "Illegal immigration does not increase crime."
          :standalone true
@@ -268,14 +269,17 @@
                                     :url "https://arxiv.org/abs/1902.05080"}]}
                      :votes {:rating 100}}]}
         ["In 2019, the \"War on Drugs\" is one pillar of a racial caste system similar to Jim Crow."
-         [{:book "new-jim-crow"}]]
-        {:body "In 2019, the mass incarceration of African Americans has created a racial caste system similar to Jim Crow."
-         :sources [{:book "new-jim-crow"}]
-         :evidence [["In 2019, a person who has been convicted of a felony is considered to be part of a social undercaste by the laws of the United States of America."]
-                    ["In 2019, the social undercaste created by laws disempowering felons shares many characteristics with the social undercaste created by Jim Crow laws."
-                     [{:book "new-jim-crow"}]]]}
-        ["In 2019, the \"War on Drugs\" drives the mass incarceration of African Americans."
-         [{:book "new-jim-crow"}]]
+         [{:book "new-jim-crow"}]
+         {:support
+          [[{:body "In 2019, the mass incarceration of African Americans has created a racial caste system similar to Jim Crow."
+             :sources [{:book "new-jim-crow"}]
+             :evidence [[["In 2019, a person who has been convicted of a felony is considered to be part of a social undercaste by the laws of the United States of America."]]
+                        [["In 2019, the social undercaste created by laws disempowering felons shares many characteristics with the social undercaste created by Jim Crow laws."
+                          [{:book "new-jim-crow"}]]]]}]
+           [["In 2019, the \"War on Drugs\" drives the mass incarceration of African Americans."
+             [{:book "new-jim-crow"}]]]]}]
+
+
         ])
   )
 
