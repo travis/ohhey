@@ -115,8 +115,8 @@
              (evidence-for "cats-are-great" "travis")))
       (is (= [["Animals are awesome" -1 100]]
              (evidence-for "cats-are-great" "chuchu")))
-      (is (= [["Animals are awesome" 100 -101]
-              ["Animals are awesome" -1 -101]]
+      (is (= [["Animals are awesome" -1 -101]
+              ["Animals are awesome" 100 -101]]
              (evidence-for "cats-are-great" "james")))
       (is (= [[ "Animals are awesome" -1 100]]
              (evidence-for "cats-are-great" "toby")))
