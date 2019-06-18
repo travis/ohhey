@@ -1,5 +1,6 @@
 (ns truth.env.prod.data
   (:require
+   [clojure.walk :refer [postwalk]]
    [truth.domain
     :refer [new-user new-claim new-claim-vote new-book
             new-source new-evidence new-relevance-vote]
@@ -85,6 +86,11 @@
   nil
   (->evidence-list [n]
     []))
+
+(defn print-claim [claim]
+  [(:claim/body claim)
+   (for [evidence (:claim/evidence claim)]
+     (print-claim (:evidence/claim evidence)))])
 
 (def books
   (map
@@ -286,6 +292,28 @@
                      [{:book "new-jim-crow" :page 190}]]]]}]]]}]]
            [["In 2019, the \"War on Drugs\" drives the mass incarceration of African Americans."
              [{:book "new-jim-crow"}]]]]}]
+        ["Earth's climate is changing rapidly as a result of human activity."
+         [{:url "https://climate.nasa.gov/evidence/" :title "NASA Climate Change Facts"}]
+         {:support
+          [[["More than 97 percent of actively publishing climate scientists agree that climate warming trends over the last century are a result of human activity."
+             [{:url "https://climate.nasa.gov/scientific-consensus/" :title "NASA Climate Change Scientific Consensus"}]]]
+           [["An increase in carbon dioxide in the earth's atmosphere is driving a rapid increase in global temperatures."
+             [{:url "https://climate.nasa.gov/evidence/" :title "NASA Climate Change Facts"}]
+             {:support
+              [[["Carbon dioxide traps infrared radiation in the atmosphere."]]
+               [["Measured increases in atmospheric concentrations of carbon dioxide correlate with measured increases in global temperatures."
+                 [{:url "https://skepticalscience.com/The-correlation-between-CO2-and-temperature.html" :title "The correlation between CO2 and temperature"}]]]]}]]
+           [["Human activity has driven a rapid and historically unprecedented rise in the amount of carbin dioxide in the atmosphere."
+             [{:url "https://skepticalscience.com/co2-increase-is-natural-not-human-caused.htm" :title "What is causing the increase in atmospheric CO2?"}]]]
+           [["Global anually averaged surface air temperature increased by about 1.8°F (1.0°C) from 1901-2016"
+             [{:url "https://science2017.globalchange.gov/chapter/executive-summary/"
+               :title "U.S. Global Change Research Program Climate Science Special Report"}
+              {:url "https://www.ncdc.noaa.gov/cag/global/time-series/globe/land_ocean/12/5/1901-2019"
+               :title "Global Land and Temperature Anomalies"}]]
+            ["The number of wildfires is increasing and wildfire season is getting longer in the Western United States."
+             [{:url "https://www.ucsusa.org/global-warming/science-and-impacts/impacts/infographic-wildfires-climate-change.html"
+               :title "Union of Concerned Scientists Western Wildfires and Climate Change"}]]]
+           ]}]
 
         ])
   )
