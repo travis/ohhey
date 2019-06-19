@@ -92,6 +92,9 @@
    (for [evidence (:claim/evidence claim)]
      (print-claim (:evidence/claim evidence)))])
 
+(defn ->claim-print [shorthand-claim]
+  (print-claim (->claim shorthand-claim)))
+
 (def books
   (map
    new-book
@@ -314,7 +317,27 @@
              [{:url "https://www.ucsusa.org/global-warming/science-and-impacts/impacts/infographic-wildfires-climate-change.html"
                :title "Union of Concerned Scientists Western Wildfires and Climate Change"}]]]
            ]}]
-
+        ["The death penalty should be abolished."
+         [{:url "https://www.amnesty.org.au/5-reasons-abolish-death-penalty/" :title "Five Reasons to Abolish the Death Penalty"}
+          {:url "https://www.nytimes.com/2019/06/14/opinion/sunday/death-penalty.html" :title "When We Kill"}]
+         {:support
+          [[["The death penalty is irreversible."]]
+           [["The death penalty is frequently overturned in the United States."
+             [{:url "https://www.innocenceproject.org/all-cases/" :title "Innocence Project - All Cases"}
+              {:url "https://en.wikipedia.org/wiki/List_of_exonerated_death_row_inmates#United_States" :title "Wikipedia - List of exonerated death row inmates in the United States"}
+              ]]]
+           [["There is no credible scientific evidence that the death penalty deters crime."
+             [{:url "https://www.abc.net.au/news/2015-02-26/fact-check3a-does-the-death-penalty-deter3f/6116030" :title "Fact check: No proof the death penalty prevents crime"}]]]
+           [["A 2009 study found that 88% of surveyed members of the American Criminology Society did not believe the death penalty deterred murderers more than long term imprisonment."]]]
+          :oppose
+          [[["Long term imprisonment of people who commit heinous crimes is very costly."]]
+           [["People who commit murder deserve to be killed."
+             []
+             {:oppose
+              [[["Most killers are untreated traumatized children who are controlling the actions of the scary adults they have become."
+                 [{:url "https://www.apa.org/monitor/2016/02/killers" :title "Listening to killers"}]]]
+               [["The goal of the United States of America's criminal justice system should be to rehabilitate offenders."]]]}]]]}]
+        ["Prisons should not be operated by private companies."]
         ])
   )
 
