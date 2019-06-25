@@ -344,6 +344,16 @@
                  [{:url "https://www.apa.org/monitor/2016/02/killers" :title "Listening to killers"}]]]
                [["The goal of the United States of America's criminal justice system should be to rehabilitate offenders."]]]}]]]}]
         ["Prisons should not be operated by private companies."]
+        ["Having aspirations helps us navigate life in a meaningful and fulfilling way."
+         []
+         {:oppose
+          [[["Failing to make progress toward our aspirations causes suffering."
+             []
+             {:oppose
+              [[["Failing to make progress toward our aspirations doesn't cause suffering, a negative fixation on that lack of progress causes suffering."
+                 {:url "https://www.ecu.edu.au/news/latest-news/2019/06/not-always-reaching-your-potential-is-okay-but-overthinking-it-is-a-problem"
+                  :title "Not always reaching your potential is okay, but overthinking it is a problem"}]]]}]]
+           ]}]
         ])
   )
 
