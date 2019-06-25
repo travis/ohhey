@@ -71,8 +71,9 @@
   (->evidence-list [evidence-map] (map->evidence-list evidence-map))
 
   clojure.lang.PersistentVector
-  (->claim [[claim-body & [sources evidence]]]
-    (->claim {:body claim-body :evidence evidence :sources sources}))
+  (->claim [[claim-body & [sources evidence] :as claim]]
+    (->claim (merge {:body claim-body :evidence evidence :sources sources}
+                    (meta claim))))
   (->evidence [[claim]]
     (->evidence {:claim claim}))
   (->evidence-list [evidence-list]
@@ -206,6 +207,7 @@
 
         {:body "Illegal immigration does not increase crime."
          :standalone true
+         :featured true
          :created-at #inst "2019-05-14T13:09:00Z"
          :creator toby
          :sources [{:title "Is There a Connection Between Undocumented Immigrants and Crime?"
@@ -295,6 +297,7 @@
                      [{:book "new-jim-crow" :page 190}]]]]}]]]}]]
            [["In 2019, the \"War on Drugs\" drives the mass incarceration of African Americans."
              [{:book "new-jim-crow"}]]]]}]
+        ^{:featured true}
         ["Earth's climate is changing rapidly as a result of human activity."
          [{:url "https://climate.nasa.gov/evidence/" :title "NASA Climate Change Facts"}]
          {:support
