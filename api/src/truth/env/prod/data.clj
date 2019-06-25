@@ -312,8 +312,14 @@
              [{:url "https://science2017.globalchange.gov/chapter/executive-summary/"
                :title "U.S. Global Change Research Program Climate Science Special Report"}
               {:url "https://www.ncdc.noaa.gov/cag/global/time-series/globe/land_ocean/12/5/1901-2019"
-               :title "Global Land and Temperature Anomalies"}]]
-            ["The number of wildfires is increasing and wildfire season is getting longer in the Western United States."
+               :title "Global Land and Temperature Anomalies"}]]]
+           [["Glacial melting in the Himalayas is accelerating."
+             [{:url "https://www.theguardian.com/environment/2019/jun/19/himalayan-glacier-melting-doubled-since-2000-scientists-reveal"
+               :title "Himalayan glacier melting doubled since 2000, spy satellites show"}]
+             {:support
+              [[["Between 1975 and 2000, Himalayan glacier surfaces sank by an average of 22cm per year."]]
+               [["Between 2000 and 2016, Himalayan glacier surfaces sank by an average of 43cm per year."]]]}]]
+           [["The number of wildfires is increasing and wildfire season is getting longer in the Western United States."
              [{:url "https://www.ucsusa.org/global-warming/science-and-impacts/impacts/infographic-wildfires-climate-change.html"
                :title "Union of Concerned Scientists Western Wildfires and Climate Change"}]]]
            ]}]
