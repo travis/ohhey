@@ -13,6 +13,7 @@ import ClaimPage from './pages/Claim'
 import UserClaimPage from './pages/UserClaim'
 import HomePage from './pages/Home'
 import SearchPage from './pages/Search'
+import LoginPage from './pages/Login'
 import {AuthenticationProvider } from './authentication'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from './components/Header'
@@ -50,7 +51,7 @@ const UI = withAuth(({authData: {currentUser, userLoading, logIn, logOut}}) => (
     <Content>
       <Switch>
         <Route exact path="/" component={HomePage}/>
-        <Route path="/login" component={Header}/>
+        <Route path="/login" component={LoginPage}/>
         <Route path="/all" component={teaseAnon(Claims)}/>
         <Route path="/search" component={teaseAnon(SearchPage)}/>
         <Route path="/ibelieve/:slug" component={ClaimPage}/>
