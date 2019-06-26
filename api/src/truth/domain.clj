@@ -279,7 +279,8 @@
                             ?agree-disagree-score ?support-oppose-score ?support-oppose-score-component-count)])
          db rules (or user-ref anon-user-ref))
         (map (fn [result] (apply assoc-claim-stats result)))
-        (sort-by :claim/created-at))))
+        (sort-by :claim/created-at)
+        reverse)))
 
 (defn get-all-claims-as
   ([db user-ref]
