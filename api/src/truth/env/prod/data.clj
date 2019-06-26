@@ -325,7 +325,15 @@
            [["The number of wildfires is increasing and wildfire season is getting longer in the Western United States."
              [{:url "https://www.ucsusa.org/global-warming/science-and-impacts/impacts/infographic-wildfires-climate-change.html"
                :title "Union of Concerned Scientists Western Wildfires and Climate Change"}]]]
-           ]}]
+           ]
+          :oppose
+          [[["Over the past few hundred years, there has been a steady increase in the numbers of sunspots, at the time when the Earth has been getting warmer. The data suggests solar activity is influencing the global climate causing the world to get warmer."
+             [{:url "http://news.bbc.co.uk/2/hi/science/nature/3869753.stm"
+               :title "Sunspots reaching 1,000-year high"}]
+             {:oppose
+              [[["The sun's energy output has been decreasing since the 1980s, but global temperatures have continued to increase."
+                 [{:url "https://skepticalscience.com/solar-activity-sunspots-global-warming-basic.htm"
+                   :title "Sun & climate: moving in opposite directions"}]]]]}]]]}]
         ["The death penalty should be abolished."
          [{:url "https://www.amnesty.org.au/5-reasons-abolish-death-penalty/" :title "Five Reasons to Abolish the Death Penalty"}
           {:url "https://www.nytimes.com/2019/06/14/opinion/sunday/death-penalty.html" :title "When We Kill"}]
