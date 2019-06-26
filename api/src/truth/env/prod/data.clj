@@ -355,6 +355,12 @@
                  [{:url "https://www.apa.org/monitor/2016/02/killers" :title "Listening to killers"}]]]
                [["The goal of the United States of America's criminal justice system should be to rehabilitate offenders."]]]}]]]}]
         ["Prisons should not be operated by private companies."]
+        ["Abortion should be legal."
+         []
+         {:support
+          [[["A woman's right to bodily autonomy outweighs any moral harm caused by terminating a fetus."]]]
+          :oppose
+          [[["Abortion ends a life."]]]}]
         ["Having aspirations helps us navigate life in a meaningful and fulfilling way."
          []
          {:oppose
