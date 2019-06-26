@@ -53,6 +53,7 @@ const UI = withAuth(({authData: {currentUser, userLoading, logIn, logOut}}) => (
         <Route exact path="/" component={HomePage}/>
         <Route path="/login" component={LoginPage}/>
         <Route path="/all" component={teaseAnon(Claims)}/>
+        <Route path="/featured" component={() => <Claims featured />}/>
         <Route path="/search" component={teaseAnon(SearchPage)}/>
         <Route path="/ibelieve/:slug" component={ClaimPage}/>
         <Route path="/idontbelieve/:slug" component={ClaimPage}/>

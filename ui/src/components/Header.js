@@ -27,17 +27,16 @@ export default withStyles({
   <header>
     <AppBar color="default" position="static">
       <Toolbar >
-        <Link to="/"><HeaderLogo/></Link>
-        {/*<MenuButton menuItems={[
-           <MenuItem key="/">
-           <Link to="/">What?</Link>
-           </MenuItem>,
-           <MenuItem key="/all">
-           <Link to="/all">All</Link>
-           </MenuItem>
-           ]}>
-           <HeaderLogo/>
-           </MenuButton>*/}
+        <MenuButton menuItems={[
+          <MenuItem key="/">
+            <Link to="/">What?</Link>
+          </MenuItem>,
+          <MenuItem key="/featured">
+            <Link to="/featured">Featured</Link>
+          </MenuItem>
+        ]}>
+          <HeaderLogo/>
+        </MenuButton>
         <Typography variant="h6" className={classes.ohhey}>
           oh hey!
         </Typography>
