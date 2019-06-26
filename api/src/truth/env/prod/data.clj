@@ -311,7 +311,7 @@
                  [{:url "https://skepticalscience.com/The-correlation-between-CO2-and-temperature.html" :title "The correlation between CO2 and temperature"}]]]]}]]
            [["Human activity has driven a rapid and historically unprecedented rise in the amount of carbin dioxide in the atmosphere."
              [{:url "https://skepticalscience.com/co2-increase-is-natural-not-human-caused.htm" :title "What is causing the increase in atmospheric CO2?"}]]]
-           [["Global anually averaged surface air temperature increased by about 1.8°F (1.0°C) from 1901-2016"
+           [["Global annually averaged surface air temperature increased by about 1.8°F (1.0°C) from 1901-2016"
              [{:url "https://science2017.globalchange.gov/chapter/executive-summary/"
                :title "U.S. Global Change Research Program Climate Science Special Report"}
               {:url "https://www.ncdc.noaa.gov/cag/global/time-series/globe/land_ocean/12/5/1901-2019"
