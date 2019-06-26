@@ -19,7 +19,16 @@
     {:db/id "travis"
      :username "travis"
      :email "travis@ohhey.fyi"
-     :password "cats"}]))
+     :password "cats"}
+    {:username "rylan"
+     :email "rylan@colab.coop"
+     :password "ithaca"}
+    {:username "mckenzie"
+     :email "mckenzie@colab.coop"
+     :password "cayuga"}
+    {:username "ethan"
+     :email "ethan@colab.coop"
+     :password "chester"}]))
 
 (def travis "travis")
 (def toby "toby")
