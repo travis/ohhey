@@ -30,7 +30,7 @@ export default withStyles({
         <MenuButton menuItems={[
           (currentUser && (
             <MenuItem key="/">
-              <Link to="/">What?</Link>
+              <Link to="/what">What?</Link>
             </MenuItem>
           )),
           <MenuItem key="/featured">
