@@ -55,13 +55,17 @@
 
 (defn toby-claim [{sources :sources votes :votes creator :creator
                    evidence :evidence supported-by :supported-by countered-by :countered-by
+                   agree :agree
                    :as claim
                    :or {sources [] evidence [] votes [] creator toby}}]
   (new-claim (-> claim
                  (assoc :creator creator)
                  (assoc :sources (map new-source sources))
                  (assoc :evidence (->evidence-list evidence))
-                 (assoc :votes (map toby-claim-vote votes)))))
+                 (assoc :votes (map toby-claim-vote
+                                    (if (nil? agree)
+                                      votes
+                                      (cons {:agreement (if agree 100 -100)} votes)))))))
 
 (defn map->evidence-list [{supporting-evidence :support opposing-evidence :oppose}]
   (concat (map (fn [evidence] (assoc (->evidence evidence) :evidence/supports true))
@@ -119,13 +123,13 @@
          :body "Animals are awesome."
          :standalone true
          :created-at #inst "2019-05-01T12:01:00Z"
-         :votes [{:voter toby :agree true :agreement 100}]}
+         :votes [{:voter toby :agreement 100}]}
 
         {:body "Dogs are great."
          :standalone true
          :created-at #inst "2019-05-01T12:00:00Z"
-         :votes [{:voter travis :agree true :agreement 100}
-                 {:voter toby :agree true :agreement 100}]
+         :votes [{:voter travis :agreement 100}
+                 {:voter toby :agreement 100}]
          :evidence [{:creator travis
                      :claim "animals-are-awesome"
                      :supports true
@@ -135,8 +139,8 @@
          :featured true
          :created-at #inst "2019-05-01T12:00:00Z"
          :creator toby
-         :votes [{:voter travis :agree true :agreement 100}
-                 {:voter toby :agree true :agreement 100}]
+         :votes [{:voter travis :agreement 100}
+                 {:voter toby :agreement 100}]
          :evidence [{:creator toby
                      :claim "animals-are-awesome"
                      :supports true
@@ -217,6 +221,7 @@
         {:body "Illegal immigration does not increase crime."
          :standalone true
          :featured true
+         :agree true
          :created-at #inst "2019-05-14T13:09:00Z"
          :creator toby
          :sources [{:title "Is There a Connection Between Undocumented Immigrants and Crime?"
@@ -249,6 +254,7 @@
                              :creator toby
                              :created-at #inst "2019-05-14T13:12:00Z"}}
                     {:creator toby
+                     :agree false
                      :supports false
                      :claim {:body "The US federal government's State Criminal Alien Assistence Program data suggest undocumented immigrants commit crime at a higher rate than citizens and documented immigrants."
                              :creator toby
@@ -257,6 +263,7 @@
                                         :url "https://www.fairus.org/issue/illegal-immigration/scaap-data-suggest-illegal-aliens-commit-crime-much-higher-rate-citizens"}]
                              :evidence [{:creator toby
                                          :supports false
+                                         :agree true
                                          :claim {:body "The Federation for American Immigration Reform report on undocumented immigrant incarceration rates is poorly contrived and terribly executed."
                                                  :creator toby
                                                  :created-at #inst "2019-05-14T13:14:00Z"
@@ -336,7 +343,8 @@
                :title "Union of Concerned Scientists Western Wildfires and Climate Change"}]]]
            ]
           :oppose
-          [[["Over the past few hundred years, there has been a steady increase in the numbers of sunspots, at the time when the Earth has been getting warmer. The data suggests solar activity is influencing the global climate causing the world to get warmer."
+          [[^{:agree false}
+            ["Over the past few hundred years, there has been a steady increase in the numbers of sunspots, at the time when the Earth has been getting warmer. The data suggests solar activity is influencing the global climate causing the world to get warmer."
              [{:url "http://news.bbc.co.uk/2/hi/science/nature/3869753.stm"
                :title "Sunspots reaching 1,000-year high"}]
              {:oppose
