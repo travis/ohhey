@@ -12,7 +12,8 @@
              :refer [get-user-by-email get-all-claims get-contributors get-claim-evidence]]
             [truth.search :as search]
             [truth.features :as features]
-            [datomic.client.api :as d]))
+            [datomic.client.api :as d]
+            [datomic.ion.cast :as cast]))
 
 (defn dkey
   [key]
@@ -28,23 +29,31 @@
           (if (= (:db/error (:data exception-map)) :db.error/unique-conflict)
             (do
               (log/debug e (str "caught :db.error/unique-conflict while resolving "resolver-path))
+              (cast/dev {:msg (str "caught :db.error/unique-conflict while resolving "resolver-path)
+                         :ex e})
               (resolve-as nil {:message "this mutation attempted to assert a duplicate value"
                                :data {:truth.error/type :truth.error/unique-conflict}}))
             (do
               (println e (str "caught clojure.lang.ExceptionInfo while resolving "resolver-path))
               (log/error e (str "caught clojure.lang.ExceptionInfo while resolving "resolver-path))
+              (cast/alert {:msg (str "caught clojure.lang.ExceptionInfo while resolving "resolver-path)
+                           :ex e})
               (resolve-as nil {:message "unknown clojure.lang.ExceptionInfo - please contact the administrator"
                                :data {:truth.error/type :truth.error/unknown-exception-info
                                       :truth.error/error exception-map}})))))
       (catch java.util.concurrent.ExecutionException e
         (println e (str "caught execution exception while resolving "resolver-path))
         (log/error e (str "caught execution exception while resolving "resolver-path))
+        (cast/alert {:msg (str "caught execution exception while resolving "resolver-path)
+                     :ex e})
         (resolve-as nil {:message "unknown execution exception - please contact the administrator"
                          :data {:truth.error/type :truth.error/unknown-execution-exception
                                 :truth.error/error (Throwable->map e)}}))
       (catch Throwable t
         (println t (class t) (str "caught error while resolving "resolver-path))
         (log/error t (class t) (str "caught error while resolving "resolver-path))
+        (cast/alert {:msg (str "caught error while resolving "resolver-path)
+                     :ex t})
         (resolve-as nil {:message "unknown error - please contact the administrator"
                          :data {:truth.error/type :truth.error/unknown-error
                                 :truth.error/error (Throwable->map t)}})))))
