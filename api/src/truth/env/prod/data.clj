@@ -364,6 +364,31 @@
                  [{:url "https://www.apa.org/monitor/2016/02/killers" :title "Listening to killers"}]]]
                [["The goal of the United States of America's criminal justice system should be to rehabilitate offenders."]]]}]]]}]
         ["Prisons should not be operated by private companies."]
+        ["Prisons should be abolished."
+         []
+         {:support
+          [[["Prisons exacerbate many of the underlying problems that lead people to cause harm."
+             []
+             {:support
+              [[["Prisoners are exposed to more violence than non-prisoners."]]
+               [["Prisoners frequently accrue debts in prison that leave them more impoverished once they leave than when they went to prison."]]
+               [["Most people with substance abuse issues who are released from prison relapse once they are out."
+                 [{:url "https://www.prisonerhealth.org/educational-resources/factsheets-2/incarceration-substance-abuse-and-addiction/"
+                   :title "Incarceration, Substance Abuse, and Addiction" :author "The Center for Prisoner Health and Human Rights"}]]]]}]]
+           [["Putting people in prisons does not solve any of the underlying problems that lead people to cause harm."
+             [{:url "http://criticalresistance.org/wp-content/uploads/2012/06/What-is-Abolition.pdf"
+               :title "What is Abolition?" :author "Critical Resistance"}]
+             {:support
+              [[["Putting people in prisons does not improve their mental health."]]
+               [["Putting people in prisons does not lift them out of poverty."]]
+               [["Putting people in prisons does not cure addiction."]]
+               [["Putting people in prisons does not reduce their exposure to violence."]]]}]]]
+          :oppose
+          [[["Prisons keep criminals from causing harm to people outside prisons."
+             []
+             {:oppose
+              [[["Prisons traumatize people, making it even more likely they will cause harm to people outside prisons once they leave."]]]}]]]}]
+
         ["Abortion should be legal."
          []
          {:support
