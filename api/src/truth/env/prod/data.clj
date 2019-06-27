@@ -395,6 +395,18 @@
           [[["A woman's right to bodily autonomy outweighs any moral harm caused by terminating a fetus."]]]
           :oppose
           [[["Abortion ends a life."]]]}]
+        ["Police officers should not be first responders to mental health crises."
+         []
+         {:support
+          [[["Many police officers don't have the appropriate training to be first responders to mental health crises."]]
+           [["Policing culture in the United States of America does not provide a good framework for responding to mental health crises."]]
+           [["The threat of state sanctioned violence escalates mental health crises."]]
+           [["All police action carries an implicit threat of state sanctioned violence."]]
+           [["The CAHOOTS program in Eugene, OR is a better model for responding to mental health crises than police response."
+             [{:url "https://whitebirdclinic.org/cahoots/" :title "CAHOOTS Information Page"}]]]]
+          :oppose
+          [[["Police officers are the only resource many communities have to respond to mental health crises."]]
+           [["Many police officers genuinely want to help people who are experiencing a mental health crisis."]]]}]
         ["Having aspirations helps us navigate life in a meaningful and fulfilling way."
          []
          {:oppose
