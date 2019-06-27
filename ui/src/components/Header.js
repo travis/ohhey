@@ -28,9 +28,11 @@ export default withStyles({
     <AppBar color="default" position="static">
       <Toolbar >
         <MenuButton menuItems={[
-          <MenuItem key="/">
-            <Link to="/">What?</Link>
-          </MenuItem>,
+          (currentUser && (
+            <MenuItem key="/">
+              <Link to="/">What?</Link>
+            </MenuItem>
+          )),
           <MenuItem key="/featured">
             <Link to="/featured">Featured</Link>
           </MenuItem>
@@ -38,7 +40,7 @@ export default withStyles({
           <HeaderLogo/>
         </MenuButton>
         <Typography variant="h6" className={classes.ohhey}>
-          oh hey!
+          <Link to="/">oh hey!</Link>
         </Typography>
       {currentUser && (
         <MenuButton menuItems={[

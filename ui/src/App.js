@@ -14,6 +14,7 @@ import UserClaimPage from './pages/UserClaim'
 import HomePage from './pages/Home'
 import SearchPage from './pages/Search'
 import LoginPage from './pages/Login'
+import WhatPage from './pages/What'
 import {AuthenticationProvider } from './authentication'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from './components/Header'
@@ -26,6 +27,7 @@ const TeaserVideo = withStyles(theme => ({
     zIndex: "-1000",
     position: "fixed",
     top: 0,
+    left: 0,
     minWidth: "100%",
     minHeight: "100%"
   }
@@ -53,6 +55,7 @@ const UI = withAuth(({authData: {currentUser, userLoading, logIn, logOut}}) => (
         <Route exact path="/" component={HomePage}/>
         <Route path="/login" component={LoginPage}/>
         <Route path="/all" component={teaseAnon(Claims)}/>
+        <Route path="/what" component={teaseAnon(WhatPage)}/>
         <Route path="/featured" component={() => <Claims featured />}/>
         <Route path="/search" component={teaseAnon(SearchPage)}/>
         <Route path="/ibelieve/:slug" component={ClaimPage}/>
