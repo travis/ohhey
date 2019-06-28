@@ -230,12 +230,14 @@
                      :supports true
                      :claim {:body "There is no sign of a strong link between undocumented immigrants and crime."
                              :creator toby
+                             :agree true
                              :created-at #inst "2019-05-14T13:10:00Z"
                              :sources  [{:title "Is There a Connection Between Undocumented Immigrants and Crime?"
                                          :url "https://www.nytimes.com/2019/05/13/upshot/illegal-immigration-crime-rates-research.html"}]
                              }}
                     {:creator toby
                      :supports true
+                     :agree true
                      :claim {:body "A 2018 study published in the journal \"Criminology\" found that \"undocumented immigration does not increase violence. Rather, the relationship between undocumented immigration and violent crime is generally negative.\""
                              :creator toby
                              :created-at #inst "2019-05-14T13:11:00Z"
@@ -249,6 +251,7 @@
                              :sources  [{:title "Illegal Immigrants and Crime – Assessing the Evidence"
                                          :url "https://www.cato.org/blog/illegal-immigrants-crime-assessing-evidence"}]}}
                     {:creator toby
+                     :agree true
                      :supports true
                      :claim {:body "Undocumented immigrants have far more to lose from being arrested than citizens or legal immigrants, and are therefore less likely to break the law once they are in the country."
                              :creator toby
@@ -372,17 +375,25 @@
                  [{:url "https://www.apa.org/monitor/2016/02/killers" :title "Listening to killers"}]]]
                [["The goal of the United States of America's criminal justice system should be to rehabilitate offenders."]]]}]]]}]
         ["Prisons should not be operated by private companies."]
+        ^{:agree true}
         ["Prisons should be abolished."
          []
          {:support
-          [[["Prisons exacerbate many of the underlying problems that lead people to cause harm."
+          [^{:agree true}
+           [["Prisons isolate people from communities that support them."]]
+           ^{:agree true}
+           [["Prisons exacerbate many of the underlying problems that lead people to cause harm."
              []
              {:support
-              [[["Prisoners are exposed to more violence than non-prisoners."]]
+              [[["People who are imprisoned for committing crimes motivated by need, such as minor theft or prostitution, find it much harder to obtain legal employment once convicted of a crime and are therefore even more likely to cause harm again."
+                 [{:url "https://en.wikipedia.org/wiki/Prison_abolition_movement#Arguments_made_for_prison_abolition"
+                   :title "Wikipedia: Arguments made for prison abolition"}]]]
+               [["Prisoners are exposed to more violence than non-prisoners."]]
                [["Prisoners frequently accrue debts in prison that leave them more impoverished once they leave than when they went to prison."]]
                [["Most people with substance abuse issues who are released from prison relapse once they are out."
                  [{:url "https://www.prisonerhealth.org/educational-resources/factsheets-2/incarceration-substance-abuse-and-addiction/"
                    :title "Incarceration, Substance Abuse, and Addiction" :author "The Center for Prisoner Health and Human Rights"}]]]]}]]
+           ^{:agree true}
            [["Putting people in prisons does not solve any of the underlying problems that lead people to cause harm."
              [{:url "http://criticalresistance.org/wp-content/uploads/2012/06/What-is-Abolition.pdf"
                :title "What is Abolition?" :author "Critical Resistance"}]
@@ -392,11 +403,12 @@
                [["Putting people in prisons does not cure addiction."]]
                [["Putting people in prisons does not reduce their exposure to violence."]]]}]]]
           :oppose
-          [[["Prisons keep criminals from causing harm to people outside prisons."
+          [[^{:agree false}
+            ["Prisons keep criminals from causing harm to people outside prisons."
              []
              {:oppose
-              [[["Prisons traumatize people, making it even more likely they will cause harm to people outside prisons once they leave."]]]}]]]}]
-
+              [[["Prisons traumatize people, making it even more likely they will cause harm to people outside prisons once they leave."]]
+               [["Prisons acclimate people to violence, making it even more likely they will act violently to people outside prisons once they leave."]]]}]]]}]
         ["Abortion should be legal."
          []
          {:support
