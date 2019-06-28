@@ -1,5 +1,5 @@
 {:paths ["src" "resources" "dev-resources"]
- :deps {com.datomic/ion {:mvn/version "0.9.28"}
+ :deps {com.datomic/ion {:mvn/version "0.9.34"}
         com.datomic/datomic-free {:mvn/version "0.9.5697"}
         org.clojure/clojure {:mvn/version "1.9.0"},
         com.walmartlabs/lacinia {:mvn/version "0.31.0"}
@@ -14,7 +14,7 @@
              "my.datomic.com" {:url "https://my.datomic.com/repo"}}
  :aliases
  {:dev {:extra-deps {com.datomic/ion-dev {:mvn/version "0.9.186"}
-                     com.datomic/client-cloud {:mvn/version "0.8.71"}}}
+                     com.datomic/client-cloud {:mvn/version "0.8.78"}}}
   :cider-clj {:extra-deps {cider/cider-nrepl {:mvn/version "0.21.1"}
                            listora/again {:mvn/version "1.0.0"}}
               :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
