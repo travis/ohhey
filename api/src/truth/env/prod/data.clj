@@ -437,6 +437,33 @@
                  {:url "https://www.ecu.edu.au/news/latest-news/2019/06/not-always-reaching-your-potential-is-okay-but-overthinking-it-is-a-problem"
                   :title "Not always reaching your potential is okay, but overthinking it is a problem"}]]]}]]
            ]}]
+        ["In 2019, in the United States we should make laws that give advantages to some people on the basis of race."
+         []
+         {:support
+          [[["There are profound racial inequalities in housing, employment and health in the United States in 2019."
+             [{:url "https://news.stanford.edu/2017/06/16/report-finds-significant-racial-ethnic-disparities/"
+               :title "Significant racial and ethnic disparities still exist, according to Stanford report"}]]
+            ["We should aspire to live in a society that does not disadvantage people on the basis of race."]
+            ["The cultural and financial structures of the United States in 2019 give advantages to people who present as white."]
+            ["We should use law to effect change in our cultural and financial institutions."]
+            ["There is no biological basis for the idea of race."
+             [{:url "https://rationalwiki.org/wiki/Racialism#Scientific_consensus:_Races_aren.27t_useful"
+               :title "RationalWiki: Racialism: Scientific consensus: Races aren't useful"}]
+             {:support
+              [[["DNA studies do not indicate that separate classifiable subspecies (races) exist within modern humans."
+                 [{:url "https://archive.fo/oQ5ut"
+                   :title "Human Genome Project Information Archive: Minorities, Race and Genomics"}]]]
+
+               [["A 2012 survey of 3,286 American Anthropological Association members found very strong agreement that the conventional concept of race is not scientifically useful."
+                 [{:url "https://onlinelibrary.wiley.com/doi/full/10.1002/ajpa.23120"
+                   :title "Anthropologists' views on race, ancestry, and genetics"}]]]]
+              }]
+            ["There is a large racial gap in the transmission of wealth across generations."
+             [{:url "https://news.umich.edu/three-generations-of-data-show-how-wealthy-white-families-stay-wealthy/"
+               :title "Three generations of data show how wealthy (white) families stay wealthy"}]]
+
+            ]]}]
+
         ])
   )
 
