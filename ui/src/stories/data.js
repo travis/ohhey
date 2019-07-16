@@ -35,7 +35,7 @@ export const supportingEvidence = {id: 100, claim: supportingClaim, supports: tr
 export const opposingClaim = {
   id: 4, body: "'This is a claim' is a tautology", slug: "this-is-a-claim-is-a-tautology", score: 100,
   creator: james,
-  userMeta: {id: "4:ian", agreement: -100, user: ian}
+  userMeta: {id: "4:toby", agreement: -100, user: toby}
 }
 export const opposingEvidence = {id: 101, claim: opposingClaim, supports: false,
                                  userMeta: {id: "101:ian", relevance: 45, user: ian}}

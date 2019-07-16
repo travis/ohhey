@@ -70,7 +70,7 @@ const Evidence = compose(
   )
 })
 
-const Evidences = ({list, username, support}) => (
+const Evidences = ({list, username}) => (
   <Fragment>
     {list.map((evidence) => (
       <Evidence evidence={evidence} username={username} key={evidence.id}/>
@@ -78,95 +78,121 @@ const Evidences = ({list, username, support}) => (
   </Fragment>
 )
 
-const evidenceIntroText = (claim, sentimentMap) => {
-  if (claim) {
-    switch(claim.userMeta && claim.userMeta.agreement) {
-    case undefined:
-      return ""
-    case null:
-      return ""
-    case 100:
-      return sentimentMap.believes
-    case -100:
-      return sentimentMap.doesntbelieve
-    default:
-      return sentimentMap.isntsureif
+const introText = ({
+  // does this user agree with top level claim?
+  // ie, Toby believes cats are cute
+  true: {
+    // does this evidence support the top level claim?
+    // ie Cats are soft
+    true: {
+      // does this user agree with the evidence?
+      true: "because they believe",
+      false: "despite not believing"
+    },
+    // ie Cats are mean
+    false: {
+      // does this user agree with the evidence?
+      true: "despite believing",
+      false: "because they don't believe"
     }
+  },
+  // ie, Toby doesn't believe cats are cute
+  false: {
+    // does this evidence support the top level claim?
+    // ie, Cats are soft
+    true: {
+      // does this user agree with the evidence?
+      true: "despite believing",
+      false: "because they don't believe"
+    },
+    // ie, Cats are mean
+    false: {
+      // does this user agree with the evidence?
+      true: "because they believe",
+      false: "despite not believing"
+    }
+  }
+})
+
+const evidenceIntroText = (believesClaim, support, agree) => {
+  if ((typeof believesClaim === "boolean") &&
+      (typeof support === "boolean") &&
+      (typeof agree === "boolean")) {
+    return introText[believesClaim][support][agree]
+  } else {
+    console.error("evidenceIntroText called with ", believesClaim, support, agree)
+    return ""
   }
 }
 
-const EvidenceList = ({claim, username, evidence, support, placeholder, sentimentMap, nested}) => {
-  const myEvidence = evidence && evidence.filter(e => e.supports === support)
+const userBelievesClaim = (claim) => claim && claim.userMeta &&
+      claim.userMeta.agreement && (claim.userMeta.agreement > 0)
+
+const EvidenceList = ({claim, username, evidence: evidenceList, support, agree, nested}) => {
+  const believesClaim = userBelievesClaim(claim)
+  const myEvidence = evidenceList && evidenceList.filter(
+    (evidence) => (evidence.supports === support) && (userBelievesClaim(evidence.claim) === agree)
+  )
+  console.log({evidenceList, myEvidence, support, agree})
   return (myEvidence && (myEvidence.length > 0)) ? (
     <Box mt={2}>
       <Box display="flex">
         <Typography variant={nested? "h6" : "h5"} fontFamily="claimBody">
-          {evidenceIntroText(claim, sentimentMap)}
+          {evidenceIntroText(believesClaim, support, agree)}
         </Typography>
       </Box>
-      <Evidences claim={claim} list={myEvidence} support={support} username={username}/>
+      <Evidences claim={claim} list={myEvidence} username={username}/>
     </Box>
   ) : ""
 }
-
-const SupportList = (props) => (
-  <EvidenceList support={true} placeholder="why?"
-                sentimentMap={{
-                  believes: "because",
-                  doesntbelieve: "despite",
-                  isntsureif: "on one hand",
-                }}
-                {...props}/>
-)
-
-const OpposeList = (props) => (
-  <EvidenceList support={false} placeholder="why not?"
-                sentimentMap={{
-                  believes: "despite",
-                  doesntbelieve: "because",
-                  isntsureif: "but on the other",
-                }}
-                {...props}/>
-)
 
 const EvidenceLists = graphql(
   queries.UserEvidenceForClaim, {
     options: ({username, claim}) => ({
       variables: {username, claimID: claim.id}
     }),
-    props: ({data: {evidenceForClaim}}) => ({evidenceList: evidenceForClaim})
+    props: ({data: {evidenceForClaim}}) => ({evidence: evidenceForClaim})
   }
-)(({claim, username, evidenceList, nested, ...props}) => {
-  const agreement = claim && claim.userMeta && claim.userMeta.agreement
-  const Support = () => (evidenceList && (evidenceList.length > 0) && (
-    <SupportList claim={claim} username={username} evidence={evidenceList} nested={nested}/>
-  )) || ""
-  const Oppose = () => (evidenceList && (evidenceList.length > 0) && (
-    <OpposeList claim={claim} username={username} evidence={evidenceList} nested={nested}/>
-  )) || ""
-  return (
-    <div {...props}>
-      {(agreement === -100) ?
-         (<Fragment><Oppose/><Support/></Fragment>) :
-         (<Fragment><Support/><Oppose/></Fragment>)
-      }
-    </div>
-  )
+)(({claim, username, evidence, nested, ...props}) => {
+  if (claim && claim.userMeta) {
+    const believesClaim = userBelievesClaim(claim)
+    const args = {claim, username, evidence, nested}
+    return (
+      <div {...props}>
+        {(believesClaim) ?
+         (<Fragment>
+            <EvidenceList support={true} agree={true} {...args}/>
+            <EvidenceList support={true} agree={false} {...args}/>
+            <EvidenceList support={false} agree={true} {...args}/>
+            <EvidenceList support={false} agree={false} {...args}/>
+          </Fragment>) :
+         (<Fragment>
+            <EvidenceList support={false} agree={true} {...args}/>
+            <EvidenceList support={false} agree={false} {...args}/>
+            <EvidenceList support={true} agree={true} {...args}/>
+            <EvidenceList support={true} agree={false} {...args}/>
+          </Fragment>)
+        }
+      </div>
+    )
+  } else {
+    return <div>Cannot find user meta for claim.</div>
+  }
 })
 
-const introText = (claim) => {
-  const agreement = claim && claim.userMeta && claim.userMeta.agreement
-  switch(agreement) {
-  case undefined:
+
+const claimIntroText = (claim) => {
+  if (claim && claim.userMeta) {
+    const agreement = claim.userMeta.agreement
+    if (agreement === 0) {
+      return " isn't sure if "
+    } else if (agreement > 0) {
+      return " believes "
+    } else {
+      return " doesn't believe "
+    }
+  } else {
     return ""
-  case null:
-    return ""
-  case 100:
-    return " believes "
-  case -100:
-    return " doesn't believe "
-  default:
-    return " isn't sure whether "
   }
 }
 
@@ -180,7 +206,7 @@ export default compose(
       <ClaimToolbar claim={claim} isUserClaim />
       <ClaimIntroType>
         @{username}
-        {introText(claim)}
+        {claimIntroText(claim)}
       </ClaimIntroType>
       <ClaimBody>
         <ClaimBodyLink username={username} claim={claim}/>
