@@ -475,21 +475,21 @@
         ["People should be able to choose the pronouns people use to refer to them in English."
          []
          {:support
-          [["Many people with male genitalia do not identify with masculine gender norms."]
-           ["Many people with female genitalia do not identify with feminine gender norms."]
-           [["The experience of being misgendered can be hurtful."
-             [{:url "https://www.hrc.org/resources/talking-about-pronouns-in-the-workplace"
-               :title "Talking About Pronouns in the Workplace"}]]]
-           [["Many people do not identify with the gender they were assigned at birth and experience distress when people use the pronouns associated with that gender to refer to them."]]
-           [["Gender expression through preferred pronouns is an important part of identity for many people, and people's decisions about their own identities should be respected."
-             [{:url "https://www.theguardian.com/commentisfree/2018/jun/04/gender-neutral-pronouns-they-he-she-why-deny"
-               :title "If someone wants to be called 'they' and not 'he' or 'she', why say no?"}]
-             {:support
-              [[["Gender expression through preferred pronouns is an important part of identity for many people."]
-                ["People's decisions about their own identities should be respected."]]]}]]
-           [["People should not have the right to deny other people's identities."
-             [{:url "https://www.theguardian.com/commentisfree/2018/jun/04/gender-neutral-pronouns-they-he-she-why-deny"
-               :title "If someone wants to be called 'they' and not 'he' or 'she', why say no?"}]]]]}]
+          [[["Many people with male genitalia do not identify with masculine gender norms."]
+            ["Many people with female genitalia do not identify with feminine gender norms."]
+            [["The experience of being misgendered can be hurtful."
+              [{:url "https://www.hrc.org/resources/talking-about-pronouns-in-the-workplace"
+                :title "Talking About Pronouns in the Workplace"}]]]
+            [["Many people do not identify with the gender they were assigned at birth and experience distress when people use the pronouns associated with that gender to refer to them."]]
+            [["Gender expression through preferred pronouns is an important part of identity for many people, and people's decisions about their own identities should be respected."
+              [{:url "https://www.theguardian.com/commentisfree/2018/jun/04/gender-neutral-pronouns-they-he-she-why-deny"
+                :title "If someone wants to be called 'they' and not 'he' or 'she', why say no?"}]
+              {:support
+               [[["Gender expression through preferred pronouns is an important part of identity for many people."]
+                 ["People's decisions about their own identities should be respected."]]]}]]
+            [["People should not have the right to deny other people's identities."
+              [{:url "https://www.theguardian.com/commentisfree/2018/jun/04/gender-neutral-pronouns-they-he-she-why-deny"
+                :title "If someone wants to be called 'they' and not 'he' or 'she', why say no?"}]]]]]}]
 
         ])
   )
