@@ -39,6 +39,22 @@ type Claim implements Node {
   myAgreement: Int
   score: Int,
   userMeta(username: String!): UserClaimMeta
+  sources: [Source]
+}
+
+type Book {
+  url: String
+  title: String
+  author: String
+  lccn: String
+}
+
+type Source {
+  url: String
+  title: String
+  lccn: String
+  page: Int
+  book: Book
 }
 
 type EvidenceConnection {
@@ -75,8 +91,9 @@ type SearchResults {
 }
 
 type Query {
+  healthy: Boolean
   currentUser: User
-  claims: [Claim]
+  claims(featured: Boolean): [Claim]
   searchClaims(term: String): SearchResults
   suggestClaims(term: String): SearchResults
   claim(slug: String): Claim
