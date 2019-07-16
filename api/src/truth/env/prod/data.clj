@@ -379,10 +379,12 @@
         ["Prisons should be abolished."
          []
          {:support
-          [^{:agree true}
-           [["Prisons isolate people from communities that support them."]]
-           ^{:agree true}
-           [["Prisons exacerbate many of the underlying problems that lead people to cause harm."
+          [[^{:agree false}
+            ["We could safely eliminate all prisons tomorrow."]]
+           [^{:agree true}
+            ["Prisons isolate people from communities that support them."]]
+           [^{:agree true}
+            ["Prisons exacerbate many of the underlying problems that lead people to cause harm."
              []
              {:support
               [[["People who are imprisoned for committing crimes motivated by need, such as minor theft or prostitution, find it much harder to obtain legal employment once convicted of a crime and are therefore even more likely to cause harm again."
@@ -393,8 +395,8 @@
                [["Most people with substance abuse issues who are released from prison relapse once they are out."
                  [{:url "https://www.prisonerhealth.org/educational-resources/factsheets-2/incarceration-substance-abuse-and-addiction/"
                    :title "Incarceration, Substance Abuse, and Addiction" :author "The Center for Prisoner Health and Human Rights"}]]]]}]]
-           ^{:agree true}
-           [["Putting people in prisons does not solve any of the underlying problems that lead people to cause harm."
+           [^{:agree true}
+            ["Putting people in prisons does not solve any of the underlying problems that lead people to cause harm."
              [{:url "http://criticalresistance.org/wp-content/uploads/2012/06/What-is-Abolition.pdf"
                :title "What is Abolition?" :author "Critical Resistance"}]
              {:support
@@ -403,7 +405,9 @@
                [["Putting people in prisons does not cure addiction."]]
                [["Putting people in prisons does not reduce their exposure to violence."]]]}]]]
           :oppose
-          [[^{:agree false}
+          [[^{:agree true}
+            ["Prisons are necessary in 2019 to deal with very dangerous individuals."]]
+           [^{:agree false}
             ["Prisons keep criminals from causing harm to people outside prisons."
              []
              {:oppose
