@@ -237,9 +237,9 @@
                              }}
                     {:creator toby
                      :supports true
-                     :agree true
                      :claim {:body "A 2018 study published in the journal \"Criminology\" found that \"undocumented immigration does not increase violence. Rather, the relationship between undocumented immigration and violent crime is generally negative.\""
                              :creator toby
+                             :agree true
                              :created-at #inst "2019-05-14T13:11:00Z"
                              :sources  [{:title "Does Undocumented Immigration Increase Violent Crime?"
                                          :url "https://onlinelibrary.wiley.com/doi/full/10.1111/1745-9125.12175?fbclid=IwAR05w2ks-G8TSlg6F1tKJghcogd-jkweNHgSFtDLE_oZMzceveUyr2NBCCo"}]}}
@@ -247,34 +247,36 @@
                      :supports true
                      :claim {:body "Undocumented immigrants in Texas are convicted of homicide, larceny, and sex crimes at lower rates than native-born Americans."
                              :creator toby
+                             :agree true
                              :created-at #inst "2019-05-14T13:12:00Z"
                              :sources  [{:title "Illegal Immigrants and Crime – Assessing the Evidence"
                                          :url "https://www.cato.org/blog/illegal-immigrants-crime-assessing-evidence"}]}}
                     {:creator toby
-                     :agree true
                      :supports true
                      :claim {:body "Undocumented immigrants have far more to lose from being arrested than citizens or legal immigrants, and are therefore less likely to break the law once they are in the country."
+                             :agree true
                              :creator toby
                              :created-at #inst "2019-05-14T13:12:00Z"}}
                     {:creator toby
-                     :agree false
                      :supports false
                      :claim {:body "The US federal government's State Criminal Alien Assistence Program data suggest undocumented immigrants commit crime at a higher rate than citizens and documented immigrants."
                              :creator toby
+                             :agree false
                              :created-at #inst "2019-05-14T13:13:00Z"
                              :sources [{:title "SCAAP Data Suggest Illegal Aliens Commit Crime at a Much Higher Rate Than Citizens and Lawful Immigrants"
                                         :url "https://www.fairus.org/issue/illegal-immigration/scaap-data-suggest-illegal-aliens-commit-crime-much-higher-rate-citizens"}]
                              :evidence [{:creator toby
                                          :supports false
-                                         :agree true
                                          :claim {:body "The Federation for American Immigration Reform report on undocumented immigrant incarceration rates is poorly contrived and terribly executed."
                                                  :creator toby
+                                                 :agree true
                                                  :created-at #inst "2019-05-14T13:14:00Z"
                                                  :sources [{:title "FAIR SCAAP Crime Report Has Many Serious Problems"
                                                             :url "https://www.cato.org/blog/fair-scaap-crime-report-has-many-serious-problems"}]
                                                  :evidence [{:creator toby
                                                              :supports true
                                                              :claim {:body "The Federation for American Immigration Reform report on undocumented immigrant incarceration rates does not state the year or period of years it is analyzing."
+                                                                     :agree true
                                                                      :creator toby
                                                                      :created-at #inst "2019-05-14T13:14:00Z"
                                                                      :sources [{:title "FAIR SCAAP Crime Report Has Many Serious Problems"
@@ -283,6 +285,7 @@
                                                              :supports true
                                                              :claim {:body "The Federation for American Immigration Reform report on undocumented immigrant incarceration rates uses SCAAP data incorrectly when calculating incarceration rates."
                                                                      :creator toby
+                                                                     :agree true
                                                                      :created-at #inst "2019-05-14T13:14:00Z"
                                                                      :sources [{:title "FAIR SCAAP Crime Report Has Many Serious Problems"
                                                                                 :url "https://www.cato.org/blog/fair-scaap-crime-report-has-many-serious-problems"}]}}]}}]}
