@@ -378,7 +378,9 @@
                  [{:url "https://www.apa.org/monitor/2016/02/killers" :title "Listening to killers"}]]]
                [["The goal of the United States of America's criminal justice system should be to rehabilitate offenders."]]]}]]]}]
         ["Prisons should not be operated by private companies."]
-        ^{:agree true}
+        ^{:agree true
+          :standalone true
+          :featured true}
         ["Prisons should be abolished."
          []
          {:support
