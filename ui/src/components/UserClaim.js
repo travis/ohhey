@@ -133,7 +133,6 @@ const EvidenceList = ({claim, username, evidence: evidenceList, support, agree, 
   const myEvidence = evidenceList && evidenceList.filter(
     (evidence) => (evidence.supports === support) && (userBelievesClaim(evidence.claim) === agree)
   )
-  console.log({evidenceList, myEvidence, support, agree})
   return (myEvidence && (myEvidence.length > 0)) ? (
     <Box mt={2}>
       <Box display="flex">
