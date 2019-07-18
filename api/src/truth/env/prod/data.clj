@@ -472,30 +472,66 @@
                :title "Three generations of data show how wealthy (white) families stay wealthy"}]]
 
             ]]}]
-        ["English speakers should use 'they' and 'them' pronouns when referring to a person whose gender identity they do not know."
-         []
-         {:support [[["It is grammatically correct to refer to a single person as \"they\" in english if I do not know their gender."
-                      []
-                      {:support [[["If someone knocked on my door and my housemate said \"there's someone here for you\" I would reply \"what do they want\" if I did not know their gender."]]]}]]]}]
-        ["People should be able to choose the pronouns people use to refer to them in English."
+        ^{:agree true
+          :featured true}
+        ["Until a child is able to choose their own pronouns, it makes sense to use \"they\" or \"them\" when referring to them regardless of what genitalia they are born with."
          []
          {:support
-          [[["Many people with male genitalia do not identify with masculine gender norms."]
-            ["Many people with female genitalia do not identify with feminine gender norms."]
-            [["The experience of being misgendered can be hurtful."
-              [{:url "https://www.hrc.org/resources/talking-about-pronouns-in-the-workplace"
-                :title "Talking About Pronouns in the Workplace"}]]]
-            [["Many people do not identify with the gender they were assigned at birth and experience distress when people use the pronouns associated with that gender to refer to them."]]
-            [["Gender expression through preferred pronouns is an important part of identity for many people, and people's decisions about their own identities should be respected."
-              [{:url "https://www.theguardian.com/commentisfree/2018/jun/04/gender-neutral-pronouns-they-he-she-why-deny"
-                :title "If someone wants to be called 'they' and not 'he' or 'she', why say no?"}]
-              {:support
-               [[["Gender expression through preferred pronouns is an important part of identity for many people."]
-                 ["People's decisions about their own identities should be respected."]]]}]]
-            [["People should not have the right to deny other people's identities."
-              [{:url "https://www.theguardian.com/commentisfree/2018/jun/04/gender-neutral-pronouns-they-he-she-why-deny"
-                :title "If someone wants to be called 'they' and not 'he' or 'she', why say no?"}]]]]]}]
-
+          [[^{:agree true}
+            ["English speakers commonly use 'they' and 'them' pronouns when referring to a person whose gender they do not know."
+             []
+             {:support
+              [[^{:agree true}
+                ["If someone knocked on my door and my housemate said \"there's someone here for you\" I would reply \"what do they want\" if I did not know their gender."]]
+               [^{:agree true}
+                ["It is grammatically correct to refer to a single person as \"they\" in english if I do not know their gender."
+                 []
+                 {:support [[^{:agree true}
+                             ["\"They\" has been in consistent use as a singular pronoun since the late 1300s."
+                              [{:url "https://www.merriam-webster.com/words-at-play/singular-nonbinary-they"
+                                :title "Merriam-Webster: Singular 'They'"}]]]]}]]]}]]
+           [^{:agree true}
+            ["People should be able to choose the pronouns people use to refer to them in English."
+             []
+             {:support
+              [[^{:agree true}
+                ["Many people with male genitalia do not identify with masculine gender norms."]]
+               [^{:agree true}
+                ["Many people with female genitalia do not identify with feminine gender norms."]]
+               [^{:agree true}
+                ["The experience of being misgendered can be hurtful."
+                 [{:url "https://www.hrc.org/resources/talking-about-pronouns-in-the-workplace"
+                   :title "Talking About Pronouns in the Workplace"}]]]
+               [^{:agree true}
+                ["Many people do not identify with the gender they were assigned at birth and experience distress when people use the pronouns associated with that gender to refer to them."]]
+               [^{:agree true}
+                ["Gender expression through preferred pronouns is an important part of identity for many people, and people's decisions about their own identities should be respected."
+                 [{:url "https://www.theguardian.com/commentisfree/2018/jun/04/gender-neutral-pronouns-they-he-she-why-deny"
+                   :title "If someone wants to be called 'they' and not 'he' or 'she', why say no?"}]
+                 {:support
+                  [[^{:agree true}
+                    ["Gender expression through preferred pronouns is an important part of identity for many people."]]
+                   [^{:agree true}
+                    ["People's decisions about their own identities should be respected."]]]}]]
+               [^{:agree true}
+                ["People should not have the right to deny other people's identities."
+                 [{:url "https://www.theguardian.com/commentisfree/2018/jun/04/gender-neutral-pronouns-they-he-she-why-deny"
+                   :title "If someone wants to be called 'they' and not 'he' or 'she', why say no?"}]]]]}]]
+           [^{:agree true}
+            ["Children should be allowed to choose their gender identity and expression as early as possible."
+             []
+             {:support
+              [[^{:agree true}
+                ["Children subject to strict gender expectations are at an increased risk for mental and physical health problems during and after adolescence."
+                 [{:url "https://www.telegraph.co.uk/family/parenting/gender-neutral-parenting-has-gone-far/"
+                   :title "Gender neutral parenting – has it gone too far?"}]]]
+               [^{:agree true}
+                ["Children do best when their parents or caregivers show them that they are loved and accepted for who they are."
+                 [{:url "https://www.caringforkids.cps.ca/handouts/gender-identity"
+                   :title "Caring for Kids: Gender identity"}]]]]
+              }]]
+           [^{:agree true}
+            ["Using \"they\" and \"them\" pronouns until a child chooses differently gives them the most freedom to choose their own gender expression and identity."]]]}]
         ])
   )
 
