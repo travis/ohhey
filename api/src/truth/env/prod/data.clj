@@ -356,7 +356,21 @@
              {:oppose
               [[["The sun's energy output has been decreasing since the 1980s, but global temperatures have continued to increase."
                  [{:url "https://skepticalscience.com/solar-activity-sunspots-global-warming-basic.htm"
-                   :title "Sun & climate: moving in opposite directions"}]]]]}]]]}]
+                   :title "Sun & climate: moving in opposite directions"}]]]]}]]
+           [^{:agree false}
+            ["During the Common Era (the past 2000 years) earth's climate has changed significantly at various times. The current changes in climate are no different."
+             []
+             {:support
+              [[^{:agree true}
+                ["During the Common Era (the past 2000 years) earth's climate has changed significantly at various times."]]
+               [^{:agree false}
+                ["Current changes in climate are no different than other shifts we've experience in recent history."
+                 []
+                 {:oppose
+                  [[^{:agree true}
+                    ["Previous epochs of climate change were much smaller in scope than the near-global reach of current warming."
+                     [{:url "https://www.nature.com/articles/d41586-019-02179-2"
+                       :title "The abberant global synchrony of present-day warming"}]]]]}]]]}]]]}]
         ["The death penalty should be abolished."
          [{:url "https://www.amnesty.org.au/5-reasons-abolish-death-penalty/" :title "Five Reasons to Abolish the Death Penalty"}
           {:url "https://www.nytimes.com/2019/06/14/opinion/sunday/death-penalty.html" :title "When We Kill"}]
