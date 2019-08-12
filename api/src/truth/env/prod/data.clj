@@ -488,7 +488,7 @@
             ]]}]
         ^{:agree true
           :featured true}
-        ["Until a child is able to choose their own pronouns, it makes sense to use \"they\" or \"them\" when referring to them regardless of what genitalia they are born with."
+        ["Until a child is able to choose their own pronouns, it makes sense to use \"they\" or \"them\" when referring to them regardless of the genitalia they are born with."
          []
          {:support
           [[^{:agree true}
