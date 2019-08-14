@@ -546,6 +546,34 @@
               }]]
            [^{:agree true}
             ["Using \"they\" and \"them\" pronouns until a child chooses differently gives them the most freedom to choose their own gender expression and identity."]]]}]
+        ["The institution of policing should be phased out."
+         []
+         {:support
+          [[["The modern institution of policing was created by the wealthy to control the poor."
+             []
+             {:support
+              [[["The modern institution of policing was created by the wealthy."
+                 []
+                 {:support
+                  [[["The first police force in the United States was created by wealthy Boston merchants to protect their goods."
+                     [{:url "https://time.com/4779112/police-history-origins/"
+                       :title "How the U.S. Got Its Police Force"}]]]
+                   [["The first police force in the world was created by wealthy London merchants to protect their goods."
+                     [{:url "https://en.wikipedia.org/wiki/History_of_the_Metropolitan_Police_Service#Policing_in_London_before_1829"
+                       :title "History of the Metropolitan Police Service"}]]]]}]]
+               [["The modern institution of policing was created to control the poor."
+                 []
+                 {:support
+                  [[["The first police forces in the United States primarily worked to control slaves and workers."
+                     [{:url "https://time.com/4779112/police-history-origins/"
+                       :title "How the US Got Its Police Force"}]
+                     {:support
+                      [[["In the American South the economics that drove the creation of police forces were centered on the preservation of the slavery system."
+                         [{:url "https://time.com/4779112/police-history-origins/"
+                           :title "How the US Got Its Police Force"}]]]
+                       [["Fears of labor-union organizers and of large waves of Catholic, Irish, Italian, German, and Eastern European immigrants drove the call for the \"preservation of law and order\" by dominant interests."
+                         [{:url "https://time.com/4779112/police-history-origins/"
+                           :title "How the US Got Its Police Force"}]]]]}]]]}]]]}]]]}]
         ])
   )
 
