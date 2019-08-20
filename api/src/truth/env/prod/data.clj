@@ -330,7 +330,8 @@
                      [{:book "new-jim-crow" :page 190}]]]]}]]]}]]
            [["In 2019, the \"War on Drugs\" drives the mass incarceration of African Americans."
              [{:book "new-jim-crow"}]]]]}]
-        ^{:featured true}
+        ^{:featured true
+          :created-at #inst "2019-06-25T17:25:00Z"}
         ["Earth's climate is changing rapidly as a result of human activity."
          [{:url "https://climate.nasa.gov/evidence/" :title "NASA Climate Change Facts"}]
          {:support
@@ -405,7 +406,8 @@
         ["Prisons should not be operated by private companies."]
         ^{:agree true
           :standalone true
-          :featured true}
+          :featured true
+          :created-at #inst "2019-07-16T12:00:00Z"}
         ["Prisons should be abolished."
          []
          {:support
@@ -471,7 +473,8 @@
                  {:url "https://www.ecu.edu.au/news/latest-news/2019/06/not-always-reaching-your-potential-is-okay-but-overthinking-it-is-a-problem"
                   :title "Not always reaching your potential is okay, but overthinking it is a problem"}]]]}]]
            ]}]
-        ^{:featured true}
+        ^{:featured true
+          :created-at #inst "2019-08-19T17:25:00Z"}
         ["A vast wealth gap, driven by segregation, redlining, evictions and exclusion, separates black and white America."
          ["nyt-racial-wealth-gap"]
          {:support
@@ -529,7 +532,8 @@
 
             ]]}]
         ^{:agree true
-          :featured true}
+          :featured true
+          :created-at #inst "2019-08-12T13:12:00Z"}
         ["Until a child is able to choose their own pronouns, it makes sense to use \"they\" or \"them\" when referring to them regardless of the genitalia they are born with."
          []
          {:support
