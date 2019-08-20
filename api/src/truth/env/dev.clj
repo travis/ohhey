@@ -6,6 +6,7 @@
    [truth.env.prod.data :as data]
    [truth.schema :as schema]
    [truth.search :as search]
+   [again.core :as again]
    ))
 
 
@@ -36,5 +37,20 @@
   (client-load (get-conn))
   (d/delete-database (client) db-spec)
 
-
+  (do
+    (d/delete-database (client) db-spec)
+    (again/with-retries
+      [10000 20000 30000 40000]
+      (do
+        (clojure.core.memoize/memo-clear! client)
+        (d/create-database (client) db-spec)
+        (println
+         "loaded schema"
+         (schema/client-load (get-conn)))
+        (println
+         "loaded data"
+         (client-load (get-conn)))
+        )
+      )
+    )
   )

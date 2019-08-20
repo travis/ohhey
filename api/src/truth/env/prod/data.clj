@@ -36,7 +36,8 @@
 (defprotocol Shorthand
   (->claim [data])
   (->evidence [data])
-  (->evidence-list [data]))
+  (->evidence-list [data])
+  (->source [data]))
 
 (defn toby-relevance-vote [vote]
   (new-relevance-vote (merge {:voter toby} vote)))
@@ -60,7 +61,7 @@
                    :or {sources [] evidence [] votes [] creator toby}}]
   (new-claim (-> claim
                  (assoc :creator creator)
-                 (assoc :sources (map new-source sources))
+                 (assoc :sources (map ->source sources))
                  (assoc :evidence (->evidence-list evidence))
                  (assoc :votes (map toby-claim-vote
                                     (if (nil? agree)
@@ -78,10 +79,12 @@
   (->claim [claim] (toby-claim claim))
   (->evidence [evidence] (toby-evidence evidence))
   (->evidence-list [evidence-map] (map->evidence-list evidence-map))
+  (->source [source] (new-source source))
   clojure.lang.PersistentHashMap
   (->claim [claim] (toby-claim claim))
   (->evidence [evidence] (toby-evidence evidence))
   (->evidence-list [evidence-map] (map->evidence-list evidence-map))
+  (->source [source] (new-source source))
 
   clojure.lang.PersistentVector
   (->claim [[claim-body & [sources evidence] :as claim]]
@@ -96,6 +99,8 @@
     (map ->evidence-list evidence-list))
   java.lang.String
   (->claim [tmpid]
+    tmpid)
+  (->source [tmpid]
     tmpid)
   nil
   (->evidence-list [n]
@@ -116,6 +121,12 @@
      :title "The New Jim Crow: Mass Incarceration in the Age of Colorblindness"
      :author "Michelle Alexander"
      :url "http://newjimcrow.com/"}]))
+
+(def sources
+  (map new-source
+       [{:db/id "nyt-racial-wealth-gap"
+         :url "https://www.nytimes.com/interactive/2019/08/14/magazine/racial-wealth-gap.html"
+         :title "Racial Wealth Gap"}]))
 
 (def claims
   (map ->claim
@@ -460,6 +471,37 @@
                  {:url "https://www.ecu.edu.au/news/latest-news/2019/06/not-always-reaching-your-potential-is-okay-but-overthinking-it-is-a-problem"
                   :title "Not always reaching your potential is okay, but overthinking it is a problem"}]]]}]]
            ]}]
+        ^{:featured true}
+        ["A vast wealth gap, driven by segregation, redlining, evictions and exclusion, separates black and white America."
+         ["nyt-racial-wealth-gap"]
+         {:support
+          [[["In 2019 in the United States there is a massive gap between the wealth of black and white families."
+             ["nyt-racial-wealth-gap"]
+             {:support
+              [[["White Americans have seven times the wealth of black americans on average"
+                 ["nyt-racial-wealth-gap"]]]
+               [["Though black people make up nearly 13 percent of the United States population, they hold less than 3 percent of the nation’s total wealth."
+                 ["nyt-racial-wealth-gap"]]]
+               [["The median family wealth for white people is $171,000, compared with just $17600 for black people."
+                 ["nyt-racial-wealth-gap"]]]
+               [["19 percent of black households have zero or negative net worth, compared to 9 percent of white households."
+                 ["nyt-racial-wealth-gap"]]]
+               ]}]]
+           [["The vast wealth gap between white and black families is a result of intentional and unintentional discrimination against black people by the United States government and its citizens."
+             ["nyt-racial-wealth-gap"]
+             {:support
+              [[["After the American Civil War, bad financial decisions on the part of the all-white trustees of the Freedman's Savings Bank resulted in more than 60,000 black people losing much of their savings."
+                 ["nyt-racial-wealth-gap"]]]
+               [["The G.I. Bill helped many white veterans buy houses but the Veterans Administration adopted a policy of only giving loans to developers who wouldn’t sell to black people."
+                 ["nyt-racial-wealth-gap"]]]
+               [["In 1866, Andrew Johnson cancelled General William Sherman’s order reallocating white-owned land to black families, saying “This is a country for white men and by God, as long as I am President, it shall be a government for white men.”"
+                 ["nyt-racial-wealth-gap"]]]
+               [["After the Reconstruction period, lawmakers across the United States South enacted Black Codes and Jim Crow laws that stripped black people of many of their freedoms and property."
+                 ["nyt-racial-wealth-gap"]]]
+               [["After the Reconstruction period, white people, aided by law enforcement, waged a campaign of violence against black people that robbed them of an incalculable amount of wealth."
+                 ["nyt-racial-wealth-gap"]]]
+               [["Through the first half of the 20th century, the United States federal government actively excluded black people from government wealth-building programs."
+                 ["nyt-racial-wealth-gap"]]]]}]]]}]
         ["In 2019, in the United States we should make laws that give advantages to some people on the basis of race."
          []
          {:support
@@ -577,4 +619,4 @@
         ])
   )
 
-(def data (concat users books claims))
+(def data (concat users books sources claims))
