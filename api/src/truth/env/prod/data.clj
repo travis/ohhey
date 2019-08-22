@@ -485,36 +485,48 @@
         ^{:featured true
           :created-at #inst "2019-08-19T17:25:00Z"
           :quoting "nyt-racial-wealth-gap"
+          :agree true
           }
         ["A vast wealth gap, driven by segregation, redlining, evictions and exclusion, separates black and white America."
          []
          {:support
-          [[["In 2019 in the United States there is a massive gap between the wealth of black and white families."
+          [[^{:agree true}
+            ["In 2019 in the United States there is a massive gap between the wealth of black and white families."
              ["nyt-racial-wealth-gap"]
              {:support
-              [[["White Americans have seven times the wealth of black americans on average"
+              [[^{:agree true}
+                ["White Americans have seven times the wealth of black americans on average"
                  ["nyt-racial-wealth-gap"]]]
-               [["Though black people make up nearly 13 percent of the United States population, they hold less than 3 percent of the nation’s total wealth."
-                 ["nyt-racial-wealth-gap"]]]
-               [["The median family wealth for white people is $171,000, compared with just $17600 for black people."
-                 ["nyt-racial-wealth-gap"]]]
-               [["19 percent of black households have zero or negative net worth, compared to 9 percent of white households."
-                 ["nyt-racial-wealth-gap"]]]
-               ]}]]
-           [["The vast wealth gap between white and black families is a result of intentional and unintentional discrimination against black people by the United States government and its citizens."
+               [^{:quoting "nyt-racial-wealth-gap"
+                  :agree true}
+                ["Though black people make up nearly 13 percent of the United States population, they hold less than 3 percent of the nation’s total wealth."]]
+               [^{:quoting "nyt-racial-wealth-gap"
+                  :agree true}
+                ["The median family wealth for white people is $171,000, compared with just $17,600 for black people."]]
+               [^{:agree true}
+                ["19 percent of black households have zero or negative net worth, compared to 9 percent of white households."
+                 ["nyt-racial-wealth-gap"]]]]}]]
+           [^{:agree true}
+            ["The vast wealth gap between white and black families is a result of intentional and unintentional discrimination against black people by the United States government and its citizens."
              ["nyt-racial-wealth-gap"]
              {:support
-              [[["After the American Civil War, bad financial decisions on the part of the all-white trustees of the Freedman's Savings Bank resulted in more than 60,000 black people losing much of their savings."
+              [[^{:agree true}
+                ["After the American Civil War, bad financial decisions on the part of the all-white trustees of the Freedman's Savings Bank resulted in more than 60,000 black people losing much of their savings."
                  ["nyt-racial-wealth-gap"]]]
-               [["The G.I. Bill helped many white veterans buy houses but the Veterans Administration adopted a policy of only giving loans to developers who wouldn’t sell to black people."
+               [^{:agree true}
+                ["The G.I. Bill helped many white veterans buy houses but the Veterans Administration adopted a policy of only giving loans to developers who wouldn’t sell to black people."
                  ["nyt-racial-wealth-gap"]]]
-               [["In 1866, Andrew Johnson cancelled General William Sherman’s order reallocating white-owned land to black families, saying “This is a country for white men and by God, as long as I am President, it shall be a government for white men.”"
+               [^{:agree true}
+                ["In 1866, Andrew Johnson cancelled General William Sherman’s order reallocating white-owned land to black families, saying “This is a country for white men and by God, as long as I am President, it shall be a government for white men.”"
                  ["nyt-racial-wealth-gap"]]]
-               [["After the Reconstruction period, lawmakers across the United States South enacted Black Codes and Jim Crow laws that stripped black people of many of their freedoms and property."
+               [^{:agree true}
+                ["After the Reconstruction period, lawmakers across the United States South enacted Black Codes and Jim Crow laws that stripped black people of many of their freedoms and property."
                  ["nyt-racial-wealth-gap"]]]
-               [["After the Reconstruction period, white people, aided by law enforcement, waged a campaign of violence against black people that robbed them of an incalculable amount of wealth."
+               [^{:agree true}
+                ["After the Reconstruction period, white people, aided by law enforcement, waged a campaign of violence against black people that robbed them of an incalculable amount of wealth."
                  ["nyt-racial-wealth-gap"]]]
-               [["Through the first half of the 20th century, the United States federal government actively excluded black people from government wealth-building programs."
+               [^{:agree true}
+                ["Through the first half of the 20th century, the United States federal government actively excluded black people from government wealth-building programs."
                  ["nyt-racial-wealth-gap"]]]]}]]]}]
         ["In 2019, in the United States we should make laws that give advantages to some people on the basis of race."
          []

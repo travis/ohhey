@@ -12,7 +12,7 @@ export const Citation = withStyles({
 })(({classes, source: {url, title, publication}}) => (
   <cite className={classes.cite}>
     - {publication && (
-      <Fragment><NewTabLink href={publication.url}>{publication.name}</NewTabLink>, </Fragment>
+      <Fragment><NewTabLink href={publication.url}>{publication.name}</NewTabLink>,&nbsp;</Fragment>
     )}
     <NewTabLink href={url}>{title}</NewTabLink>
   </cite>
@@ -38,22 +38,29 @@ export default withStyles(theme => ({
   const close = () => setShowSources(null)
   return (
     <Box display="inline">
-      <sup className={classes.sup} onClick={(e) => buttonEl ? close() : setShowSources(e.target)}>
+      <sup className={classes.sup} onMouseEnter={(e) => buttonEl ? close() : setShowSources(e.target)}>
         [<span className={classes.note}>*</span>]
       </sup>
       <Popper open={sourcesShown} onClose={close} anchorEl={buttonEl} >
         <Paper onMouseLeave={close}>
           <List>
-            {sources && sources.map(({url, title, book}, i) => (
+            {sources && sources.map(({url, title, book, publication}, i) => (
               <ListItem key={url || (book && book.url)}>
-                {book ?
-                 (
-                   <p>
-                     <a href={book.url} target="_blank" rel="noopener noreferrer">{book.title}</a>
-                     {book.author  && (<i className={classes.author}>by {book.author}</i>)}
-                   </p>
-                 ) :
-                 (<a href={url} target="_blank" rel="noopener noreferrer">{title}</a>)}
+                <cite>
+                  {book ? (
+                    <p>
+                      <NewTabLink href={book.url}>{book.title}</NewTabLink>
+                      {book.author  && (<i className={classes.author}>by {book.author}</i>)}
+                    </p>
+                  ) : (
+                    <Fragment>
+                      {publication && (
+                        <Fragment><NewTabLink href={publication.url}>{publication.name}</NewTabLink>,&nbsp;</Fragment>
+                      )}
+                      <NewTabLink href={url}>{title}</NewTabLink>
+                    </Fragment>
+                  )}
+                </cite>
               </ListItem>
             ))}
           </List>
