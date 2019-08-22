@@ -261,12 +261,16 @@
       :title (dkey :source/title)
       :lccn (dkey :source/lccn)
       :page (dkey :source/page)
-      :book (dkey :source/book)}
+      :book (dkey :source/book)
+      :publication (dkey :source/publication)}
      :Book
      {:url (dkey :book/url)
       :title (dkey :book/title)
       :lccn (dkey :book/lccn)
       :author (dkey :book/author)}
+     :Publication
+     {:url (dkey :publication/url)
+      :name (dkey :publication/name)}
      :Evidence
      {:id (dkey :evidence/id)
       :supports (dkey :evidence/supports)

@@ -1,7 +1,22 @@
-import React, {useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
-import {Box, Popper, Paper, List, ListItem} from '../components/ui'
+import {Box, Popper, Paper, List, ListItem, NewTabLink} from '../components/ui'
+
+export const Citation = withStyles({
+  cite: {
+    display: "block",
+    fontSize: "0.67em",
+    textAlign: "right"
+  }
+})(({classes, source: {url, title, publication}}) => (
+  <cite className={classes.cite}>
+    - {publication && (
+      <Fragment><NewTabLink href={publication.url}>{publication.name}</NewTabLink>, </Fragment>
+    )}
+    <NewTabLink href={url}>{title}</NewTabLink>
+  </cite>
+))
 
 export default withStyles(theme => ({
   sup: {

@@ -9,7 +9,20 @@ export const CurrentUser = gql`
   }
 `
 
+const sourceFragment = gql`
+fragment sourceFields on Source {
+  url, title, lccn, page
+  book {
+    url, title, author, lccn
+  }
+  publication {
+    url, name
+  }
+}
+`
+
 const fullClaimFieldsFragment = gql`
+${sourceFragment}
 fragment fullClaimFields on Claim {
   id
   slug
@@ -22,8 +35,8 @@ fragment fullClaimFields on Claim {
   agreementCount
   myAgreement
   score
-  sources { url, title, lccn, page, book { url, title, author, lccn } }
-  quoting { url, title, lccn, page, book { url, title, author, lccn } }
+  sources { ...sourceFields }
+  quoting { ...sourceFields }
 }
 `
 
@@ -41,14 +54,15 @@ fragment fullEvidenceFields on Evidence {
 `
 
 const fullUserClaimFieldsFragment = gql`
+${sourceFragment}
 fragment fullUserClaimFields on Claim {
   id
   body
   slug
   creator { username }
   myAgreement
-  sources { url, title, lccn, page, book { url, title, author, lccn } }
-  quoting { url, title, lccn, page, book { url, title, author, lccn } }
+  sources { ...sourceFields }
+  quoting { ...sourceFields }
   userMeta(username: $username) {
     id
     agreement

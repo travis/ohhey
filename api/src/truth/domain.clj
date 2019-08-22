@@ -22,11 +22,13 @@
 
 (defn new-source [{db-id :db/id id :id
                    url :url title :title
-                   book :book page :page}]
+                   book :book publication :publication
+                   page :page}]
   (-> {:db/id (or db-id (default-db-id))
        :source/id (or id (uuid))}
       (cond->
           book (assoc :source/book book)
+          publication (assoc :source/publication publication)
           url (assoc :source/url url)
           title (assoc :source/title title)
           page (assoc :source/page page))))
@@ -41,6 +43,14 @@
           title (assoc :book/title title)
           author (assoc :book/author author)
           lccn (assoc :book/lccn lccn))))
+
+(defn new-publication [{db-id :db/id id :id
+                        url :url name :name}]
+  (-> {:db/id (or db-id (default-db-id))
+       :publication/id (or id (uuid))}
+      (cond->
+          url (assoc :publication/url url)
+          name(assoc :publication/name name))))
 
 (defn new-claim [{db-id :db/id id :id
                   body :body creator :creator sources :sources
@@ -178,9 +188,11 @@
                           :claim/created-at
                           :claim/slug
                           {:claim/sources [:source/url :source/title :source/lccn :source/page
-                                           {:source/book [:book/url :book/title :book/author :book/lccn]}]}
+                                           {:source/book [:book/url :book/title :book/author :book/lccn]}
+                                           {:source/publication [:publication/url :publication/name]}]}
                           {:claim/quoting [:source/url :source/title :source/lccn :source/page
-                                           {:source/book [:book/url :book/title :book/author :book/lccn]}]}
+                                           {:source/book [:book/url :book/title :book/author :book/lccn]}
+                                           {:source/publication [:publication/url :publication/name]}]}
                           {:claim/creator [:user/username]}])
 
 (def anon-user-ref [:user/username "anon"])

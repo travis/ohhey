@@ -47,12 +47,18 @@ type Book {
   lccn: String
 }
 
+type Publication {
+  url: String
+  name: String
+}
+
 type Source {
   url: String
   title: String
   lccn: String
   page: Int
   book: Book
+  publication: Publication
 }
 
 type EvidenceConnection {

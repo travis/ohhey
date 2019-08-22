@@ -10,11 +10,11 @@ import {
 } from './claim'
 import {
   Typography, Button, PopoverButton, Link, Divider, MenuButton, MenuItem, Grid,
-  ClaimBody, Box
+  ClaimBody, Box, NewTabLink
 } from './ui'
 import { Form } from './form'
 import AutosuggestClaimTextInput from './AutosuggestClaimTextInput'
-import Sources from './Sources'
+import Sources, {Citation} from './Sources'
 import { StopPropagation } from './util'
 import { withAuth } from '../authentication'
 
@@ -49,10 +49,7 @@ export const ClaimBodyLink = ({claim: {slug, body, sources, quoting}}) => (
     />
     {quoting && "”"}
     {sources && <Sources sources={sources}/>}
-    {quoting && (
-      <cite className={claimBodyLinkStyles().quoteCitation}>
-        - <a href={quoting.url}>{quoting.title}</a>
-      </cite>)}
+    {quoting && (<Citation source={quoting}/>)}
   </Fragment>
 )
 

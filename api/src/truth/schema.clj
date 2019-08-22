@@ -47,6 +47,21 @@
     :db/cardinality :db.cardinality/one
     :db/doc "The library of congress catalog number of the book"}])
 
+(def publication
+  [{:db/ident :publication/id
+    :db/valueType :db.type/uuid
+    :db/cardinality :db.cardinality/one
+    :db/unique :db.unique/identity
+    :db/doc "The publication's id"}
+   {:db/ident :publication/url
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/doc "The url of the publication"}
+   {:db/ident :publication/name
+    :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one
+    :db/doc "The name of the publication"}])
+
 (def source
   [{:db/ident :source/id
     :db/valueType :db.type/uuid
@@ -65,6 +80,10 @@
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one
     :db/doc "If the source is a book, a reference to the book."}
+   {:db/ident :source/publication
+    :db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/one
+    :db/doc "If the source is a publication, a reference to the publication."}
    {:db/ident :source/page
     :db/valueType :db.type/long
     :db/cardinality :db.cardinality/one
@@ -186,6 +205,7 @@
 (defn load [conn]
   @(d/transact conn user)
   @(d/transact conn book)
+  @(d/transact conn publication)
   @(d/transact conn source)
   @(d/transact conn claim)
   @(d/transact conn claim-vote)
@@ -196,4 +216,4 @@
   (cd/transact
    conn
    {:tx-data
-    (concat user book source claim claim-vote evidence relevance-vote)}))
+    (concat user book publication source claim claim-vote evidence relevance-vote)}))

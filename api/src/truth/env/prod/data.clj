@@ -2,7 +2,7 @@
   (:require
    [clojure.walk :refer [postwalk]]
    [truth.domain
-    :refer [new-user new-claim new-claim-vote new-book
+    :refer [new-user new-claim new-claim-vote new-book new-publication
             new-source new-evidence new-relevance-vote]
     :as t]))
 
@@ -123,11 +123,19 @@
      :author "Michelle Alexander"
      :url "http://newjimcrow.com/"}]))
 
+(def publications
+  (map
+   new-publication
+   [{:db/id "new-york-times"
+     :name "The New York Times"
+     :url "https://nytimes.com"}]))
+
 (def sources
   (map new-source
        [{:db/id "nyt-racial-wealth-gap"
          :url "https://www.nytimes.com/interactive/2019/08/14/magazine/racial-wealth-gap.html"
-         :title "Racial Wealth Gap"}]))
+         :title "Racial Wealth Gap"
+         :publication "new-york-times"}]))
 
 (def claims
   (map ->claim
@@ -479,7 +487,7 @@
           :quoting "nyt-racial-wealth-gap"
           }
         ["A vast wealth gap, driven by segregation, redlining, evictions and exclusion, separates black and white America."
-         ["nyt-racial-wealth-gap"]
+         []
          {:support
           [[["In 2019 in the United States there is a massive gap between the wealth of black and white families."
              ["nyt-racial-wealth-gap"]
@@ -626,4 +634,4 @@
         ])
   )
 
-(def data (concat users books sources claims))
+(def data (concat users books publications sources claims))
