@@ -6,7 +6,7 @@ import {Box, Popper, Paper, List, ListItem, NewTabLink} from '../components/ui'
 export const Citation = withStyles({
   cite: {
     display: "block",
-    fontSize: "0.67em",
+    fontSize: "0.5em",
     textAlign: "right"
   }
 })(({classes, source: {url, title, publication}}) => (

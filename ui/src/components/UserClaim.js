@@ -11,15 +11,18 @@ import {
 } from './ui'
 import { ExpandMoreIcon } from './icons'
 import { withAuth } from '../authentication'
-import Sources from './Sources'
+import Sources, {Citation} from './Sources'
 
 import * as goto from '../goto';
 import * as queries from '../queries';
 
-export const ClaimBodyLink = ({username, claim: {slug, body, sources}}) => (
+export const ClaimBodyLink = ({username, claim: {slug, body, sources, quoting}}) => (
   <Fragment>
+    {quoting && "“"}
     <Link to={`/somesay/${slug}`}>{body}</Link>
+    {quoting && "”"}
     {sources && <Sources sources={sources}/>}
+    {quoting && (<Citation source={quoting}/>)}
   </Fragment>
 )
 
