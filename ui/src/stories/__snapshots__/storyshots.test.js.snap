@@ -2,10 +2,10 @@
 
 exports[`Storyshots ClaimPaper with ClaimBody 1`] = `
 <div
-  className="MuiPaper-root MuiPaper-elevation1 Component-root-145 Component-root-146 Component-root-144 MuiPaper-rounded"
+  className="MuiPaper-root MuiPaper-elevation1 Component-root-153 Component-root-154 Component-root-152 MuiPaper-rounded"
 >
   <h5
-    className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-174 WithStyles(ForwardRef(Typography))-root-175 MuiTypography-h5 MuiTypography-colorTextPrimary MuiTypography-alignCenter"
+    className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-182 WithStyles(ForwardRef(Typography))-root-183 MuiTypography-h5 MuiTypography-colorTextPrimary MuiTypography-alignCenter"
   >
     This is a claim body
   </h5>
@@ -14,12 +14,12 @@ exports[`Storyshots ClaimPaper with ClaimBody 1`] = `
 
 exports[`Storyshots Claims Evidence 1`] = `
 <div
-  className="MuiPaper-root MuiPaper-elevation0 MuiExpansionPanel-root Component-root-313 MuiExpansionPanel-rounded MuiPaper-rounded"
+  className="MuiPaper-root MuiPaper-elevation0 MuiExpansionPanel-root Component-root-321 MuiExpansionPanel-rounded MuiPaper-rounded"
 >
   <div
     aria-disabled={false}
     aria-expanded={false}
-    className="MuiButtonBase-root MuiExpansionPanelSummary-root Component-root-345"
+    className="MuiButtonBase-root MuiExpansionPanelSummary-root Component-root-353"
     onBlur={[Function]}
     onClick={[Function]}
     onDragLeave={[Function]}
@@ -36,18 +36,18 @@ exports[`Storyshots Claims Evidence 1`] = `
     tabIndex={0}
   >
     <div
-      className="MuiExpansionPanelSummary-content Component-content-346"
+      className="MuiExpansionPanelSummary-content Component-content-354"
     >
       <div
-        className="MuiBox-root MuiBox-root-357"
+        className="MuiBox-root MuiBox-root-365"
       >
         <div
-          className="MuiBox-root MuiBox-root-358"
+          className="MuiBox-root MuiBox-root-366"
           onClick={[Function]}
         >
           <button
             aria-haspopup="true"
-            className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-361 WithStyles(ForwardRef(Button))-root-362 Component-root-359 Component-root-360 MuiButton-text"
+            className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-369 WithStyles(ForwardRef(Button))-root-370 Component-root-367 Component-root-368 MuiButton-text"
             disabled={false}
             onBlur={[Function]}
             onClick={[Function]}
@@ -74,24 +74,27 @@ exports[`Storyshots Claims Evidence 1`] = `
         </div>
       </div>
       <div
-        className="MuiBox-root MuiBox-root-381"
+        className="MuiBox-root MuiBox-root-389"
       >
         <h6
-          className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-382 WithStyles(ForwardRef(Typography))-root-383 MuiTypography-h6"
+          className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-390 WithStyles(ForwardRef(Typography))-root-391 MuiTypography-h6"
         >
           <a
+            className="MuiTypography-root MuiLink-root MuiLink-underlineHover UnstyledLink-root-422 UnstyledLink-root-423 MuiTypography-colorInherit"
             href="/somesay/this-is-another-claim"
+            onBlur={[Function]}
             onClick={[Function]}
+            onFocus={[Function]}
           >
             This is a claim that stretches the limits of this system. It has precisely 255 characters, the maximum number of characters that a claim can have and still be valid. Anything longer than this will be rejected by the system because it is too long. Goodbye.
           </a>
         </h6>
         <div
-          className="MuiBox-root MuiBox-root-414"
+          className="MuiBox-root MuiBox-root-430"
           onClick={[Function]}
         >
           <button
-            className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-361 WithStyles(ForwardRef(Button))-root-415 MuiButton-text"
+            className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-369 WithStyles(ForwardRef(Button))-root-431 MuiButton-text"
             disabled={false}
             onBlur={[Function]}
             onClick={[Function]}
@@ -115,7 +118,7 @@ exports[`Storyshots Claims Evidence 1`] = `
             </span>
           </button>
           <button
-            className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-361 WithStyles(ForwardRef(Button))-root-416 MuiButton-text"
+            className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-369 WithStyles(ForwardRef(Button))-root-432 MuiButton-text"
             disabled={false}
             onBlur={[Function]}
             onClick={[Function]}
@@ -139,7 +142,7 @@ exports[`Storyshots Claims Evidence 1`] = `
             </span>
           </button>
           <button
-            className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-361 WithStyles(ForwardRef(Button))-root-417 MuiButton-text"
+            className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-369 WithStyles(ForwardRef(Button))-root-433 MuiButton-text"
             disabled={false}
             onBlur={[Function]}
             onClick={[Function]}
@@ -231,7 +234,7 @@ exports[`Storyshots Claims SupportList 1`] = `""`;
 
 exports[`Storyshots Claims default 1`] = `
 <div
-  className="MuiGrid-root WithStyles(ForwardRef(Grid))-root-206 WithStyles(ForwardRef(Grid))-root-207 MuiGrid-container MuiGrid-spacing-xs-1"
+  className="MuiGrid-root WithStyles(ForwardRef(Grid))-root-214 WithStyles(ForwardRef(Grid))-root-215 MuiGrid-container MuiGrid-spacing-xs-1"
 />
 `;
 
@@ -276,15 +279,18 @@ exports[`Storyshots Header default 1`] = `
         className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-102 WithStyles(ForwardRef(Typography))-root-103 Component-ohhey-33 MuiTypography-h6"
       >
         <a
+          className="MuiTypography-root MuiLink-root MuiLink-underlineHover UnstyledLink-root-134 UnstyledLink-root-135 MuiTypography-colorInherit"
           href="/"
+          onBlur={[Function]}
           onClick={[Function]}
+          onFocus={[Function]}
         >
           oh hey!
         </a>
       </h6>
       <button
         aria-haspopup="true"
-        className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-76 WithStyles(ForwardRef(Button))-root-134 MuiButton-text"
+        className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-76 WithStyles(ForwardRef(Button))-root-142 MuiButton-text"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -324,15 +330,15 @@ exports[`Storyshots Header default 1`] = `
 
 exports[`Storyshots Sources default 1`] = `
 <div
-  className="MuiBox-root MuiBox-root-566"
+  className="MuiBox-root MuiBox-root-591"
 >
   <sup
-    className="Component-sup-562"
+    className="Component-sup-587"
     onMouseEnter={[Function]}
   >
     [
     <span
-      className="Component-note-563"
+      className="Component-note-588"
     >
       *
     </span>
@@ -360,21 +366,23 @@ exports[`Storyshots UI components Spinner 1`] = `
 
 exports[`Storyshots UserClaim default 1`] = `
 <div
-  className="MuiPaper-root MuiPaper-elevation1 Component-root-443 Component-root-444 Component-root-442 MuiPaper-rounded"
+  className="MuiPaper-root MuiPaper-elevation1 Component-root-459 Component-root-460 Component-root-458 MuiPaper-rounded"
 >
   <div
-    className="MuiToolbar-root MuiToolbar-regular WithStyles(ForwardRef(Toolbar))-root-472 WithStyles(ForwardRef(Toolbar))-root-473 MuiToolbar-gutters"
+    className="MuiToolbar-root MuiToolbar-regular WithStyles(ForwardRef(Toolbar))-root-488 WithStyles(ForwardRef(Toolbar))-root-489 MuiToolbar-gutters"
   >
     <div
-      className="MuiBox-root MuiBox-root-479"
+      className="MuiBox-root MuiBox-root-495"
     />
     <div
-      className="MuiBox-root MuiBox-root-480"
+      className="MuiBox-root MuiBox-root-496"
     >
       <a
-        fontSize="button"
+        className="MuiTypography-root MuiLink-root MuiLink-underlineHover UnstyledLink-root-497 UnstyledLink-root-498 MuiTypography-colorInherit"
         href="/somesay/this-is-a-claim"
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
       >
         <svg
           aria-hidden="true"
@@ -389,7 +397,7 @@ exports[`Storyshots UserClaim default 1`] = `
         </svg>
       </a>
       <button
-        className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-491 WithStyles(ForwardRef(Button))-root-492 Styled(WithStyles(ForwardRef(Button)))-root-490 MuiButton-text"
+        className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-545 WithStyles(ForwardRef(Button))-root-546 Styled(WithStyles(ForwardRef(Button)))-root-544 MuiButton-text"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -425,27 +433,30 @@ exports[`Storyshots UserClaim default 1`] = `
     </div>
   </div>
   <h6
-    className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-525 WithStyles(ForwardRef(Typography))-root-526 MuiTypography-subtitle1 MuiTypography-colorTextPrimary MuiTypography-alignCenter"
+    className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-579 WithStyles(ForwardRef(Typography))-root-580 MuiTypography-subtitle1 MuiTypography-colorTextPrimary MuiTypography-alignCenter"
   >
     @
     toby
      believes 
   </h6>
   <h5
-    className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-525 WithStyles(ForwardRef(Typography))-root-557 MuiTypography-h5 MuiTypography-colorTextPrimary MuiTypography-alignCenter"
+    className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-579 WithStyles(ForwardRef(Typography))-root-581 MuiTypography-h5 MuiTypography-colorTextPrimary MuiTypography-alignCenter"
   >
     <a
+      className="MuiTypography-root MuiLink-root MuiLink-underlineHover UnstyledLink-root-497 UnstyledLink-root-582 MuiTypography-colorInherit"
       href="/somesay/this-is-a-claim"
+      onBlur={[Function]}
       onClick={[Function]}
+      onFocus={[Function]}
     >
       This is a claim
     </a>
   </h5>
   <p
-    className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-525 WithStyles(ForwardRef(Typography))-root-558 MuiTypography-body1 MuiTypography-alignCenter"
+    className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-579 WithStyles(ForwardRef(Typography))-root-583 MuiTypography-body1 MuiTypography-alignCenter"
   >
     <button
-      className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-491 WithStyles(ForwardRef(Button))-root-559 MuiButton-text"
+      className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-545 WithStyles(ForwardRef(Button))-root-584 MuiButton-text"
       disabled={false}
       onBlur={[Function]}
       onClick={[Function]}
@@ -469,7 +480,7 @@ exports[`Storyshots UserClaim default 1`] = `
       </span>
     </button>
     <button
-      className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-491 WithStyles(ForwardRef(Button))-root-560 MuiButton-text"
+      className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-545 WithStyles(ForwardRef(Button))-root-585 MuiButton-text"
       disabled={false}
       onBlur={[Function]}
       onClick={[Function]}
@@ -493,7 +504,7 @@ exports[`Storyshots UserClaim default 1`] = `
       </span>
     </button>
     <button
-      className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-491 WithStyles(ForwardRef(Button))-root-561 MuiButton-text"
+      className="MuiButtonBase-root MuiButton-root WithStyles(ForwardRef(Button))-root-545 WithStyles(ForwardRef(Button))-root-586 MuiButton-text"
       disabled={false}
       onBlur={[Function]}
       onClick={[Function]}
