@@ -100,7 +100,12 @@
    {:db/ident :claim/sources
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/many
-    :db/isComponent true
+    :db/isComponent false
+    :db/doc "Sources for this claim"}
+   {:db/ident :claim/quoting
+    :db/valueType :db.type/ref
+    :db/cardinality :db.cardinality/one
+    :db/isComponent false
     :db/doc "Sources for this claim"}
    {:db/ident :claim/evidence
     :db/valueType :db.type/ref

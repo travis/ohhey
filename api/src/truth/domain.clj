@@ -46,22 +46,24 @@
                   body :body creator :creator sources :sources
                   contributors :contributors evidence :evidence
                   votes :votes created-at :created-at featured :featured
-                  standalone :standalone
+                  standalone :standalone quoting :quoting
                   :or {contributors [] evidence [] votes [] sources []
                        created-at (java.util.Date.)
                        standalone false featured false}}]
-  {:db/id (or db-id (default-db-id))
-   :claim/id (or id (uuid))
-   :claim/body body
-   :claim/created-at created-at
-   :claim/slug (->slug body)
-   :claim/creator creator
-   :claim/contributors contributors
-   :claim/sources sources
-   :claim/evidence  evidence
-   :claim/votes votes
-   :claim/standalone standalone
-   :claim/featured featured})
+  (cond->
+   {:db/id (or db-id (default-db-id))
+    :claim/id (or id (uuid))
+    :claim/body body
+    :claim/created-at created-at
+    :claim/slug (->slug body)
+    :claim/creator creator
+    :claim/contributors contributors
+    :claim/sources sources
+    :claim/evidence evidence
+    :claim/votes votes
+    :claim/standalone standalone
+    :claim/featured featured}
+    quoting (assoc :claim/quoting quoting)))
 
 (defn new-claim-vote [{db-id :db/id id :id
                        claim :claim voter :voter agreement :agreement}]
@@ -176,6 +178,8 @@
                           :claim/created-at
                           :claim/slug
                           {:claim/sources [:source/url :source/title :source/lccn :source/page
+                                           {:source/book [:book/url :book/title :book/author :book/lccn]}]}
+                          {:claim/quoting [:source/url :source/title :source/lccn :source/page
                                            {:source/book [:book/url :book/title :book/author :book/lccn]}]}
                           {:claim/creator [:user/username]}])
 

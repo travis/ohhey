@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
-import { withStyles, styled } from '@material-ui/core/styles';
+import { withStyles, makeStyles, styled } from '@material-ui/core/styles';
 import { Route, Switch, withRouter } from "react-router-dom";
 import { Spinner, ClaimPaper } from './ui'
 import {
@@ -30,15 +30,29 @@ const RoutePrefixSwitch = ({ibelieve, idontbelieve, somesay, fallback}) => (
   </Switch>
 )
 
-export const ClaimBodyLink = ({claim: {slug, body, sources}}) => (
+const claimBodyLinkStyles = makeStyles({
+  quoteCitation: {
+    display: "block",
+    fontSize: "0.67em",
+    textAlign: "right"
+  }
+})
+
+export const ClaimBodyLink = ({claim: {slug, body, sources, quoting}}) => (
   <Fragment>
+    {quoting && "“"}
     <RoutePrefixSwitch
       ibelieve={<Link to={`/ibelieve/${slug}`}>{body}</Link>}
       idontbelieve={<Link to={`/idontbelieve/${slug}`}>{body}</Link>}
       somesay={<Link to={`/somesay/${slug}`}>{body}</Link>}
       fallback={<Link to={`/somesay/${slug}`}>{body}</Link>}
     />
+    {quoting && "”"}
     {sources && <Sources sources={sources}/>}
+    {quoting && (
+      <cite className={claimBodyLinkStyles().quoteCitation}>
+        - <a href={quoting.url}>{quoting.title}</a>
+      </cite>)}
   </Fragment>
 )
 

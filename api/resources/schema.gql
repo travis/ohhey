@@ -37,6 +37,7 @@ type Claim implements Node {
   score: Int,
   userMeta(username: String!): UserClaimMeta
   sources: [Source]
+  quoting: Source
 }
 
 type Book {

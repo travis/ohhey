@@ -54,7 +54,7 @@
 (defn toby-claim-vote [vote]
   (new-claim-vote (merge {:voter toby} vote)))
 
-(defn toby-claim [{sources :sources votes :votes creator :creator
+(defn toby-claim [{sources :sources votes :votes creator :creator quoting :quoting
                    evidence :evidence supported-by :supported-by countered-by :countered-by
                    agree :agree
                    :as claim
@@ -62,6 +62,7 @@
   (new-claim (-> claim
                  (assoc :creator creator)
                  (assoc :sources (map ->source sources))
+                 (assoc :quoting (when quoting (->source quoting)))
                  (assoc :evidence (->evidence-list evidence))
                  (assoc :votes (map toby-claim-vote
                                     (if (nil? agree)
@@ -470,11 +471,13 @@
              []
              {:oppose
               [[["Failing to make progress toward our aspirations doesn't cause suffering, a negative fixation on that lack of progress causes suffering."
-                 {:url "https://www.ecu.edu.au/news/latest-news/2019/06/not-always-reaching-your-potential-is-okay-but-overthinking-it-is-a-problem"
-                  :title "Not always reaching your potential is okay, but overthinking it is a problem"}]]]}]]
+                 [{:url "https://www.ecu.edu.au/news/latest-news/2019/06/not-always-reaching-your-potential-is-okay-but-overthinking-it-is-a-problem"
+                   :title "Not always reaching your potential is okay, but overthinking it is a problem"}]]]]}]]
            ]}]
         ^{:featured true
-          :created-at #inst "2019-08-19T17:25:00Z"}
+          :created-at #inst "2019-08-19T17:25:00Z"
+          :quoting "nyt-racial-wealth-gap"
+          }
         ["A vast wealth gap, driven by segregation, redlining, evictions and exclusion, separates black and white America."
          ["nyt-racial-wealth-gap"]
          {:support

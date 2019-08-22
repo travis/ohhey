@@ -245,6 +245,7 @@
       :agreementCount (dkey :agreement-count)
       :creator (dkey :claim/creator)
       :sources (dkey :claim/sources)
+      :quoting (dkey :claim/quoting)
       :contributors
       (fn [{db :db} arguments {id :db/id contributors :claim/contributors}]
         (or contributors (get-contributors db id)))
