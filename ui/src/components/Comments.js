@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
-import {  graphql, compose } from "react-apollo";
-
+import { graphql } from "@apollo/react-hoc";
+import { compose } from '../util'
 import {firebaseClient} from '../clients'
 import * as queries from '../queries';
 import {Form, TextArea} from './form'

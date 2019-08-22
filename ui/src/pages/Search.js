@@ -1,5 +1,6 @@
 import React, {Fragment} from 'react';
-import { graphql, compose } from "react-apollo";
+import { compose } from "../util";
+import { graphql } from "@apollo/react-hoc";
 import { withRouter } from "react-router-dom";
 
 import {Form, TextInput} from '../components/form'

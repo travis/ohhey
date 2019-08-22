@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose } from "react-apollo";
+import { compose } from "../util";
 
 import { withAuth } from '../authentication'
 import {Form, TextInput} from '../components/form'

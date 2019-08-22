@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
-import { graphql, compose } from "react-apollo";
+import { compose } from '../util'
+import { graphql } from "@apollo/react-hoc";
 import { withStyles, styled } from '@material-ui/core/styles';
 import { Route, Switch, withRouter } from "react-router-dom";
 import { Spinner, ClaimPaper } from './ui'

@@ -1,3 +1,3 @@
-import { compose } from "react-apollo";
+import compose from 'lodash.flowright';
 
-export {compose}
+export { compose }

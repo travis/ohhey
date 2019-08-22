@@ -4,7 +4,7 @@ import { storiesOf, addDecorator } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
 import StoryRouter from 'storybook-react-router';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/react-components';
 import { SnackbarProvider } from 'notistack';
 
 import { client } from './apollo'

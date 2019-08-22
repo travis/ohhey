@@ -1,5 +1,6 @@
 import React, {createContext} from 'react';
-import { graphql, compose, withApollo } from 'react-apollo'
+import { graphql, withApollo } from '@apollo/react-hoc'
+import { compose } from './util'
 import * as queries from './queries'
 
 export const {Consumer, Provider} = createContext({

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import { compose, Query } from "react-apollo";
+import { Query } from "@apollo/react-components";
+import { compose } from '../util'
 import { withStyles } from '@material-ui/core/styles';
 import {AutosuggestTextInput} from './form'
 

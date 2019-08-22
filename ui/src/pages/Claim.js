@@ -1,5 +1,6 @@
 import React, {Fragment, useEffect} from 'react';
-import { graphql, compose } from "react-apollo";
+import { graphql } from "@apollo/react-hoc";
+import { compose } from "../util";
 import { withRouter } from "react-router-dom";
 
 import {Claim} from '../components/Claims'

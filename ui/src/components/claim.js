@@ -1,5 +1,5 @@
 import React, {Fragment, useState} from 'react';
-import { graphql } from "react-apollo";
+import { graphql } from "@apollo/react-hoc";
 import { withStyles, styled } from '@material-ui/core/styles';
 import { withTheme } from '@material-ui/styles';
 import { Twitter, Facebook, Reddit } from 'react-social-sharing'

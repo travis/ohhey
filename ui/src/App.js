@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 
-import { ApolloProvider } from "react-apollo";
+import { ApolloProvider } from "@apollo/react-components";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { SnackbarProvider } from 'notistack';
 

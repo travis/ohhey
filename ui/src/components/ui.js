@@ -36,7 +36,7 @@ import { compose, css, positions, palette, spacing, typography, flexbox, sizing 
 
 export const UnstyledLink = ({children, ...props}) => <MuiLink color="inherit" component={RouterLink} {...props}>{children}</MuiLink>
 
-export const Link = styled(UnstyledLink)(compose(flexbox, typography, spacing))
+export const Link = RouterLink // styled(UnstyledLink)(compose(flexbox, typography, spacing))
 
 export const NewTabLink = ({children, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props}>{children}</a>
 
