@@ -34,9 +34,9 @@ import SpinkitSpinner from 'react-spinkit'
 import { styled } from '@material-ui/styles';
 import { compose, css, positions, palette, spacing, typography, flexbox, sizing } from "@material-ui/system"
 
-export const Link = styled(
-  (props) => <MuiLink color="inherit" component={RouterLink} {...props}/>
-)(compose(flexbox, typography, spacing))
+export const UnstyledLink = ({children, ...props}) => <MuiLink color="inherit" component={RouterLink} {...props}>{children}</MuiLink>
+
+export const Link = styled(UnstyledLink)(compose(flexbox, typography, spacing))
 
 export const NewTabLink = ({children, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props}>{children}</a>
 
