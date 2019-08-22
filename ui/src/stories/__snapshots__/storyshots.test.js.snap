@@ -2,10 +2,10 @@
 
 exports[`Storyshots ClaimPaper with ClaimBody 1`] = `
 <div
-  className="MuiPaper-root-165 MuiPaper-elevation1-168 MuiPaper-rounded-166 Component-root-163 Component-root-164 Component-root-162"
+  className="MuiPaper-root MuiPaper-elevation1 Component-root-153 Component-root-154 Component-root-152 MuiPaper-rounded"
 >
   <h5
-    className="MuiTypography-root-194 MuiTypography-h5-203 MuiTypography-colorTextPrimary-219 MuiTypography-alignCenter-210 WithStyles(ForwardRef(Typography))-root-192 WithStyles(ForwardRef(Typography))-root-193"
+    className="MuiTypography-root WithStyles(ForwardRef(Typography))-root-182 WithStyles(ForwardRef(Typography))-root-183 MuiTypography-h5 MuiTypography-colorTextPrimary MuiTypography-alignCenter"
   >
     This is a claim body
   </h5>
@@ -230,7 +230,7 @@ exports[`Storyshots Claims SupportList 1`] = `""`;
 
 exports[`Storyshots Claims default 1`] = `
 <div
-  className="MuiGrid-root-226 MuiGrid-container-227 MuiGrid-spacing-xs-1-249 WithStyles(ForwardRef(Grid))-root-224 WithStyles(ForwardRef(Grid))-root-225"
+  className="MuiGrid-root WithStyles(ForwardRef(Grid))-root-214 WithStyles(ForwardRef(Grid))-root-215 MuiGrid-container MuiGrid-spacing-xs-1"
 />
 `;
 
@@ -326,15 +326,15 @@ exports[`Storyshots Header default 1`] = `
 
 exports[`Storyshots Sources default 1`] = `
 <div
-  className="MuiBox-root-622 MuiBox-root-623"
+  className="MuiBox-root MuiBox-root-591"
 >
   <sup
-    className="Component-sup-619"
-    onClick={[Function]}
+    className="Component-sup-587"
+    onMouseEnter={[Function]}
   >
     [
     <span
-      className="Component-note-620"
+      className="Component-note-588"
     >
       *
     </span>
@@ -345,7 +345,7 @@ exports[`Storyshots Sources default 1`] = `
 
 exports[`Storyshots UI components ClaimPaper 1`] = `
 <div
-  className="MuiPaper-root-6 MuiPaper-elevation1-9 MuiPaper-rounded-7 Component-root-4 Component-root-5 Component-root-3"
+  className="MuiPaper-root MuiPaper-elevation1 Component-root-4 Component-root-5 Component-root-3 MuiPaper-rounded"
 >
   This is some paper on which to write a claim.
 </div>
