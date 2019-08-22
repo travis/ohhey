@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { graphql, compose } from "react-apollo";
-import { withStyles, makeStyles, styled } from '@material-ui/core/styles';
+import { withStyles, styled } from '@material-ui/core/styles';
 import { Route, Switch, withRouter } from "react-router-dom";
 import { Spinner, ClaimPaper } from './ui'
 import {
@@ -10,7 +10,7 @@ import {
 } from './claim'
 import {
   Typography, Button, PopoverButton, Link, Divider, MenuButton, MenuItem, Grid,
-  ClaimBody, Box, NewTabLink
+  ClaimBody, Box
 } from './ui'
 import { Form } from './form'
 import AutosuggestClaimTextInput from './AutosuggestClaimTextInput'
@@ -29,14 +29,6 @@ const RoutePrefixSwitch = ({ibelieve, idontbelieve, somesay, fallback}) => (
     {fallback && <Route path="/"><Fragment>{fallback}</Fragment></Route>}
   </Switch>
 )
-
-const claimBodyLinkStyles = makeStyles({
-  quoteCitation: {
-    display: "block",
-    fontSize: "0.67em",
-    textAlign: "right"
-  }
-})
 
 export const ClaimBodyLink = ({claim: {slug, body, sources, quoting}}) => (
   <Fragment>

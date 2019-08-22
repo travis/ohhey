@@ -38,7 +38,7 @@ export const Link = styled(
   (props) => <MuiLink color="inherit" component={RouterLink} {...props}/>
 )(compose(flexbox, typography, spacing))
 
-export const NewTabLink = (props) => <a target="_blank" rel="noopener noreferrer" {...props}/>
+export const NewTabLink = ({children, ...props}) => <a target="_blank" rel="noopener noreferrer" {...props}>{children}</a>
 
 export const PopoverButton = styled(({ariaID="popover", children, popoverContent, ...buttonProps}) => {
   const [buttonEl, setShowPopover] = useState(null)
