@@ -114,9 +114,8 @@ export const ClaimBody = (props) => (
   <Typography fontFamily="claimBody" variant="h5" align="center" color="textPrimary" {...props}/>
 )
 
-//export const Claim
-
-const StyledSpinner = styled(SpinkitSpinner)(compose(palette))
+// https://kyleamathews.github.io/react-spinkit/
+const StyledSpinner = styled(SpinkitSpinner)(compose(palette, sizing, spacing))
 
 export const Spinner = (props) => (
   <StyledSpinner name="chasing-dots" color="primary.main" {...props}/>

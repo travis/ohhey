@@ -329,7 +329,11 @@ const EvidenceLists = graphql(
   )
 })
 
-const ClaimsGrid = ({claims}) => (
+const ClaimsGrid = ({claims, claimsLoading, claimsError}) => claimsLoading ? (
+  <Spinner name="three-bounce" width="6em" height="6em" mx="auto" mt="2em"/>
+) : (claimsError ? (
+  <Box textAlign="center">Sorry, something went wrong! Please reload the page.</Box>
+) : (
   <Grid container spacing={1}>
     {claims && claims.map((claim) => (
       <Grid item xs={12} key={claim.id}>
@@ -337,10 +341,10 @@ const ClaimsGrid = ({claims}) => (
       </Grid>
     ))}
   </Grid>
-)
+))
 
 export default graphql(
   queries.Claims, {
-    props: ({data: {claims}}) => ({claims})
+    props: ({data: {claims, loading, error}}) => ({claims, claimsLoading: loading, claimsError: error})
   }
 )(ClaimsGrid)
