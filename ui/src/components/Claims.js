@@ -67,13 +67,13 @@ const SentimentPicker = withRouter(
       </MenuItem>,
       <MenuItem key="somesay"
                 onClick={() => goto.someSay(history, {slug}, 'replace')}>
-        some people say
+        some might say
       </MenuItem>
     ]}>
       <RoutePrefixSwitch
         ibelieve="I believe"
         idontbelieve="I don't believe"
-        somesay="some people say"
+        somesay="some might say"
       />
     </SentimentMenuButton>
   )
@@ -95,7 +95,7 @@ export const Claim = compose(
         <RoutePrefixSwitch
           ibelieve={<SentimentPicker>I believe</SentimentPicker>}
           idontbelieve={<SentimentPicker>I don't believe</SentimentPicker>}
-          somesay={<SentimentPicker>some people say</SentimentPicker>}
+          somesay={<SentimentPicker>some might say</SentimentPicker>}
         />
       </ClaimIntroType>
       <ClaimBody>
