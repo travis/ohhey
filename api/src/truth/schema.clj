@@ -97,7 +97,7 @@
    {:db/ident :claim/created-at
     :db/valueType :db.type/instant
     :db/cardinality :db.cardinality/one
-    :db/doc "The instant this claim was created. Can be different from the instant of the transaction it was created in, but usually not by much."}
+    :db/doc "The instant this claim was created."}
    {:db/ident :claim/slug
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one
@@ -167,6 +167,10 @@
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity
     :db/doc "The evidence's id"}
+   {:db/ident :evidence/created-at
+    :db/valueType :db.type/instant
+    :db/cardinality :db.cardinality/one
+    :db/doc "The instant this claim was created."}
    {:db/ident :evidence/creator
     :db/valueType :db.type/ref
     :db/cardinality :db.cardinality/one

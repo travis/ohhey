@@ -33,6 +33,17 @@
 (def travis "travis")
 (def toby "toby")
 
+(def tick-in-ms (* 1000 60 60 10))
+
+(defn inc-date [date]
+  (java.util.Date. (+ (.getTime date) tick-in-ms)))
+
+(defn date-counter []
+  (let [tick (atom #inst "2019-05-01T16:20:00Z")]
+    #(swap! tick inc-date)))
+
+(def tick (date-counter))
+
 (defprotocol Shorthand
   (->claim [data])
   (->evidence [data])
@@ -43,11 +54,13 @@
   (new-relevance-vote (merge {:voter toby} vote)))
 
 (defn toby-evidence [{claim :claim votes :votes supports :supports
+                      created-at :created-at
                       :as evidence
-                      :or {votes [] supports true}}]
+                      :or {votes [] supports true created-at (tick)}}]
   (new-evidence (-> evidence
                     (assoc :supports supports)
                     (assoc :creator toby)
+                    (assoc :created-at created-at)
                     (assoc :claim (->claim claim))
                     (assoc :votes (map toby-relevance-vote votes)))))
 
@@ -56,9 +69,10 @@
 
 (defn toby-claim [{sources :sources votes :votes creator :creator quoting :quoting
                    evidence :evidence supported-by :supported-by countered-by :countered-by
-                   agree :agree
+                   created-at :created-at agree :agree
                    :as claim
-                   :or {sources [] evidence [] votes [] creator toby}}]
+                   :or {sources [] evidence [] votes [] creator toby
+                        created-at (tick)}}]
   (new-claim (-> claim
                  (assoc :creator creator)
                  (assoc :sources (map ->source sources))

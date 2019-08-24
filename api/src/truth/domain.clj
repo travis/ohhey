@@ -84,11 +84,13 @@
 
 (defn new-evidence [{db-id :db/id id :id
                      creator :creator claim :claim supports :supports
+                     created-at :created-at
                      votes :votes
-                     :or {votes []}}]
+                     :or {votes [] created-at (java.util.Date.)}}]
   {:db/id (or db-id (default-db-id))
    :evidence/id (or id (uuid))
    :evidence/creator creator
+   :evidence/created-at created-at
    :evidence/claim claim
    :evidence/supports supports
    :evidence/votes votes})
