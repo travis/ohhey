@@ -10,7 +10,15 @@ import { RetryLink } from "apollo-link-retry";
 //import * as firebase from 'firebase';
 
 export const makeLinkFrom = (networkLink) => ApolloLink.from([
-  new RetryLink(),
+  new RetryLink({
+    delay: {
+      initial: 300,
+      max: 5000
+    },
+    attempts: {
+      max: 3
+    }
+  }),
   onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>
