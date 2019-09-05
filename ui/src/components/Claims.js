@@ -3,7 +3,7 @@ import { compose } from '../util'
 import { graphql } from "@apollo/react-hoc";
 import { withStyles, styled } from '@material-ui/core/styles';
 import { Route, Switch, withRouter } from "react-router-dom";
-import { Spinner, ClaimPaper } from './ui'
+import { ClaimSpinner, Spinner, ClaimPaper } from './ui'
 import {
   ClaimToolbar, EvidenceExpansionPanel, EvidenceExpansionPanelSummary,
   EvidenceExpansionPanelDetails, EvidenceClaimBodyType,
@@ -330,7 +330,7 @@ const EvidenceLists = graphql(
 })
 
 const ClaimsGrid = ({claims, claimsLoading, claimsError}) => claimsLoading ? (
-  <Spinner name="three-bounce" width="6em" height="6em" mx="auto" mt="2em"/>
+  <ClaimSpinner/>
 ) : (claimsError ? (
   <Box textAlign="center">Sorry, something went wrong! Please reload the page.</Box>
 ) : (

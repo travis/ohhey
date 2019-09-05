@@ -3,7 +3,7 @@ import { graphql } from "@apollo/react-hoc";
 import { compose } from "../util";
 import { withRouter } from "react-router-dom";
 
-import {Paper} from '../components/ui';
+import {ClaimSpinner, Paper} from '../components/ui';
 import UserClaim from '../components/UserClaim'
 import * as urls from '../urls'
 
@@ -14,22 +14,26 @@ export default compose(
   withRouter,
   graphql(
     queries.UserClaim, {
-      props: ({data: {claim}}) => ({claim}),
+      props: ({data: {claim, loading, error}}) => (
+        {claim, claimLoading: loading, claimError: error}
+      ),
       options: ({match: {params: {username, slug}}}) => ({
         variables: {username, slug}
       })
 
     }
   )
-)(({history, match: {params: {username}}, claim}) => {
+)(({history, match: {params: {username}}, claim, claimLoading}) => {
   useEffect(() => {
     if (claim) {
       history.replace(urls.userView(claim))
     }
   }, [claim, history])
-  return (
+  return claimLoading ? (
+    <ClaimSpinner/>
+  ) : (
     <Paper>
-      {claim && <UserClaim username={username} claim={claim} />}
+      <UserClaim username={username} claim={claim} />
     </Paper>
   )
 })

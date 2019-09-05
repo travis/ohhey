@@ -121,6 +121,10 @@ export const Spinner = (props) => (
   <StyledSpinner name="chasing-dots" color="primary.main" {...props}/>
 )
 
+export const ClaimSpinner = () => (
+  <Spinner name="three-bounce" width="6em" height="6em" mx="auto" mt="2em"/>
+)
+
 const Typography = styled(MuiTypography)(css(compose(typography, flexbox, spacing)))
 const Grid = styled(MuiGrid)(compose(spacing))
 const Button = styled(MuiButton)(compose(typography, flexbox))

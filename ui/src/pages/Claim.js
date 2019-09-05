@@ -4,6 +4,7 @@ import { compose } from "../util";
 import { withRouter } from "react-router-dom";
 
 import {Claim} from '../components/Claims'
+import { ClaimSpinner } from '../components/ui'
 
 import * as goto from '../goto';
 import * as queries from '../queries';
@@ -12,14 +13,14 @@ export default compose(
   withRouter,
   graphql(
     queries.Claim, {
-      props: ({data: {claim}}) => ({claim}),
+      props: ({data: {claim, loading, error}}) => ({claim, claimLoading: loading, claimError: error}),
       options: ({match: {params: {slug}}}) => ({
         variables: {slug}
       })
 
     }
   )
-)(({history, claim}) => {
+)(({history, claim, claimLoading}) => {
   useEffect(() => {
     if (claim) {
       const myAgreement = claim.myAgreement
@@ -34,7 +35,11 @@ export default compose(
   }, [claim, history])
   return (
     <Fragment>
-      {claim && <Claim claim={claim} />}
+      {claimLoading ? (
+        <ClaimSpinner />
+      ) : (
+        <Claim claim={claim} />
+      )}
     </Fragment>
   )
 })
