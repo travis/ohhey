@@ -151,7 +151,10 @@
        [{:db/id "nyt-racial-wealth-gap"
          :url "https://www.nytimes.com/interactive/2019/08/14/magazine/racial-wealth-gap.html"
          :title "Racial Wealth Gap"
-         :publication "new-york-times"}]))
+         :publication "new-york-times"}
+        {:db/id "betita-white-supremacy"
+         :url "https://collectiveliberation.org/wp-content/uploads/2013/01/What_Is_White_Supremacy_Martinez.pdf"
+         :title "What is white supremacy?"}]))
 
 (def shorthand-claims
   [{:db/id "animals-are-awesome"
@@ -443,7 +446,7 @@
        ["Prisons exacerbate many of the underlying problems that lead people to cause harm."
         []
         {:support
-         [[["People who are imprisoned for committing crimes motivated by need, such as minor theft or prostitution, find it much harder to obtain legal employment once convicted of a crime and are therefore even more likely to cause harm again."
+         [[["People who are imprisoned for committing crimes motivated by need, such as minor theft or prostitution, find it much harder to obtain legal employment once convicted of a crime and are therefore even more likely to break the law again."
             [{:url "https://en.wikipedia.org/wiki/Prison_abolition_movement#Arguments_made_for_prison_abolition"
               :title "Wikipedia: Arguments made for prison abolition"}]]]
           [["Prisoners are exposed to more violence than non-prisoners."]]
@@ -657,7 +660,53 @@
                       :title "How the US Got Its Police Force"}]]]
                   [["Fears of labor-union organizers and of large waves of Catholic, Irish, Italian, German, and Eastern European immigrants drove the call for the \"preservation of law and order\" by dominant interests."
                     [{:url "https://time.com/4779112/police-history-origins/"
-                      :title "How the US Got Its Police Force"}]]]]}]]]}]]]}]]]}]])
+                      :title "How the US Got Its Police Force"}]]]]}]]]}]]]}]]]}]
+   ^{:quoting "betita-white-supremacy"}
+   ["The United States is a nation state created by military conquest in several stages."
+    []
+    {:support
+     [[^{:quoting "betita-white-supremacy"}
+       ["The first stage [of the military conquest of the Americas] was the European seizure of the lands inhabited by indigenous peoples, which they called Turtle Island."
+        []
+        {:support
+         [[^{:quoting "betita-white-supremacy"}
+           ["Before the European invasion, there were between nine and eighteen million indigenous people in North America."]]
+          [^{:quoting "betita-white-supremacy"}
+           ["By the end of the Indian Wars, there were about 250,000 in what is now called the United States, and about 123,000 in what is now Canada "]]]}]]
+      [["Between 1836 and 1853, the United States used its military to gain control over and annex half of Mexico."
+        ["betita-white-supremacy"]]]]}]
+   ^{:quoting "betita-white-supremacy"}
+   ["The United States could not have developed economically as a nation without enslaved African labor."
+    []
+    {:support
+     [[^{:quoting "betita-white-supremacy"}
+       ["When agriculture and industry began to grow in the colonial period, a tremendous labor shortage existed."]]
+      [^{:quoting "betita-white-supremacy"}
+       ["Enslaved Africans...  provided the labor force that made the growth of the United States [curing colonial times] possible."]]
+      [["Slave labor was the key driver of the United States \"Market Revolution\" from about 1800 to 1860"
+        ["betita-white-supremacy"]]]
+      ]}]
+   ^{:quoting "betita-white-supremacy"}
+   ["The roots of U.S. racism or White Supremacy lie in establishing economic exploitation by the theft of resources and human labor, then justifying that exploitation by institutionalizing the inferiority of its victims."]
+   ^{:quoting "betita-white-supremacy"}
+   ["The United States is the first nation in the world to be born racist (South Africa came later) and also the first to be born capitalist."]
+   ^{:quoting "betita-white-supremacy"}
+   ["In Virginia, [in 1790], 50 rich white families held the reins of power but were vastly outnumbered by non‐whites. "]
+   ^{:quoting "betita-white-supremacy"}
+   ["Whiteness was born as a racist concept to prevent lower‐class whites from joining people of color, especially Blacks, against their class enemies."]
+   ["Political unity across racial lines has been and remains the greatest threat to the predominantly white ruling class in the United States."
+    ["betita-white-supremacy"]]
+   ^{:quoting "betita-white-supremacy"}
+   ["The doctrine of Manifest Destiny, born at a time of aggressive western expansion, said that the United States was destined by God to take over other peoples and lands."]
+   ^{:quoting "betita-white-supremacy"}
+   ["Manifest Destiny is a profoundly racist concept."
+    []
+    {:support
+     [[^{:quoting "betita-white-supremacy"}
+       ["The doctrine of Manifest Destiny facilitated the geographic extension and economic development of the United States while confirming racist policies and practices. "]]]}]
+   ^{:quoting "betita-white-supremacy"}
+   ["The arrogance of [Manifest Destiny, which asserts] that God gave white people (primarily men) the right to dominate everything around them still haunts our society and sustains its racist oppression. "]
+   ])
 
 (def claims (map ->claim shorthand-claims))
 
