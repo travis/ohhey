@@ -154,7 +154,10 @@
          :publication "new-york-times"}
         {:db/id "betita-white-supremacy"
          :url "https://collectiveliberation.org/wp-content/uploads/2013/01/What_Is_White_Supremacy_Martinez.pdf"
-         :title "What is white supremacy?"}]))
+         :title "What is white supremacy?"}
+        {:db/id "three-pillars-white-supremacy"
+         :url "https://loveharder.files.wordpress.com/2009/08/andrea-smith.pdf"
+         :title "Heteropatriarchy and the Three Pillars of White Supremacy"}]))
 
 (def shorthand-claims
   [{:db/id "animals-are-awesome"
@@ -706,6 +709,14 @@
        ["The doctrine of Manifest Destiny facilitated the geographic extension and economic development of the United States while confirming racist policies and practices. "]]]}]
    ^{:quoting "betita-white-supremacy"}
    ["The arrogance of [Manifest Destiny, which asserts] that God gave white people (primarily men) the right to dominate everything around them still haunts our society and sustains its racist oppression. "]
+   ^{:quoting "three-pillars-white-supremacy"}
+   ["The capitalist system ultimately commodifies all workers - one's own person becomes a commodity that one must sell in the labor market while the profits of one's work are taken by someone else."]
+   ^{:quoting "three-pillars-white-supremacy"}
+   ["[P]rior to the Civil War, most people in prison where white. However, after the thirteenth amendment was passed... Black people previously enslaved through the slavery system were reenslaved through the prison system."]
+   ^{:quoting "three-pillars-white-supremacy"}
+   ["Native peoples who are organizing against the colonial and genocidal practices committed by the US government will be more effective in their struggle if they also organize against US militarism."]
+   ^{:quoting "three-pillars-white-supremacy"}
+   ["Any liberation struggle that does not challenge heteronormativity cannot substantially challenge colonialism or white supremacy."]
    ])
 
 (def claims (map ->claim shorthand-claims))
