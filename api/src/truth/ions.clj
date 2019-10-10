@@ -82,43 +82,36 @@
   (if (= :options request-method)
     {:status 200
      :headers {"Content-Type" "application/json"}}
-    (cast-timing
-     :GraphQLHandler
-     (with-local-vars [request-session session]
-       (let [body-str (slurp body)
-             body-json (json/read-str body-str
-                                      :key-fn keyword)
-             variables (:variables body-json)
-             query (:query body-json)
-             conn (cast-timing
-                   :GetConn
-                   (get-conn))
-             db (cast-timing
-                 :GetDB
-                 (d/db conn))
-             current-user (cast-timing
-                           :GetCurrentUser
-                           (when-let [username (:identity session)]
-                             (t/get-user-by-username db username)))
-             result (cast-timing
-                     :LaciniaExecute
-                     (lacinia/execute
-                      schema query variables
-                      {:db db
-                       :conn conn
-                       :transact #(d/transact conn %)
-                       :session request-session
-                       :current-user current-user
-                       :search-client search-client
-                       }))
-             ]
-         (cast-timing
-          :MakeRingResult
-          {:status 200
-           :headers {"Content-Type" "application/json"}
-           :body (json/write-str result)
-           :session @request-session})))
-     )))
+    (with-local-vars [request-session session]
+      (let [body-str (slurp body)
+            body-json (json/read-str body-str
+                                     :key-fn keyword)
+            variables (:variables body-json)
+            query (:query body-json)
+            conn (get-conn)
+            db (d/db conn)
+            current-user (cast-timing
+                          :GetCurrentUser
+                          (when-let [username (:identity session)]
+                            (t/get-user-by-username db username)))
+            result
+            (lacinia/execute
+             schema query variables
+             {:db db
+              :conn conn
+              :transact #(d/transact conn %)
+              :session request-session
+              :current-user current-user
+              :search-client search-client
+              })
+            ]
+        (cast-timing
+         :MakeRingResult
+         {:status 200
+          :headers {"Content-Type" "application/json"}
+          :body (json/write-str result)
+          :session @request-session})))
+    ))
 
 (defn wrap-fix-set-cookie [handler]
   (fn [request]

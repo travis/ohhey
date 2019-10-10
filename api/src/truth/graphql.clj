@@ -289,6 +289,5 @@
    (apply-middleware [handle-errors])))
 
 (defn load-schema []
-  (-> (parse-schema (slurp (clojure.java.io/resource "schema.gql")) resolvers)
-      schema/compile
-      ))
+  (schema/compile
+   (parse-schema (slurp (clojure.java.io/resource "schema.gql")) resolvers)))

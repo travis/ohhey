@@ -4,17 +4,8 @@
          truth.domain/vote-on-claim!
          truth.domain/vote-on-evidence!
 
-         ;; query functions
-         ;;datomic.ion.starter/feature-item?
-
-         ;; lambda handlers
-         ;;datomic.ion.starter/echo
-         ;;datomic.ion.starter/add-item
-         ;;datomic.ion.starter/items-by-type
-
          ;; web applications
          truth.ions/graphql
-         ;;datomic.ion.starter/get-tutorial-schema
          ]
  :lambdas {:graphql
            {:fn truth.ions/graphql
