@@ -9,6 +9,8 @@
         ring {:mvn/version "1.7.0"}
         software.amazon.awssdk/cloudsearch {:mvn/version "2.5.20"}
         software.amazon.awssdk/cloudsearchdomain {:mvn/version "2.5.20"}
+        arachne/aristotle {:git/url "https://github.com/arachne-framework/aristotle.git"
+                           :sha "7b93e62abc45c82c75d5cf6c0ae2c0e21a233e81"}
         }
  :mvn/repos {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}
              "my.datomic.com" {:url "https://my.datomic.com/repo"}}
