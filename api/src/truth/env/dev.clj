@@ -7,6 +7,7 @@
    [truth.schema :as schema]
    [truth.search :as search]
    [again.core :as again]
+   [truth.rdf :as rdf]
    ))
 
 
@@ -27,7 +28,35 @@
   (d/transact conn {:tx-data data/data})
   )
 
+(defn all-claims [db]
+  (apply concat
+   (d/q '[:find (pull ?claim [:claim/slug :claim/created-at :claim/body
+                              {:claim/quoting [:source/url]}
+                              {:claim/sources [:source/url]}
+                              {:claim/evidence [:evidence/supports {:evidence/claim [:claim/slug]}]}])
+          :where
+          [?claim :claim/id _]
+          ]
+        db)))
+
+(defn evidence [db]
+  (d/q '[:find ?slug ?created-at ?supports ?evidence-slug
+         :where
+         [?claim :claim/slug ?slug]
+         [?claim :claim/evidence ?evidence]
+         [?evidence :evidence/created-at ?created-at]
+         [?evidence :evidence/claim ?evidence-claim]
+         [?evidence :evidence/supports ?supports]
+         [?evidence-claim :claim/slug ?evidence-slug]]
+       db)
+
+  )
+
 (comment
+
+  (map #(rdf/print-triples (rdf/claim->rdf %)) (all-claims (d/db (get-conn))))
+
+
   (clojure.core.memoize/memo-clear! client)
 
   (d/create-database (client) db-spec)
