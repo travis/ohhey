@@ -27,7 +27,7 @@
 (def owner-profile-iri (java.net.URI. (str owner-root-iri "profile/card#me")))
 
 (defn belief-iri [root slug]
-  (java.net.URI. (str root "beliefs/" slug)))
+  (java.net.URI. (str root "public/ohhey/concepts/" slug)))
 
 (defn evidence-iri [belief-iri slug]
   (java.net.URI. (str belief-iri "/evidence/" slug)))
@@ -48,16 +48,26 @@
                :belief/body body
                :terms/creator owner-profile-iri
                :terms/created created
-               :terms/source (for [{url :source/url} sources]
-                               (java.net.URI. url))
+               :terms/source (for [source sources]
+                               (java.net.URI. (or (:source/url source) (-> source :source/book :book/url))))
                :prov/wasQuotedFrom (if quoting
-                                     (java.net.URI. (:source/url quoting))
+                                     (java.net.URI. (or (:source/url quoting) (-> quoting :source/book :book/url)))
                                      [])
                :ibis/supported-by (for [{{ev-slug :claim/slug} :evidence/claim} (filter :evidence/supports evidence)]
                                     (belief-iri owner-root-iri ev-slug))
                :ibis/opposed-by (for [{{ev-slug :claim/slug} :evidence/claim} (filter #(not (:evidence/supports %)) evidence)]
                                   (belief-iri owner-root-iri ev-slug))}))
     ))
+
+(defn source->rdf [{url :source/url title :source/title
+                    {pub-url :publication/url pub-name :publication/name} :source/publication book :source/book}]
+  (doto (aa/graph :simple)
+    (aa/add (if url
+              {:rdf/about (java.net.URI. url)
+               :terms/title title
+               :terms/publisher (if pub-url pub-url [])}
+              {:rdf/about (java.net.URI. (:book/url book))
+               :terms/title (:book/title book)}))))
 
 (defn print-triples [triples]
   (->
@@ -66,14 +76,15 @@
       (aa/add triples)))
    (.write *out* "ttl")))
 
-(print-triples (claim->rdf {:claim/slug "cats-are-cool"
-                            :claim/created-at #inst "1985-04-12T23:20:50.520-00:00"
-                            :claim/body "Cats are cool"
-                            :claim/quoting {:source/url "http://allabout.com/cats"}
-                            :claim/sources [{:source/url "http://coolornot.com/cats"}]
-                            :claim/evidence [{:evidence/supports true
-                                              :evidence/claim {:claim/slug "animals-are-awesome"}}
-                                             {:evidence/supports true
-                                              :evidence/claim {:claim/slug "cats-are-cute"}}
-                                             {:evidence/supports false
-                                              :evidence/claim {:claim/slug "cats-are-mean"}}]}))
+(with-out-str
+ (print-triples (claim->rdf {:claim/slug "cats-are-cool"
+                             :claim/created-at #inst "1985-04-12T23:20:50.520-00:00"
+                             :claim/body "Cats are cool"
+                             :claim/quoting {:source/url "http://allabout.com/cats"}
+                             :claim/sources [{:source/url "http://coolornot.com/cats"}]
+                             :claim/evidence [{:evidence/supports true
+                                               :evidence/claim {:claim/slug "animals-are-awesome"}}
+                                              {:evidence/supports true
+                                               :evidence/claim {:claim/slug "cats-are-cute"}}
+                                              {:evidence/supports false
+                                               :evidence/claim {:claim/slug "cats-are-mean"}}]})))
